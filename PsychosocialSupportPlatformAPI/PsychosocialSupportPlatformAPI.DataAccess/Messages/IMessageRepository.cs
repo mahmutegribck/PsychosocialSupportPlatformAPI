@@ -7,8 +7,10 @@ using System.Threading.Tasks;
 
 namespace PsychosocialSupportPlatformAPI.DataAccess.Messages
 {
-    public interface IMessageRepository 
+    public interface IMessageRepository
     {
         Task AddMessage(Message message);
+
+        Task<List<Message>> GetMessages(string fromUser, string toUser);
     }
 }

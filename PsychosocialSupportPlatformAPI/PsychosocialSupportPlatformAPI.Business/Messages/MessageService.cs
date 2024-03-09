@@ -24,5 +24,20 @@ namespace PsychosocialSupportPlatformAPI.Business.Messages
         {
             await _messageRepository.AddMessage(_mapper.Map<Message>(messageDto));
         }
+
+        public async Task<List<GetMessageDto>> GetMessages(GetUserMessageDto getUserMessageDto)
+        {
+            try
+            {
+                if (getUserMessageDto == null) throw new ArgumentNullException("Veriler Eksik");
+                return _mapper.Map<List<GetMessageDto>>(await _messageRepository.GetMessages(getUserMessageDto.FromUser, getUserMessageDto.ToUser));
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
     }
 }

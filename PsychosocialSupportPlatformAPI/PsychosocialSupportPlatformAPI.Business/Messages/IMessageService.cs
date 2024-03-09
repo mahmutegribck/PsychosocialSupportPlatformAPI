@@ -11,5 +11,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Messages
     public interface IMessageService
     {
         Task AddMessage(SendMessageDto messageDto);
+
+        Task<List<GetMessageDto>> GetMessages(GetUserMessageDto getUserMessageDto);
     }
 }
