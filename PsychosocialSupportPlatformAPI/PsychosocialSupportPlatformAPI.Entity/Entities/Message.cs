@@ -16,6 +16,8 @@ namespace PsychosocialSupportPlatformAPI.Entity.Entities
         public string Text { get; set; }
         public DateTime SendedTime { get; set; }
 
+        public bool Status { get; set; } = false;
+
         //public string ToUserId { get; set; }
 
         //public ApplicationUser ApplicationUser { get; set; }

@@ -13,5 +13,6 @@ namespace PsychosocialSupportPlatformAPI.Business.Messages
         Task AddMessage(SendMessageDto messageDto);
 
         Task<List<GetMessageDto>> GetMessages(GetUserMessageDto getUserMessageDto);
+        Task<bool> MessageChangeStatus(SetUserMessages setUserMessages);
     }
 }

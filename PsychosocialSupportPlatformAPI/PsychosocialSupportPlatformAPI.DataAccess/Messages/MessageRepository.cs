@@ -22,9 +22,25 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Messages
             await _context.SaveChangesAsync();
         }
 
-        public async Task<List<Message>> GetMessages(string fromUser, string toUser)
+        public async Task<List<Message>> GetMessages(string senderId, string receiverId)
         {
-            return await _context.Messages.Where(m => m.SenderId == fromUser && m.ReceiverId == toUser).OrderBy(m => m.SendedTime).ToListAsync();
+            return await _context.Messages.Where(m => m.SenderId == senderId && m.ReceiverId == receiverId).OrderBy(m => m.SendedTime).ToListAsync();
+        }
+
+
+
+        public async Task<bool> MessageChangeStatus(string senderId, string receiverId)
+        {
+            var userMessage = await _context.Messages.Where(m => m.SenderId == senderId && m.ReceiverId == receiverId && m.Status == false).ToListAsync();
+
+            if (userMessage == null) return false;
+
+            foreach (var user in userMessage)
+            {
+                user.Status = true;
+            }
+            await _context.SaveChangesAsync();
+            return true;
         }
     }
 }

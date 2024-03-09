@@ -39,5 +39,10 @@ namespace PsychosocialSupportPlatformAPI.Business.Messages
                 throw;
             }
         }
+
+        public async Task<bool> MessageChangeStatus(SetUserMessages setUserMessages)
+        {
+            return await _messageRepository.MessageChangeStatus(setUserMessages.SenderId, setUserMessages.ReceiverId);
+        }
     }
 }
