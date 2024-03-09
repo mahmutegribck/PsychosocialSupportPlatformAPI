@@ -1,0 +1,43 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34330.188
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PsychosocialSupportPlatformAPI.Entity", "PsychosocialSupportPlatformAPI.Entity\PsychosocialSupportPlatformAPI.Entity.csproj", "{859E468B-E657-420D-B8B1-1E48CA6C45E8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PsychosocialSupportPlatformAPI.DataAccess", "PsychosocialSupportPlatformAPI.DataAccess\PsychosocialSupportPlatformAPI.DataAccess.csproj", "{BA0B3D43-37B7-44E2-8AE4-C3A4E83B21A4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PsychosocialSupportPlatformAPI.Business", "PsychosocialSupportPlatformAPI.Business\PsychosocialSupportPlatformAPI.Business.csproj", "{9E3C799F-47C4-484E-8AA4-FC9D4E16522C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PsychosocialSupportPlatformAPI.API", "PsychosocialSupportPlatformAPI.API\PsychosocialSupportPlatformAPI.API.csproj", "{4A7609DE-0E47-4775-9C50-0302D4214C13}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{859E468B-E657-420D-B8B1-1E48CA6C45E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{859E468B-E657-420D-B8B1-1E48CA6C45E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{859E468B-E657-420D-B8B1-1E48CA6C45E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{859E468B-E657-420D-B8B1-1E48CA6C45E8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BA0B3D43-37B7-44E2-8AE4-C3A4E83B21A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BA0B3D43-37B7-44E2-8AE4-C3A4E83B21A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BA0B3D43-37B7-44E2-8AE4-C3A4E83B21A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BA0B3D43-37B7-44E2-8AE4-C3A4E83B21A4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9E3C799F-47C4-484E-8AA4-FC9D4E16522C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9E3C799F-47C4-484E-8AA4-FC9D4E16522C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9E3C799F-47C4-484E-8AA4-FC9D4E16522C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9E3C799F-47C4-484E-8AA4-FC9D4E16522C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4A7609DE-0E47-4775-9C50-0302D4214C13}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4A7609DE-0E47-4775-9C50-0302D4214C13}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4A7609DE-0E47-4775-9C50-0302D4214C13}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4A7609DE-0E47-4775-9C50-0302D4214C13}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0CFE384F-1390-4650-94A5-21E21533D73C}
+	EndGlobalSection
+EndGlobal
