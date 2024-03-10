@@ -25,6 +25,11 @@ namespace PsychosocialSupportPlatformAPI.Business.Messages
             await _messageRepository.AddMessage(_mapper.Map<Message>(messageDto));
         }
 
+        public async Task<List<object>> GetMessagedUsers(string userId)
+        {
+            return await _messageRepository.GetMessagedUsers(userId);
+        }
+
         public async Task<List<GetMessageDto>> GetMessages(GetUserMessageDto getUserMessageDto)
         {
             try

@@ -13,6 +13,8 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Messages
 
         Task<List<Message>> GetMessages(string senderId, string receiverId);
 
-        Task<bool> MessageChangeStatus(string senderId, string receiverId); 
+        Task<bool> MessageChangeStatus(string senderId, string receiverId);
+
+        Task<List<object>> GetMessagedUsers(string userId);
     }
 }

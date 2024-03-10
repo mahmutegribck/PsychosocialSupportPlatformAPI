@@ -1,8 +1,12 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Update.Internal;
 using PsychosocialSupportPlatformAPI.Business.Messages;
 using PsychosocialSupportPlatformAPI.Business.Messages.DTOs;
+using PsychosocialSupportPlatformAPI.DataAccess;
+using PsychosocialSupportPlatformAPI.Entity.Entities;
+using PsychosocialSupportPlatformAPI.Entity.Entities.Users;
 using System.Runtime.CompilerServices;
 
 namespace PsychosocialSupportPlatformAPI.API.Controllers
@@ -12,10 +16,11 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
     public class MessageController : ControllerBase
     {
         private readonly IMessageService _messageService;
-
-        public MessageController(IMessageService messageService)
+        private readonly PsychosocialSupportPlatformDBContext _context;
+        public MessageController(IMessageService messageService, PsychosocialSupportPlatformDBContext context)
         {
             _messageService = messageService;
+            _context = context;
         }
 
 
@@ -40,6 +45,15 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
                 return NotFound();
             }
             return BadRequest();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetMessagedUsers(string userId)
+        {
+            var messagedUsers = await _messageService.GetMessagedUsers(userId);
+            if (messagedUsers == null) return NotFound();
+
+            return Ok(messagedUsers);
         }
     }
 }

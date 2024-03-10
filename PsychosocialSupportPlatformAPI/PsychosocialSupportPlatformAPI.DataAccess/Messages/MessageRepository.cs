@@ -22,6 +22,13 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Messages
             await _context.SaveChangesAsync();
         }
 
+        public async Task<List<object>> GetMessagedUsers(string userId)
+        {
+            var messagingUsers = await _context.Messages.Where(m => m.SenderId == userId || m.ReceiverId == userId).Select(m => m.SenderId == userId ? m.ReceiverId : m.SenderId).Distinct().Where(id => id != userId).Select(id => new { Id = id, User = _context.Users.Where(u => u.Id == id).Select(u => new { Name = u.Name, Surname = u.Surname, ProfileImageUrl = u.ProfileImageUrl }).FirstOrDefault(), LastMessage = _context.Messages.Where(msg => (msg.SenderId == userId && msg.ReceiverId == id) || (msg.SenderId == id && msg.ReceiverId == userId)).OrderByDescending(msg => msg.SendedTime).Select(msg => msg.Text).FirstOrDefault(), UnreadMessageCount = _context.Messages.Count(msg => msg.ReceiverId == id && msg.SenderId == userId && !msg.Status) }).ToListAsync();
+
+            return messagingUsers.Cast<object>().ToList();
+        }
+
         public async Task<List<Message>> GetMessages(string senderId, string receiverId)
         {
             var deneme = await _context.Messages.Include(m => m.Sender).Include(m => m.Receiver).Where(m => (m.SenderId == senderId && m.ReceiverId == receiverId) || (m.SenderId == receiverId && m.ReceiverId == senderId)).OrderBy(m => m.SendedTime).ToListAsync();
