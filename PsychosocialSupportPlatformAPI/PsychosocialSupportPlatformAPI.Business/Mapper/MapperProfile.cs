@@ -34,7 +34,13 @@ namespace PsychosocialSupportPlatformAPI.Business.Mapper
             CreateMap<Patient, GetPatientDto>().ReverseMap();
 
             CreateMap<Message, SendMessageDto>().ReverseMap();
-            CreateMap<Message, GetMessageDto>().ReverseMap();
+            CreateMap<Message, GetMessageDto>()
+                .ForMember(dest => dest.SenderName, opt => opt.MapFrom(src => src.Sender.Name))
+                .ForMember(dest => dest.SenderSurname, opt => opt.MapFrom(src => src.Sender.Surname))
+                .ForMember(dest => dest.ReceiverName, opt => opt.MapFrom(src => src.Receiver.Name))
+                .ForMember(dest => dest.ReceiverSurname, opt => opt.MapFrom(src => src.Receiver.Surname));
+
+
             //CreateMap<ApplicationUser, GetApplicationUserDto>().ReverseMap();
             //CreateMap<ApplicationUser, UpdateApplicationUserDto>().ReverseMap();
 

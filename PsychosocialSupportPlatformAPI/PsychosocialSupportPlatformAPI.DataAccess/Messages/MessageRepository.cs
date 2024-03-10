@@ -24,7 +24,8 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Messages
 
         public async Task<List<Message>> GetMessages(string senderId, string receiverId)
         {
-            return await _context.Messages.Where(m => m.SenderId == senderId && m.ReceiverId == receiverId).OrderBy(m => m.SendedTime).ToListAsync();
+            var deneme = await _context.Messages.Include(m => m.Sender).Include(m => m.Receiver).Where(m => (m.SenderId == senderId && m.ReceiverId == receiverId) || (m.SenderId == receiverId && m.ReceiverId == senderId)).OrderBy(m => m.SendedTime).ToListAsync();
+            return deneme;
         }
 
 
