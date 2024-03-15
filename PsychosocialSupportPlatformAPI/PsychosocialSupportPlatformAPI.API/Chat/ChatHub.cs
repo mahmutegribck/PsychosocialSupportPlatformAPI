@@ -29,9 +29,15 @@ namespace PsychosocialSupportPlatformAPI.API.Chat
                 SendedTime = DateTime.UtcNow,
                 ReceiverId = fromUserId,
                 SenderId = toUserId,
-                Text = message,
+                Text = message
             };
-            await Clients.Group(toUserId).SendAsync("messageToUserReceived", message);
+            if(BagliKullaniciIdler.Contains(toUserId))
+            {
+                messageDto.IsSended = true;
+                await Clients.Group(toUserId).SendAsync("messageToUserReceived", message);
+            }
+
+            
             await _messageService.AddMessage(messageDto);
 
         }
@@ -39,6 +45,13 @@ namespace PsychosocialSupportPlatformAPI.API.Chat
         public override async Task OnConnectedAsync()
         {
             var kullaniciId = Context.UserIdentifier;
+
+            var outboxMessages = await _messageService.GetOutboxMessages(kullaniciId);
+            foreach (var outboxMessage in outboxMessages)
+            {
+                await Clients.Group(outboxMessage.ReceiverId).SendAsync("messageToUserReceived", outboxMessage.Text);
+                await _messageService.SetSendedMessage(outboxMessage.MessageId);
+            }
             //var kullaniciAdi = Context.GetHttpContext()!.User.Identities.FirstOrDefault();
 
             //var accessToken = Context.GetHttpContext()?.Request.Query["access_token"];

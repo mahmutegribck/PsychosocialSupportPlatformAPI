@@ -1,4 +1,5 @@
 ﻿using PsychosocialSupportPlatformAPI.Entity.Entities;
+using PsychosocialSupportPlatformAPI.Entity.Entities.Messages;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,5 +17,9 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Messages
         Task<bool> MessageChangeStatus(string senderId, string receiverId);
 
         Task<List<object>> GetMessagedUsers(string userId);
+
+        Task<List<MessageOutbox>> GetOutboxMessages(string receiverId);
+
+        Task SetSendedMessage(int messageId);
     }
 }

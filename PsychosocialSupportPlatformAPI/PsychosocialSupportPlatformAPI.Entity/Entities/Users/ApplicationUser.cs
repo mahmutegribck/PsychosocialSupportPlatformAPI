@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using PsychosocialSupportPlatformAPI.Entity.Entities.Messages;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;

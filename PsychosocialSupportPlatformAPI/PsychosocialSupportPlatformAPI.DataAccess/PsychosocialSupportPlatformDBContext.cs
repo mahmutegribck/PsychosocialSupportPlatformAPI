@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using PsychosocialSupportPlatformAPI.Entity.Entities;
+using PsychosocialSupportPlatformAPI.Entity.Entities.Messages;
 using PsychosocialSupportPlatformAPI.Entity.Entities.Users;
 using System;
 using System.Collections.Generic;
@@ -19,18 +20,12 @@ namespace PsychosocialSupportPlatformAPI.DataAccess
         public PsychosocialSupportPlatformDBContext(DbContextOptions<PsychosocialSupportPlatformDBContext> options) : base(options) { }
 
         public DbSet<Message> Messages { get; set; }
+
+        public DbSet<MessageOutbox> MessageOutboxes { get; set; }
         public DbSet<Patient> Patients { get; set; }
         public DbSet<Doctor> Doctors { get; set; }
 
-        //public DbSet<User> Users { get; set; }
-
-        //protected override void OnModelCreating(ModelBuilder modelBuilder)
-        //{
-        //    //modelBuilder.Entity<Message>()
-        //    //    .HasOne(p => p.ApplicationUser)
-        //    //    .WithMany(c => c.Messages)
-        //    //    .HasForeignKey(p => p.ApplicationUserId);
-        //}
+        
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);

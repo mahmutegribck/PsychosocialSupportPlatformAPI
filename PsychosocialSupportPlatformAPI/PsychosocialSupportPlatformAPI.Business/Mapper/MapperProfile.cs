@@ -5,6 +5,7 @@ using PsychosocialSupportPlatformAPI.Business.Auth.AuthService.DTOs.PatientDTOs;
 using PsychosocialSupportPlatformAPI.Business.Messages.DTOs;
 using PsychosocialSupportPlatformAPI.Business.Users.DTOs;
 using PsychosocialSupportPlatformAPI.Entity.Entities;
+using PsychosocialSupportPlatformAPI.Entity.Entities.Messages;
 using PsychosocialSupportPlatformAPI.Entity.Entities.Users;
 using System;
 using System.Collections.Generic;
@@ -40,6 +41,8 @@ namespace PsychosocialSupportPlatformAPI.Business.Mapper
                 .ForMember(dest => dest.ReceiverName, opt => opt.MapFrom(src => src.Receiver.Name))
                 .ForMember(dest => dest.ReceiverSurname, opt => opt.MapFrom(src => src.Receiver.Surname));
 
+
+            CreateMap<MessageOutbox, GetOutboxMessageDto>().ForMember(dest => dest.Text, opt => opt.MapFrom(src => src.Message.Text));
 
             //CreateMap<ApplicationUser, GetApplicationUserDto>().ReverseMap();
             //CreateMap<ApplicationUser, UpdateApplicationUserDto>().ReverseMap();

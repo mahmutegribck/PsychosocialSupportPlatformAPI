@@ -97,7 +97,7 @@ app.UseSwaggerUI();
 app.UseHttpsRedirection();
 //app.UseRouting();
 app.UseCors();
-//app.UseWebSockets();
+app.UseWebSockets();
 
 //app.MapHub<DenemeHub>("/hub/denemeHub");
 
