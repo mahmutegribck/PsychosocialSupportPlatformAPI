@@ -31,13 +31,13 @@ namespace PsychosocialSupportPlatformAPI.API.Chat
                 SenderId = toUserId,
                 Text = message
             };
-            if(BagliKullaniciIdler.Contains(toUserId))
+            if (BagliKullaniciIdler.Contains(toUserId))
             {
                 messageDto.IsSended = true;
                 await Clients.Group(toUserId).SendAsync("messageToUserReceived", message);
             }
 
-            
+
             await _messageService.AddMessage(messageDto);
 
         }
@@ -59,7 +59,7 @@ namespace PsychosocialSupportPlatformAPI.API.Chat
             //var token = tokenHandler.ReadToken(accessToken) as JwtSecurityToken;
 
             //// Token içindeki id (user id) bilgisini al
-            //var userID = token?.Claims.First(claim => claim.Type == "nameid").Value;
+            //var kullaniciId = token?.Claims.First(claim => claim.Type == "nameid").Value;
 
             if (kullaniciId == null)
                 throw new Exception("kullanici adı bulunamadı.");
@@ -87,7 +87,7 @@ namespace PsychosocialSupportPlatformAPI.API.Chat
             var kullaniciId = Context.UserIdentifier;
 
             // Token içindeki id (user id) bilgisini al
-            //var userID = token?.Claims.First(claim => claim.Type == "nameid").Value;
+            //var kullaniciId = token?.Claims.First(claim => claim.Type == "nameid").Value;
 
             if (kullaniciId == null)
             {

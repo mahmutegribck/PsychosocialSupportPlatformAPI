@@ -26,7 +26,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
             _authService = authService;
         }
 
-        
+
 
         [HttpPost]
         public async Task<IActionResult> RegisterForDoctor([FromBody] RegisterDoctorDto model)
@@ -72,7 +72,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
                 {
                     return Ok(result);
                 }
-                    
+
                 return BadRequest(result);
             }
             return BadRequest();
@@ -106,6 +106,24 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
             }
 
             return BadRequest();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> LoginViaGoogle([FromBody] GoogleLoginDto model)
+        {
+            if (ModelState.IsValid)
+            {
+                LoginResponse result = await _authService.LoginUserViaGoogle(model);
+
+                if (result.IsSuccess)
+                {
+                    return Ok(result);
+                }
+
+                return BadRequest(result);
+            }
+            return BadRequest();
+
         }
     }
 }

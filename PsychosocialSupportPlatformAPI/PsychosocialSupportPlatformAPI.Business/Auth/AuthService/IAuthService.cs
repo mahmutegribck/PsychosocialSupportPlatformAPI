@@ -20,5 +20,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
 
         Task<JwtTokenDTO?> LoginWithRefreshToken(string refreshToken);
         Task<LoginResponse> ResetPasswordAsync(ResetPasswordDto model);
+
+        Task<LoginResponse> LoginUserViaGoogle(GoogleLoginDto googleLoginDto);
     }
 }

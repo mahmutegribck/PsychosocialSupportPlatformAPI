@@ -13,6 +13,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Google.Apis.Auth;
+using static Google.Apis.Auth.GoogleJsonWebSignature;
 
 namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
 {
@@ -23,7 +25,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
         private readonly IJwtService _jwtService;
         private readonly IMapper _mapper;
         private readonly IConfiguration _config;
-        
+
         public AuthService(UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager, IJwtService jwtService, IMapper mapper, IConfiguration config)
         {
             _userManager = userManager;
@@ -269,6 +271,59 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
 
                 throw;
             }
+
+        }
+
+        public async Task<LoginResponse> LoginUserViaGoogle(GoogleLoginDto googleLoginDto)
+        {
+            ValidationSettings? settings = new GoogleJsonWebSignature.ValidationSettings()
+            {
+                Audience = new List<string>() { _config["ExternalLogin:Google-Client-Id"]! }
+            };
+
+            Payload payload = await GoogleJsonWebSignature.ValidateAsync(googleLoginDto.IdToken, settings);
+
+            UserLoginInfo userLoginInfo = new(googleLoginDto.Provider, payload.Subject, googleLoginDto.Provider);
+
+            ApplicationUser user = await _userManager.FindByLoginAsync(userLoginInfo.LoginProvider, userLoginInfo.ProviderKey);
+
+            bool result = user != null;
+
+            if (user == null)
+            {
+                user = await _userManager.FindByEmailAsync(payload.Email);
+                if (user == null)
+                {
+                    user = new()
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        Email = payload.Email,
+                        Name = payload.Name,
+                        Surname = payload.FamilyName,
+                        ProfileImageUrl = payload.Picture,
+                        UserName = payload.Email,
+                        Provider = googleLoginDto.Provider
+                    };
+
+                    IdentityResult createResult = await _userManager.CreateAsync(user);
+                    result = createResult.Succeeded;
+                }
+            }
+
+            if (result)
+                await _userManager.AddLoginAsync(user, userLoginInfo);
+            else
+                throw new Exception("Invalid external authentication.");
+
+
+            return new LoginResponse
+            {
+                JwtTokenDTO = await _jwtService.CreateJwtToken(user),
+                Message = "",
+                IsSuccess = true,
+
+            };
+
 
         }
 

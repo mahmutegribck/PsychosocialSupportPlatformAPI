@@ -14,6 +14,7 @@ using PsychosocialSupportPlatformAPI.DataAccess;
 using PsychosocialSupportPlatformAPI.DataAccess.Messages;
 using PsychosocialSupportPlatformAPI.DataAccess.Users;
 using PsychosocialSupportPlatformAPI.Entity.Entities.Users;
+using System.Security.Claims;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -56,21 +57,37 @@ builder.Services.AddAuthentication(options =>
 
 
                  IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"] ?? string.Empty)),
-                 LifetimeValidator = (notBefore, expires, securityToken, validationParameters) => expires != null ? expires > DateTime.UtcNow : false
+                 LifetimeValidator = (notBefore, expires, securityToken, validationParameters) => expires != null ? expires > DateTime.UtcNow : false,
+
+                 NameClaimType = ClaimTypes.Name //JWT üzerinde Name claimne karþýlýk gelen deðeri User.Identity.Name propertysinden elde edebiliriz.
+
+             };
+
+
+             options.Events = new JwtBearerEvents
+             {
+                 OnMessageReceived = context =>
+                 {
+                     var accessToken = context.Request.Query["access_token"];
+                     var path = context.HttpContext.Request.Path;
+                     if (!string.IsNullOrEmpty(accessToken) && (path.StartsWithSegments("/message")))
+                     {
+                         context.Token = accessToken;
+                     }
+                     return Task.CompletedTask;
+                 }
              };
          });
 
+
+builder.Services.AddAuthorizationBuilder();
+
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-
-IdentityConfigurator.ConfigureIdentity(builder.Services);
-
-
-
-
-
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnectionString");
 builder.Services.AddDbContext<PsychosocialSupportPlatformDBContext>(options => options.UseSqlServer(connectionString));
+
+IdentityConfigurator.ConfigureIdentity(builder.Services);
 
 
 builder.Services.AddSignalR();
@@ -90,8 +107,6 @@ var app = builder.Build();
 
 app.UseSwagger();
 app.UseSwaggerUI();
-
-
 
 
 app.UseHttpsRedirection();
