@@ -15,24 +15,29 @@ using System.Text;
 using System.Threading.Tasks;
 using Google.Apis.Auth;
 using static Google.Apis.Auth.GoogleJsonWebSignature;
+using Google.Apis.Http;
 
 namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
 {
     public class AuthService : IAuthService
     {
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly UserManager<Patient> _patientManager;
         private readonly RoleManager<ApplicationRole> _roleManager;
         private readonly IJwtService _jwtService;
         private readonly IMapper _mapper;
         private readonly IConfiguration _config;
+        private readonly HttpClient _httpClient;
 
-        public AuthService(UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager, IJwtService jwtService, IMapper mapper, IConfiguration config)
+        public AuthService(UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager, IJwtService jwtService, IMapper mapper, IConfiguration config, HttpClient httpClient, UserManager<Patient> patientManager)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _jwtService = jwtService;
             _mapper = mapper;
             _config = config;
+            _httpClient = httpClient;
+            _patientManager = patientManager;
         }
 
 
@@ -289,13 +294,13 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
 
             UserLoginInfo userLoginInfo = new("google", payload.Subject, "GOOGLE");
 
-            ApplicationUser user = await _userManager.FindByLoginAsync(userLoginInfo.LoginProvider, userLoginInfo.ProviderKey);
+            Patient user = await _patientManager.FindByLoginAsync(userLoginInfo.LoginProvider, userLoginInfo.ProviderKey);
 
             bool result = user != null;
 
             if (user == null)
             {
-                user = await _userManager.FindByEmailAsync(payload.Email);
+                user = await _patientManager.FindByEmailAsync(payload.Email);
                 if (user == null)
                 {
                     user = new()
@@ -309,16 +314,31 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
                         EmailConfirmed = payload.EmailVerified
                     };
 
-                    IdentityResult createResult = await _userManager.CreateAsync(user);
+                    IdentityResult createResult = await _patientManager.CreateAsync(user);
                     result = createResult.Succeeded;
                 }
             }
 
             if (result)
+            {
                 await _userManager.AddLoginAsync(user, userLoginInfo);
-            else
-                throw new Exception("Invalid external authentication.");
+                string role = _config["Roles:Patient"] ?? throw new InvalidOperationException("Hasta rolü tanımlanmamış.");
 
+                bool roleExists = await _roleManager.RoleExistsAsync(role);
+                if (!roleExists)
+                {
+                    ApplicationRole newRole = new ApplicationRole();
+                    newRole.Id = Guid.NewGuid().ToString();
+                    newRole.Name = role;
+
+                    await _roleManager.CreateAsync(newRole);
+                }
+                await _userManager.AddToRoleAsync(user, role);
+            }
+            else
+            {
+                throw new Exception("Invalid external authentication.");
+            }
 
             return new LoginResponse
             {
@@ -327,6 +347,11 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
                 IsSuccess = true,
 
             };
+        }
+
+        public Task<LoginResponse> LoginUserViaFacebook(string token)
+        {
+            throw new NotImplementedException();
         }
     }
 }

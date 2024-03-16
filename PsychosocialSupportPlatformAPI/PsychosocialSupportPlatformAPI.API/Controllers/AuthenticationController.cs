@@ -14,6 +14,7 @@ using PsychosocialSupportPlatformAPI.Entity.Entities.Users;
 
 namespace PsychosocialSupportPlatformAPI.API.Controllers
 {
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class AuthenticationController : ControllerBase
     {
@@ -110,6 +111,22 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
             if (token != null)
             {
                 LoginResponse result = await _authService.LoginUserViaGoogle(token);
+
+                if (result.IsSuccess)
+                {
+                    return Ok(result);
+                }
+                return BadRequest(result);
+            }
+            return BadRequest();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> LoginViaFacebook([FromBody] string token)
+        {
+            if (token != null)
+            {
+                LoginResponse result = await _authService.LoginUserViaFacebook(token);
 
                 if (result.IsSuccess)
                 {

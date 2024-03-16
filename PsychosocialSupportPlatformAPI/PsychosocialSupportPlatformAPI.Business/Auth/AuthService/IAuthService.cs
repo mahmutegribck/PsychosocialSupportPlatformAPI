@@ -22,5 +22,6 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
         Task<LoginResponse> ResetPasswordAsync(ResetPasswordDto model);
 
         Task<LoginResponse> LoginUserViaGoogle(string token);
+        Task<LoginResponse> LoginUserViaFacebook(string token);
     }
 }
