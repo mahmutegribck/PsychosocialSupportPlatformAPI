@@ -35,6 +35,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
             _config = config;
         }
 
+
         public async Task<RegisterResponse> RegisterForDoctor(RegisterDoctorDto model)
         {
             try
@@ -52,7 +53,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
 
                 Doctor newUser = _mapper.Map<Doctor>(model);
                 newUser.Id = Guid.NewGuid().ToString();
-                newUser.UserName = newUser.Id;
+                newUser.UserName = newUser.Email;
 
                 var result = await _userManager.CreateAsync(newUser, model.Password);
 
@@ -110,6 +111,8 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
                 };
             }
         }
+
+
         public async Task<RegisterResponse> RegisterForPatient(RegisterPatientDto model)
         {
             try
@@ -127,7 +130,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
 
                 Patient newUser = _mapper.Map<Patient>(model);
                 newUser.Id = Guid.NewGuid().ToString();
-                newUser.UserName = newUser.Id;
+                newUser.UserName = newUser.Email;
 
                 var result = await _userManager.CreateAsync(newUser, model.Password);
 
@@ -223,11 +226,11 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
             }
         }
 
+
         public async Task<JwtTokenDTO?> LoginWithRefreshToken(string refreshToken)
         {
             return await _jwtService.GenerateJwtTokenWithRefreshToken(refreshToken);
         }
-
 
 
         public async Task<LoginResponse> ResetPasswordAsync(ResetPasswordDto model)
@@ -274,16 +277,17 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
 
         }
 
-        public async Task<LoginResponse> LoginUserViaGoogle(GoogleLoginDto googleLoginDto)
+
+        public async Task<LoginResponse> LoginUserViaGoogle(string token)
         {
             ValidationSettings? settings = new GoogleJsonWebSignature.ValidationSettings()
             {
                 Audience = new List<string>() { _config["ExternalLogin:Google-Client-Id"]! }
             };
 
-            Payload payload = await GoogleJsonWebSignature.ValidateAsync(googleLoginDto.IdToken, settings);
+            Payload payload = await GoogleJsonWebSignature.ValidateAsync(token, settings);
 
-            UserLoginInfo userLoginInfo = new(googleLoginDto.Provider, payload.Subject, googleLoginDto.Provider);
+            UserLoginInfo userLoginInfo = new("google", payload.Subject, "GOOGLE");
 
             ApplicationUser user = await _userManager.FindByLoginAsync(userLoginInfo.LoginProvider, userLoginInfo.ProviderKey);
 
@@ -298,11 +302,11 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
                     {
                         Id = Guid.NewGuid().ToString(),
                         Email = payload.Email,
-                        Name = payload.Name,
+                        Name = payload.GivenName,
                         Surname = payload.FamilyName,
                         ProfileImageUrl = payload.Picture,
                         UserName = payload.Email,
-                        Provider = googleLoginDto.Provider
+                        EmailConfirmed = payload.EmailVerified
                     };
 
                     IdentityResult createResult = await _userManager.CreateAsync(user);
@@ -323,9 +327,6 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
                 IsSuccess = true,
 
             };
-
-
         }
-
     }
 }

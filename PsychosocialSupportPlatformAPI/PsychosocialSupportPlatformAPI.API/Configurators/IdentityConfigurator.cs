@@ -18,7 +18,7 @@ namespace PsychosocialSupportPlatformAPI.API.Configurators
                 options.Password.RequireUppercase = false;
                 options.User.RequireUniqueEmail = true;
                 options.Lockout.AllowedForNewUsers = false;
-                options.User.AllowedUserNameCharacters = "abcçdefgğhiıjklmnoöpqrsştuüvwxyzABCÇDEFGĞHIİJKLMNOÖPQRSŞTUÜVWXYZ0123456789@_-* ";
+                options.User.AllowedUserNameCharacters = "abcçdefgğhiıjklmnoöpqrsştuüvwxyzABCÇDEFGĞHIİJKLMNOÖPQRSŞTUÜVWXYZ0123456789-._@+ ";
 
             }).AddRoles<ApplicationRole>().AddEntityFrameworkStores<PsychosocialSupportPlatformDBContext>().AddDefaultTokenProviders();
 
@@ -32,7 +32,7 @@ namespace PsychosocialSupportPlatformAPI.API.Configurators
                 options.Password.RequireUppercase = false;
                 options.User.RequireUniqueEmail = true;
                 options.Lockout.AllowedForNewUsers = false;
-                options.User.AllowedUserNameCharacters = "abcçdefgğhiıjklmnoöpqrsştuüvwxyzABCÇDEFGĞHIİJKLMNOÖPQRSŞTUÜVWXYZ0123456789@_-* ";
+                options.User.AllowedUserNameCharacters = "abcçdefgğhiıjklmnoöpqrsştuüvwxyzABCÇDEFGĞHIİJKLMNOÖPQRSŞTUÜVWXYZ0123456789-._@+ ";
 
             }).AddRoles<ApplicationRole>().AddEntityFrameworkStores<PsychosocialSupportPlatformDBContext>().AddDefaultTokenProviders();
 
@@ -47,7 +47,7 @@ namespace PsychosocialSupportPlatformAPI.API.Configurators
                 options.Password.RequireUppercase = false;
                 options.User.RequireUniqueEmail = true;
                 options.Lockout.AllowedForNewUsers = false;
-                options.User.AllowedUserNameCharacters = "abcçdefgğhiıjklmnoöpqrsştuüvwxyzABCÇDEFGĞHIİJKLMNOÖPQRSŞTUÜVWXYZ0123456789@_-* ";
+                options.User.AllowedUserNameCharacters = "abcçdefgğhiıjklmnoöpqrsştuüvwxyzABCÇDEFGĞHIİJKLMNOÖPQRSŞTUÜVWXYZ0123456789-._@+ ";
 
             }).AddRoles<ApplicationRole>().AddEntityFrameworkStores<PsychosocialSupportPlatformDBContext>().AddDefaultTokenProviders();
         }

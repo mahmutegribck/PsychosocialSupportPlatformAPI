@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.SignalR;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 using PsychosocialSupportPlatformAPI.Business.Messages;
 using PsychosocialSupportPlatformAPI.Business.Messages.DTOs;
@@ -8,6 +9,7 @@ using System.Security.Claims;
 
 namespace PsychosocialSupportPlatformAPI.API.Chat
 {
+    [Authorize]
     public class ChatHub : Hub
     {
         private readonly IUserService _userService;
@@ -45,6 +47,9 @@ namespace PsychosocialSupportPlatformAPI.API.Chat
         public override async Task OnConnectedAsync()
         {
             var kullaniciId = Context.UserIdentifier;
+
+            if (kullaniciId == null)
+                throw new Exception("Kullanıcı bulunamadı.");
 
             var outboxMessages = await _messageService.GetOutboxMessages(kullaniciId);
             foreach (var outboxMessage in outboxMessages)
@@ -91,7 +96,7 @@ namespace PsychosocialSupportPlatformAPI.API.Chat
 
             if (kullaniciId == null)
             {
-                var mesaj = $"kullanici adı bulunamadı. ex.Message: {exception?.Message}";
+                var mesaj = $"kullanici bulunamadı. ex.Message: {exception?.Message}";
                 throw new Exception(mesaj);
             }
 

@@ -14,18 +14,15 @@ using PsychosocialSupportPlatformAPI.Entity.Entities.Users;
 
 namespace PsychosocialSupportPlatformAPI.API.Controllers
 {
-    [Route("api/[controller]/[action]")]
     [ApiController]
     public class AuthenticationController : ControllerBase
     {
         private readonly IAuthService _authService;
 
-
         public AuthenticationController(IAuthService authService)
         {
             _authService = authService;
         }
-
 
 
         [HttpPost]
@@ -60,7 +57,6 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
         }
 
 
-
         [HttpPost]
         public async Task<IActionResult> LoginAsync([FromBody] LoginDto model)
         {
@@ -76,8 +72,8 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
                 return BadRequest(result);
             }
             return BadRequest();
-
         }
+
 
         [HttpPost]
         public async Task<IActionResult> LoginWithRefreshToken([FromBody] string refreshToken)
@@ -88,8 +84,8 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
                 return Ok(tokens);
             }
             return Unauthorized();
-
         }
+
 
         [HttpPost]
         [Authorize(Roles = "Doctor,Patient")]
@@ -104,26 +100,24 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
 
                 return BadRequest(result);
             }
-
             return BadRequest();
         }
 
+
         [HttpPost]
-        public async Task<IActionResult> LoginViaGoogle([FromBody] GoogleLoginDto model)
+        public async Task<IActionResult> LoginViaGoogle([FromBody] string token)
         {
-            if (ModelState.IsValid)
+            if (token != null)
             {
-                LoginResponse result = await _authService.LoginUserViaGoogle(model);
+                LoginResponse result = await _authService.LoginUserViaGoogle(token);
 
                 if (result.IsSuccess)
                 {
                     return Ok(result);
                 }
-
                 return BadRequest(result);
             }
             return BadRequest();
-
         }
     }
 }
