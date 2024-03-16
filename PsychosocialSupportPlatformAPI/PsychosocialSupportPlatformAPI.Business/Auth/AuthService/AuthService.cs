@@ -16,6 +16,10 @@ using System.Threading.Tasks;
 using Google.Apis.Auth;
 using static Google.Apis.Auth.GoogleJsonWebSignature;
 using Google.Apis.Http;
+using Azure.Core;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+using Newtonsoft.Json;
+using PsychosocialSupportPlatformAPI.Business.Auth.AuthService.DTOs.FacebookAuthDTOs;
 
 namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
 {
@@ -349,9 +353,82 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
             };
         }
 
-        public Task<LoginResponse> LoginUserViaFacebook(string token)
+        public async Task<LoginResponse> LoginUserViaFacebook(string token)
         {
-            throw new NotImplementedException();
+            HttpResponseMessage httpResponseMessage = await _httpClient.GetAsync("https://graph.facebook.com/debug_token?input_token=" + token + $"&access_token={_config["ExternalLogin:Facebook-AppId"]}|{_config["ExternalLogin:Facebook-Secret"]}");
+
+            var stringData = await httpResponseMessage.Content.ReadAsStringAsync();
+            var userFB = JsonConvert.DeserializeObject<FacebookUserDto>(stringData);
+
+            if (userFB == null || userFB.Data.IsValid == false)
+            {
+                return new LoginResponse
+                {
+                    Message = "",
+                    IsSuccess = false,
+                };
+            }
+            HttpResponseMessage userResponse = await _httpClient.GetAsync($"https://graph.facebook.com/me?fields=first_name,last_name,email&access_token={token}");
+
+            byte[] userContentBytes = await userResponse.Content.ReadAsByteArrayAsync();
+            string userContent = Encoding.UTF8.GetString(userContentBytes);
+
+            var userData = JsonConvert.DeserializeObject<FacebookUserDataDto>(userContent);
+
+            UserLoginInfo userLoginInfo = new("facebook", userFB.Data.UserId, "FACEBOOK");
+
+            Patient user = await _patientManager.FindByLoginAsync(userLoginInfo.LoginProvider, userLoginInfo.ProviderKey);
+
+            bool result = user != null;
+
+            if (user == null)
+            {
+                user = await _patientManager.FindByEmailAsync(userData.Email);
+                if (user == null)
+                {
+                    user = new()
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        Email = userData.Email,
+                        Name = userData.FirstName,
+                        Surname = userData.LastName,
+                        UserName = userData.Email
+                    };
+
+                    IdentityResult createResult = await _patientManager.CreateAsync(user);
+                    result = createResult.Succeeded;
+                }
+            }
+
+            if (result)
+            {
+                await _userManager.AddLoginAsync(user, userLoginInfo);
+                string role = _config["Roles:Patient"] ?? throw new InvalidOperationException("Hasta rolü tanımlanmamış.");
+
+                bool roleExists = await _roleManager.RoleExistsAsync(role);
+                if (!roleExists)
+                {
+                    ApplicationRole newRole = new ApplicationRole();
+                    newRole.Id = Guid.NewGuid().ToString();
+                    newRole.Name = role;
+
+                    await _roleManager.CreateAsync(newRole);
+                }
+                await _userManager.AddToRoleAsync(user, role);
+            }
+            else
+            {
+                throw new Exception("Invalid external authentication.");
+            }
+
+            return new LoginResponse
+            {
+                JwtTokenDTO = await _jwtService.CreateJwtToken(user),
+                Message = "",
+                IsSuccess = true,
+
+            };
+
         }
     }
 }
