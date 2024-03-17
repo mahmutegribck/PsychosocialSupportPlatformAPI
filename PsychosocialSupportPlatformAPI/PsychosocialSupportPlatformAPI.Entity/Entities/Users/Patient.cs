@@ -9,5 +9,7 @@ namespace PsychosocialSupportPlatformAPI.Entity.Entities.Users
     public class Patient : ApplicationUser
     {
         public DateTime PregnancyStartDate { get; set; }
+        public ICollection<Appointment> Appointments { get; set; }
+
     }
 }

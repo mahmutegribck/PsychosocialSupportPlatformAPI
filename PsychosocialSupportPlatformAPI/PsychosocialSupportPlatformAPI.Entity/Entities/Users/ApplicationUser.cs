@@ -20,13 +20,7 @@ namespace PsychosocialSupportPlatformAPI.Entity.Entities.Users
         public string? RefreshToken { get; set; }
         public DateTime? RefreshTokenEndDate { get; set; }
 
-
-
-        //public ICollection<Message> Messages { get; set; }
-        //[InverseProperty("Sender")]
         public ICollection<Message> SentMessages { get; set; }
-
-        //[InverseProperty("Receiver")]
         public ICollection<Message> ReceivedMessages { get; set; }
     }
 }
