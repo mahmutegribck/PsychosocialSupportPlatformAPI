@@ -35,7 +35,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Messages
             try
             {
                 if (getUserMessageDto == null) throw new ArgumentNullException("Veriler Eksik");
-                return _mapper.Map<List<GetMessageDto>>(await _messageRepository.GetMessages(getUserMessageDto.FromUser, getUserMessageDto.ToUser));
+                return _mapper.Map<List<GetMessageDto>>(await _messageRepository.GetMessages(getUserMessageDto.SenderId, getUserMessageDto.ReceiverId));
 
             }
             catch (Exception)

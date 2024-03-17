@@ -9,8 +9,8 @@ namespace PsychosocialSupportPlatformAPI.Business.Messages.DTOs
 {
     public class GetUserMessageDto
     {
-        public string FromUser { get; set; }
+        public string SenderId { get; set; }
 
-        public string ToUser { get; set; }
+        public string ReceiverId { get; set; }
     }
 }
