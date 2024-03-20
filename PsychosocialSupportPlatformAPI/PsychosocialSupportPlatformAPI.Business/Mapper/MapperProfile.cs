@@ -4,6 +4,7 @@ using PsychosocialSupportPlatformAPI.Business.Auth.AuthService.DTOs.DoctorDTOs;
 using PsychosocialSupportPlatformAPI.Business.Auth.AuthService.DTOs.PatientDTOs;
 using PsychosocialSupportPlatformAPI.Business.Messages.DTOs;
 using PsychosocialSupportPlatformAPI.Business.Users.DTOs;
+using PsychosocialSupportPlatformAPI.Business.Videos.DTOs;
 using PsychosocialSupportPlatformAPI.Entity.Entities;
 using PsychosocialSupportPlatformAPI.Entity.Entities.Messages;
 using PsychosocialSupportPlatformAPI.Entity.Entities.Users;
@@ -44,6 +45,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Mapper
 
             CreateMap<MessageOutbox, GetOutboxMessageDto>().ForMember(dest => dest.Text, opt => opt.MapFrom(src => src.Message.Text));
 
+            CreateMap<Video, GetVideoDTO>().ReverseMap();
             //CreateMap<ApplicationUser, GetApplicationUserDto>().ReverseMap();
             //CreateMap<ApplicationUser, UpdateApplicationUserDto>().ReverseMap();
 

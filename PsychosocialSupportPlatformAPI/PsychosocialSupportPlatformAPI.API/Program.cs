@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -10,9 +11,11 @@ using PsychosocialSupportPlatformAPI.Business.Auth.AuthService;
 using PsychosocialSupportPlatformAPI.Business.Auth.JwtToken;
 using PsychosocialSupportPlatformAPI.Business.Messages;
 using PsychosocialSupportPlatformAPI.Business.Users;
+using PsychosocialSupportPlatformAPI.Business.Videos;
 using PsychosocialSupportPlatformAPI.DataAccess;
 using PsychosocialSupportPlatformAPI.DataAccess.Messages;
 using PsychosocialSupportPlatformAPI.DataAccess.Users;
+using PsychosocialSupportPlatformAPI.DataAccess.Videos;
 using PsychosocialSupportPlatformAPI.Entity.Entities.Users;
 using System.Security.Claims;
 using System.Text;
@@ -97,6 +100,8 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IMessageService, MessageService>();
 builder.Services.AddScoped<IMessageRepository, MessageRepository>();
+builder.Services.AddTransient<IVideoService, VideoService>();
+builder.Services.AddScoped<IVideoRepository, VideoRepository>();
 
 builder.Services.AddHttpClient();
 
@@ -123,6 +128,12 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+app.UseStaticFiles(new StaticFileOptions()
+{
+    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "UploadedVideos")),
+    RequestPath = "/UploadedVideos"
+});
+app.UseStaticFiles();
 
 
 app.MapHub<ChatHub>("message");
