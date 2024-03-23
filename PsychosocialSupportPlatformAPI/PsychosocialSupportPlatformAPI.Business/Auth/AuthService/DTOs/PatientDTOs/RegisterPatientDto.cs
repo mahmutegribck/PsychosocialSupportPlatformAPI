@@ -28,15 +28,9 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService.DTOs.PatientD
         [Compare("Password", ErrorMessage = "Girmiş olduğunuz parola birbiri ile eşleşmiyor.")]
         public string ConfirmPassword { get; set; }
 
-        [Required(ErrorMessage = "Gebelik başlangıç tarihi zorunlu")]
-        [DataType(DataType.Date)]
-        public DateTime PregnancyStartDate { get; set; }
-
         [Required(ErrorMessage = "Telefon numarası zorunlu")]
         //[Phone(ErrorMessage = "Geçerli bir telefon numarası giriniz")]
         public string PhoneNumber { get; set; }
 
-        [Required(ErrorMessage = "Doğum tarihi zorunlu")]
-        public DateTime Birthday { get; set; }
     }
 }

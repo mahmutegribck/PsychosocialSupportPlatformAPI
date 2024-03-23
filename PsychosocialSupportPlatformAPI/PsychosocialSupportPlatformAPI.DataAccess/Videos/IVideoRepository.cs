@@ -12,5 +12,7 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Videos
         Task AddVideo(Video video);
         Task DeleteVideo(int videoID);
         Task<List<Video>> GetAllVideos();
+        Task UpdateVideo(Video video);
+
     }
 }

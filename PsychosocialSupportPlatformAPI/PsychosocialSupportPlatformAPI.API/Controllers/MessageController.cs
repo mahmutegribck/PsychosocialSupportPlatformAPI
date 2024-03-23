@@ -23,7 +23,16 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
             _context = context;
         }
 
-       
+        [HttpDelete]
+        public async Task<IActionResult> DeleteAllMessages()
+        {
+            var deleteOutbox = await _context.MessageOutboxes.ToListAsync();
+            var messages = await _context.Messages.ToListAsync();
+            _context.RemoveRange(deleteOutbox);
+            _context.RemoveRange(messages);
+            return Ok();
+
+        }
         [HttpPost]
         public async Task<IActionResult> GetMessages([FromBody] GetUserMessageDto getUserMessageDto)
         {

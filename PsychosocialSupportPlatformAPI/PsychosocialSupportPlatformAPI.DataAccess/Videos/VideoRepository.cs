@@ -40,5 +40,16 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Videos
         {
             return await _context.Videos.ToListAsync();
         }
+
+        public async Task UpdateVideo(Video video)
+        {
+            var updatedVideo = await _context.Videos.FindAsync(video.Id);
+            if (updatedVideo != null)
+            {
+                updatedVideo.Title = video.Title;
+                updatedVideo.Description = video.Description;
+            }
+            await _context.SaveChangesAsync();
+        }
     }
 }

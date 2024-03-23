@@ -57,7 +57,7 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Messages
                         msg.SendedTime
                     })
                     .FirstOrDefault(),
-                    UnreadMessageCount = _context.Messages.Count(msg => msg.ReceiverId == id && msg.SenderId == userId && !msg.Status)
+                    UnreadMessageCount = _context.Messages.Count(msg => msg.ReceiverId == userId && msg.SenderId == id && !msg.Status)
                 })
                 .ToListAsync();
 

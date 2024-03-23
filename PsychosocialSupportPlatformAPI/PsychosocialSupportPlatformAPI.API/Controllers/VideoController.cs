@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http.Metadata;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ActionConstraints;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.IdentityModel.Protocols;
 using PsychosocialSupportPlatformAPI.Business.Videos;
 using PsychosocialSupportPlatformAPI.Business.Videos.DTOs;
@@ -56,6 +57,13 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
         {
             await _videoService.DeleteVideo(videoID);
             return Ok("Video Başarıyla Silindi");
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateVideo([FromBody] UpdateVideoDTO updateVideoDTO)
+        {
+            await _videoService.UpdateVideo(updateVideoDTO);
+            return Ok();
         }
     }
 }

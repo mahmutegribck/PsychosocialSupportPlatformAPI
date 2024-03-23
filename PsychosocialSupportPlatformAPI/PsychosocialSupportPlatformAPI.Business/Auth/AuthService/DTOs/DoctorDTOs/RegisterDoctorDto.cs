@@ -35,7 +35,5 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService.DTOs.DoctorDT
         //[Phone(ErrorMessage = "Geçerli bir telefon numarası giriniz")]
         public string PhoneNumber { get; set; }
 
-        [Required(ErrorMessage = "Doğum tarihi zorunlu")]
-        public DateTime Birthday { get; set; }
     }
 }

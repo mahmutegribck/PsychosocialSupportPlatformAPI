@@ -28,6 +28,10 @@ namespace PsychosocialSupportPlatformAPI.Business.Videos
             return _mapper.Map<List<GetVideoDTO>>(await _videoRepository.GetAllVideos());
         }
 
+        public async Task UpdateVideo(UpdateVideoDTO updateVideoDTO)
+        {
+            await _videoRepository.UpdateVideo(_mapper.Map<Video>(updateVideoDTO));
+        }
 
         public async Task UploadVideo(UploadVideoDTO uploadVideoDTO)
         {

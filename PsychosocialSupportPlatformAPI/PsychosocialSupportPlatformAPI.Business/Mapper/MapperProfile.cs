@@ -46,6 +46,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Mapper
             CreateMap<MessageOutbox, GetOutboxMessageDto>().ForMember(dest => dest.Text, opt => opt.MapFrom(src => src.Message.Text));
 
             CreateMap<Video, GetVideoDTO>().ReverseMap();
+            CreateMap<Video, UpdateVideoDTO>().ReverseMap();
             //CreateMap<ApplicationUser, GetApplicationUserDto>().ReverseMap();
             //CreateMap<ApplicationUser, UpdateApplicationUserDto>().ReverseMap();
 
