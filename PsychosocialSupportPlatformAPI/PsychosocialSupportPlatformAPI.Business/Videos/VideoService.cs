@@ -1,16 +1,7 @@
 ﻿using AutoMapper;
-using AutoMapper.Internal;
 using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Protocols;
 using PsychosocialSupportPlatformAPI.Business.Videos.DTOs;
 using PsychosocialSupportPlatformAPI.DataAccess.Videos;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PsychosocialSupportPlatformAPI.Business.Videos
 {
@@ -40,12 +31,16 @@ namespace PsychosocialSupportPlatformAPI.Business.Videos
         public async Task UploadVideo(UploadVideoDTO uploadVideoDTO)
         {
             var basePath = Path.Combine(Directory.GetCurrentDirectory() + "/UploadedVideos/");
-            //string fileName = Path.GetFileName(uploadVideoDTO.File.FileName);
-            if (Path.GetExtension(uploadVideoDTO.File.FileName) != "mp4")
+            if (!Directory.Exists(basePath))
+            {
+                Directory.CreateDirectory(basePath);
+            }
+            var extension = Path.GetExtension(uploadVideoDTO.File.FileName);
+            if (extension == null || extension != ".mp4" || extension != ".MP4")
             {
                 throw new ArgumentOutOfRangeException();
             }
-            string newFileName = Path.ChangeExtension(Path.GetRandomFileName(), Path.GetExtension(uploadVideoDTO.File.FileName));
+            string newFileName = Path.ChangeExtension(Path.GetRandomFileName(), extension);
 
 
             string filePath = string.Concat($"{basePath}", newFileName);
