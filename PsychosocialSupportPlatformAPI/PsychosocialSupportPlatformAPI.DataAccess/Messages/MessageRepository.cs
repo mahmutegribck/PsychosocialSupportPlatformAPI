@@ -93,8 +93,9 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Messages
         public async Task SetSendedMessage(int messageId)
         {
             var message = await _context.Messages.FindAsync(messageId);
-
+            var messageOutbox = await _context.MessageOutboxes.FindAsync(messageId);
             message.IsSended = true;
+            _context.MessageOutboxes.Remove(messageOutbox);
             await _context.SaveChangesAsync();
         }
     }

@@ -12,17 +12,13 @@ namespace PsychosocialSupportPlatformAPI.API.Chat
     [Authorize]
     public class ChatHub : Hub
     {
-        private readonly IUserService _userService;
         private readonly IMessageService _messageService;
 
         public static List<string> BagliKullaniciIdler { get; } = new List<string>();
 
-        public ChatHub(IUserService userService, IMessageService messageService)
+        public ChatHub(IMessageService messageService)
         {
-
-            _userService = userService;
             _messageService = messageService;
-
         }
         public async Task SendMessageToUser(string fromUserId, string toUserId, string message)
         {
@@ -38,10 +34,7 @@ namespace PsychosocialSupportPlatformAPI.API.Chat
                 messageDto.IsSended = true;
                 await Clients.Group(toUserId).SendAsync("messageToUserReceived", message);
             }
-
-
             await _messageService.AddMessage(messageDto);
-
         }
 
         public override async Task OnConnectedAsync()
@@ -57,22 +50,8 @@ namespace PsychosocialSupportPlatformAPI.API.Chat
                 await Clients.Group(outboxMessage.ReceiverId).SendAsync("messageToUserReceived", outboxMessage.Text);
                 await _messageService.SetSendedMessage(outboxMessage.MessageId);
             }
-            //var kullaniciAdi = Context.GetHttpContext()!.User.Identities.FirstOrDefault();
-
-            //var accessToken = Context.GetHttpContext()?.Request.Query["access_token"];
-            //var tokenHandler = new JwtSecurityTokenHandler();
-            //var token = tokenHandler.ReadToken(accessToken) as JwtSecurityToken;
-
-            //// Token içindeki id (user id) bilgisini al
-            //var kullaniciId = token?.Claims.First(claim => claim.Type == "nameid").Value;
-
             if (kullaniciId == null)
                 throw new Exception("kullanici adı bulunamadı.");
-
-            //ApplicationUser kullaniciBilgi = (ApplicationUser)await _userService.GetUserByID(userID);
-            //if (kullaniciBilgi == null)
-            //    throw new Exception("Kullanici bilgisi bulunamadı");
-
 
             lock (BagliKullaniciIdler)
             {
@@ -85,23 +64,14 @@ namespace PsychosocialSupportPlatformAPI.API.Chat
 
         public override async Task OnDisconnectedAsync(Exception? exception)
         {
-
-            //var accessToken = Context.GetHttpContext()?.Request.Query["access_token"];
-            //var tokenHandler = new JwtSecurityTokenHandler();
-            //var token = tokenHandler.ReadToken(accessToken) as JwtSecurityToken;
             var kullaniciId = Context.UserIdentifier;
-
-            // Token içindeki id (user id) bilgisini al
-            //var kullaniciId = token?.Claims.First(claim => claim.Type == "nameid").Value;
 
             if (kullaniciId == null)
             {
                 var mesaj = $"kullanici bulunamadı. ex.Message: {exception?.Message}";
                 throw new Exception(mesaj);
             }
-
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, kullaniciId);
-            //var sisKullanici = await _userService.GetUserByID(kullaniciId);
 
             lock (BagliKullaniciIdler)
             {
@@ -109,7 +79,6 @@ namespace PsychosocialSupportPlatformAPI.API.Chat
                     kullaniciId
                 );
             }
-
             await base.OnDisconnectedAsync(exception);
         }
     }
