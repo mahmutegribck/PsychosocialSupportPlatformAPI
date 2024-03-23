@@ -20,19 +20,19 @@ namespace PsychosocialSupportPlatformAPI.API.Chat
         {
             _messageService = messageService;
         }
-        public async Task SendMessageToUser(string fromUserId, string toUserId, string message)
+        public async Task SendMessageToUser(string senderID, string receiverID, string message)
         {
             SendMessageDto messageDto = new()
             {
                 SendedTime = DateTime.Now,
-                ReceiverId = fromUserId,
-                SenderId = toUserId,
+                ReceiverId = receiverID,
+                SenderId = senderID,
                 Text = message
             };
-            if (BagliKullaniciIdler.Contains(toUserId))
+            if (BagliKullaniciIdler.Contains(receiverID))
             {
                 messageDto.IsSended = true;
-                await Clients.Group(toUserId).SendAsync("messageToUserReceived", message);
+                await Clients.Group(receiverID).SendAsync("messageToUserReceived", senderID, receiverID, message);
             }
             await _messageService.AddMessage(messageDto);
         }
@@ -47,7 +47,7 @@ namespace PsychosocialSupportPlatformAPI.API.Chat
             var outboxMessages = await _messageService.GetOutboxMessages(kullaniciId);
             foreach (var outboxMessage in outboxMessages)
             {
-                await Clients.Group(outboxMessage.ReceiverId).SendAsync("messageToUserReceived", outboxMessage.Text);
+                await Clients.Group(outboxMessage.ReceiverId).SendAsync("messageToUserReceived", outboxMessage.SenderId, outboxMessage.ReceiverId, outboxMessage.Text);
                 await _messageService.SetSendedMessage(outboxMessage.MessageId);
             }
             if (kullaniciId == null)

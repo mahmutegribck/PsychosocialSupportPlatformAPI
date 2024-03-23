@@ -69,7 +69,7 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Messages
             var deneme = await _context.Messages.Include(m => m.Sender).Include(m => m.Receiver).Where(m => (m.SenderId == senderId && m.ReceiverId == receiverId) || (m.SenderId == receiverId && m.ReceiverId == senderId)).OrderBy(m => m.SendedTime).ToListAsync();
             return deneme;
         }
-
+         
         public async Task<List<MessageOutbox>> GetOutboxMessages(string receiverId)
         {
             var outboxMessages = await _context.MessageOutboxes.Where(m => m.ReceiverId == receiverId).ToListAsync();
