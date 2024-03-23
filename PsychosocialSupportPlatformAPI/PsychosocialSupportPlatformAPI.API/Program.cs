@@ -128,9 +128,14 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+var basePath = Path.Combine(Directory.GetCurrentDirectory(), "UploadedVideos");
+if (!Directory.Exists(basePath))
+{
+    Directory.CreateDirectory(basePath);
+}
 app.UseStaticFiles(new StaticFileOptions()
 {
-    FileProvider = new PhysicalFileProvider(Path.Combine(builder.Environment.ContentRootPath, "UploadedVideos")),
+    FileProvider = new PhysicalFileProvider(basePath),
     //FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "UploadedVideos")),
     RequestPath = "/UploadedVideos"
 });

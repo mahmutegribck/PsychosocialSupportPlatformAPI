@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using PsychosocialSupportPlatformAPI.Business.Videos.DTOs;
 using PsychosocialSupportPlatformAPI.DataAccess.Videos;
+using PsychosocialSupportPlatformAPI.Entity.Entities;
 
 namespace PsychosocialSupportPlatformAPI.Business.Videos
 {
@@ -31,10 +32,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Videos
         public async Task UploadVideo(UploadVideoDTO uploadVideoDTO)
         {
             var basePath = Path.Combine(Directory.GetCurrentDirectory() + "/UploadedVideos/");
-            if (!Directory.Exists(basePath))
-            {
-                Directory.CreateDirectory(basePath);
-            }
+
             var extension = Path.GetExtension(uploadVideoDTO.File.FileName);
             if (extension == null || extension != ".mp4" && extension != ".MP4")
             {
@@ -50,7 +48,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Videos
             using (var stream = new FileStream(filePath, FileMode.Create))
                 await uploadVideoDTO.File.CopyToAsync(stream);
 
-            await _videoRepository.AddVideo(new Entity.Entities.Video
+            await _videoRepository.AddVideo(new Video
             {
                 Url = url,
                 Path = filePath,

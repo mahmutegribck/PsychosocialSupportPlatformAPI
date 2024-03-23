@@ -15,6 +15,7 @@
 
 .config/
 Migrations/
+UploadedVideos/
 
 # Mono auto generated files
 mono_crash.*

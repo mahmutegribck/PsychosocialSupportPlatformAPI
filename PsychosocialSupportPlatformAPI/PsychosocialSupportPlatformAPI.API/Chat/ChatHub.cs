@@ -24,7 +24,7 @@ namespace PsychosocialSupportPlatformAPI.API.Chat
         {
             SendMessageDto messageDto = new()
             {
-                SendedTime = DateTime.UtcNow,
+                SendedTime = DateTime.Now,
                 ReceiverId = fromUserId,
                 SenderId = toUserId,
                 Text = message

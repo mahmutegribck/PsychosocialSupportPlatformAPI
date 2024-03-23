@@ -54,12 +54,8 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
         [HttpDelete]
         public async Task<IActionResult> DeleteVideo([FromQuery] int videoID)
         {
-
             await _videoService.DeleteVideo(videoID);
             return Ok("Video Başarıyla Silindi");
-
-
-
         }
     }
 }
