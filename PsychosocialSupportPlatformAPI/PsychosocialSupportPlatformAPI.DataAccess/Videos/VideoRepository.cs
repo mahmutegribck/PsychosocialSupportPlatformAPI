@@ -21,15 +21,19 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Videos
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteVideo(string videoUrl)
+        public async Task DeleteVideo(int videoID)
         {
-            var deletedVideo = await _context.Videos.Where(v => v.Url == videoUrl).FirstOrDefaultAsync();
-            if (deletedVideo != null)
+
+            var deletedVideo = await _context.Videos.Where(v => v.Id == videoID).FirstOrDefaultAsync();
+            if (deletedVideo == null)
             {
-                File.Delete(deletedVideo.Path);
-                _context.Videos.Remove(deletedVideo);
-                await _context.SaveChangesAsync();
+                throw new Exception("Video Bulunamadı");
             }
+            File.Delete(deletedVideo.Path);
+            _context.Videos.Remove(deletedVideo);
+            await _context.SaveChangesAsync();
+
+
         }
 
         public async Task<List<Video>> GetAllVideos()

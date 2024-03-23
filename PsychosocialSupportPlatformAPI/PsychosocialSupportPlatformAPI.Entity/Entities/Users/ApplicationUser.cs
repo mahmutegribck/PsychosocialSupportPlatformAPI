@@ -14,7 +14,6 @@ namespace PsychosocialSupportPlatformAPI.Entity.Entities.Users
 
         public required string Name { get; set; }
         public required string Surname { get; set; }
-        public DateTime Birthday { get; set; }
         public string? ProfileImageUrl { get; set; }
 
         public string? RefreshToken { get; set; }

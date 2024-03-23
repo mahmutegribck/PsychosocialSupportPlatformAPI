@@ -17,9 +17,9 @@ namespace PsychosocialSupportPlatformAPI.Business.Videos
             _mapper = mapper;
         }
 
-        public async Task DeleteVideo(string videoUrl)
+        public async Task DeleteVideo(int videoID)
         {
-            await _videoRepository.DeleteVideo(videoUrl);
+            await _videoRepository.DeleteVideo(videoID);
         }
 
         public async Task<List<GetVideoDTO>> GetAllVideos()
@@ -36,7 +36,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Videos
                 Directory.CreateDirectory(basePath);
             }
             var extension = Path.GetExtension(uploadVideoDTO.File.FileName);
-            if (extension == null || extension != ".mp4" || extension != ".MP4")
+            if (extension == null || extension != ".mp4" && extension != ".MP4")
             {
                 throw new ArgumentOutOfRangeException();
             }
@@ -49,7 +49,6 @@ namespace PsychosocialSupportPlatformAPI.Business.Videos
 
             using (var stream = new FileStream(filePath, FileMode.Create))
                 await uploadVideoDTO.File.CopyToAsync(stream);
-
 
             await _videoRepository.AddVideo(new Entity.Entities.Video
             {

@@ -8,8 +8,10 @@ namespace PsychosocialSupportPlatformAPI.Entity.Entities.Users
 {
     public class Patient : ApplicationUser
     {
-        public DateTime PregnancyStartDate { get; set; }
+        public Patient()
+        {
+            Appointments = new HashSet<Appointment>();
+        }
         public ICollection<Appointment> Appointments { get; set; }
-
     }
 }

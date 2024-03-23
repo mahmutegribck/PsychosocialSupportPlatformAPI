@@ -52,14 +52,14 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
         }
 
         [HttpDelete]
-        public async Task<IActionResult> DeleteVideo([FromQuery] string videoUrl)
+        public async Task<IActionResult> DeleteVideo([FromQuery] int videoID)
         {
-            if (videoUrl == null)
-            {
-                return NotFound("Video Bulunamadı.");
-            }
-            await _videoService.DeleteVideo(videoUrl);
+
+            await _videoService.DeleteVideo(videoID);
             return Ok("Video Başarıyla Silindi");
+
+
+
         }
     }
 }

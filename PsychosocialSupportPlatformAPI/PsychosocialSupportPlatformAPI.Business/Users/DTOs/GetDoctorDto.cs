@@ -13,7 +13,6 @@ namespace PsychosocialSupportPlatformAPI.Business.Users.DTOs
         public required string Title { get; set; }
         public required string Name { get; set; }
         public required string Surname { get; set; }
-        public DateTime Birthday { get; set; }
         public string? ProfileImageUrl { get; set; }
         public required string PhoneNumber { get; set; }
     }

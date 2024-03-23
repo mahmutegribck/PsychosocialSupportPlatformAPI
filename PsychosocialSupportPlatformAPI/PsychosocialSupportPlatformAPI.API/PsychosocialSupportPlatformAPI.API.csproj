@@ -7,13 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="UploadedVideos\**" />
-    <Content Remove="UploadedVideos\**" />
-    <EmbeddedResource Remove="UploadedVideos\**" />
-    <None Remove="UploadedVideos\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.16" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="7.0.16" />
@@ -28,6 +21,10 @@
   <ItemGroup>
     <ProjectReference Include="..\PsychosocialSupportPlatformAPI.Business\PsychosocialSupportPlatformAPI.Business.csproj" />
     <ProjectReference Include="..\PsychosocialSupportPlatformAPI.DataAccess\PsychosocialSupportPlatformAPI.DataAccess.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="UploadedVideos\" />
   </ItemGroup>
 
 </Project>

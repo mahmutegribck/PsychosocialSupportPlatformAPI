@@ -8,9 +8,11 @@ namespace PsychosocialSupportPlatformAPI.Entity.Entities.Users
 {
     public class Doctor : ApplicationUser
     {
-        
+        public Doctor()
+        {
+            Appointments = new HashSet<Appointment>();
+        }
         public required string Title { get; set; }
-
         public ICollection<Appointment> Appointments { get; set; }
     }
 }

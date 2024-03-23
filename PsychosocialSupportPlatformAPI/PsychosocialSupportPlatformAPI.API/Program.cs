@@ -130,7 +130,8 @@ app.MapControllers();
 
 app.UseStaticFiles(new StaticFileOptions()
 {
-    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "UploadedVideos")),
+    FileProvider = new PhysicalFileProvider(Path.Combine(builder.Environment.ContentRootPath, "UploadedVideos")),
+    //FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "UploadedVideos")),
     RequestPath = "/UploadedVideos"
 });
 app.UseStaticFiles();

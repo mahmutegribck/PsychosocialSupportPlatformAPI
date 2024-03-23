@@ -27,13 +27,14 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly UserManager<Patient> _patientManager;
+        private readonly UserManager<Doctor> _doctorManager;
         private readonly RoleManager<ApplicationRole> _roleManager;
         private readonly IJwtService _jwtService;
         private readonly IMapper _mapper;
         private readonly IConfiguration _config;
         private readonly HttpClient _httpClient;
 
-        public AuthService(UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager, IJwtService jwtService, IMapper mapper, IConfiguration config, HttpClient httpClient, UserManager<Patient> patientManager)
+        public AuthService(UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager, IJwtService jwtService, IMapper mapper, IConfiguration config, HttpClient httpClient, UserManager<Patient> patientManager, UserManager<Doctor> doctorManager)
         {
             _userManager = userManager;
             _roleManager = roleManager;
@@ -42,6 +43,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
             _config = config;
             _httpClient = httpClient;
             _patientManager = patientManager;
+            _doctorManager = doctorManager;
         }
 
 
@@ -64,7 +66,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
                 newUser.Id = Guid.NewGuid().ToString();
                 newUser.UserName = newUser.Email;
 
-                var result = await _userManager.CreateAsync(newUser, model.Password);
+                var result = await _doctorManager.CreateAsync(newUser, model.Password);
 
                 if (result.Succeeded)
                 {
@@ -141,7 +143,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
                 newUser.Id = Guid.NewGuid().ToString();
                 newUser.UserName = newUser.Email;
 
-                var result = await _userManager.CreateAsync(newUser, model.Password);
+                var result = await _patientManager.CreateAsync(newUser, model.Password);
 
                 if (result.Succeeded)
                 {

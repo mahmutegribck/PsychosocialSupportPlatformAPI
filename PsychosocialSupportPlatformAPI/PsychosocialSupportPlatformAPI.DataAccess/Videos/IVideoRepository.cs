@@ -10,7 +10,7 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Videos
     public interface IVideoRepository
     {
         Task AddVideo(Video video);
-        Task DeleteVideo(string videoUrl);
+        Task DeleteVideo(int videoID);
         Task<List<Video>> GetAllVideos();
     }
 }
