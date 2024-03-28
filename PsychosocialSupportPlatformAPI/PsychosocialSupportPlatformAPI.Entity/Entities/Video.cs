@@ -15,5 +15,8 @@ namespace PsychosocialSupportPlatformAPI.Entity.Entities
         public string? Description { get; set; }
         public required string Url { get; set; }
         public required string Path { get; set; }
+
+        public VideoStatistics Statistics { get; set; }
+        public int StatisticsId { get; set; }
     }
 }

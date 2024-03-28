@@ -21,12 +21,12 @@ namespace PsychosocialSupportPlatformAPI.DataAccess
         public PsychosocialSupportPlatformDBContext(DbContextOptions<PsychosocialSupportPlatformDBContext> options) : base(options) { }
 
         public DbSet<Message> Messages { get; set; }
-
         public DbSet<MessageOutbox> MessageOutboxes { get; set; }
         public DbSet<Patient> Patients { get; set; }
         public DbSet<Doctor> Doctors { get; set; }
         public DbSet<Appointment> Appointments { get; set; }
         public DbSet<Video> Videos { get; set; }
+        public DbSet<VideoStatistics> VideoStatistics { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder builder)

@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore.Migrations.Operations.Builders;
 using PsychosocialSupportPlatformAPI.Business.Auth.AuthService.DTOs;
 using PsychosocialSupportPlatformAPI.Business.Auth.AuthService.DTOs.DoctorDTOs;
 using PsychosocialSupportPlatformAPI.Business.Auth.AuthService.DTOs.PatientDTOs;
 using PsychosocialSupportPlatformAPI.Business.Messages.DTOs;
+using PsychosocialSupportPlatformAPI.Business.Statistics.DTOs;
 using PsychosocialSupportPlatformAPI.Business.Users.DTOs;
 using PsychosocialSupportPlatformAPI.Business.Videos.DTOs;
 using PsychosocialSupportPlatformAPI.Entity.Entities;
@@ -47,6 +49,10 @@ namespace PsychosocialSupportPlatformAPI.Business.Mapper
 
             CreateMap<Video, GetVideoDTO>().ReverseMap();
             CreateMap<Video, UpdateVideoDTO>().ReverseMap();
+
+            CreateMap<VideoStatistics, CreateVideoStatisticsDTO>().ReverseMap();
+            CreateMap<VideoStatistics, UpdateVideoStatisticsDTO>().ReverseMap();
+            CreateMap<VideoStatistics, GetVideoStatisticsDTO>().ReverseMap();
             //CreateMap<ApplicationUser, GetApplicationUserDto>().ReverseMap();
             //CreateMap<ApplicationUser, UpdateApplicationUserDto>().ReverseMap();
 
