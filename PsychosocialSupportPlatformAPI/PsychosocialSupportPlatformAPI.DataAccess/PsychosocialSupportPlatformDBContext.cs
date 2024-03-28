@@ -1,23 +1,14 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Migrations;
+using PsychosocialSupportPlatformAPI.DataAccess.DataSeeding;
 using PsychosocialSupportPlatformAPI.Entity.Entities;
 using PsychosocialSupportPlatformAPI.Entity.Entities.Messages;
 using PsychosocialSupportPlatformAPI.Entity.Entities.Users;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Reflection.Emit;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PsychosocialSupportPlatformAPI.DataAccess
 {
     public class PsychosocialSupportPlatformDBContext : IdentityDbContext<ApplicationUser, ApplicationRole, string>
     {
-
         public PsychosocialSupportPlatformDBContext(DbContextOptions<PsychosocialSupportPlatformDBContext> options) : base(options) { }
 
         public DbSet<Message> Messages { get; set; }
@@ -28,10 +19,10 @@ namespace PsychosocialSupportPlatformAPI.DataAccess
         public DbSet<Video> Videos { get; set; }
         public DbSet<VideoStatistics> VideoStatistics { get; set; }
 
-
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+            SeedData.Seeding(builder);
 
             builder.Entity<Doctor>().ToTable("Doctors");
             builder.Entity<Patient>().ToTable("Patients");
