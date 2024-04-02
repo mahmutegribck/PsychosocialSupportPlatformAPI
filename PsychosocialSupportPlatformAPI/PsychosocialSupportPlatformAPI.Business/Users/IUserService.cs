@@ -1,11 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using PsychosocialSupportPlatformAPI.Business.Users.DTOs;
-using PsychosocialSupportPlatformAPI.Entity.Entities.Users;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using PsychosocialSupportPlatformAPI.Business.Users.DTOs.DoctorDTOs;
+using PsychosocialSupportPlatformAPI.Business.Users.DTOs.PatientDTOs;
 
 namespace PsychosocialSupportPlatformAPI.Business.Users
 {
@@ -13,5 +8,9 @@ namespace PsychosocialSupportPlatformAPI.Business.Users
     {
         Task<object> GetUserByID(string userId);
         Task<IdentityResult> DeleteUser(string id);
+        Task<IdentityResult> UpdateDoctor(string currentUserID, UpdateDoctorDTO updateDoctorDTO);
+        Task<IdentityResult> UpdatePatient(string currentUserID, UpdatePatientDTO updatePatientDTO);
+
+
     }
 }

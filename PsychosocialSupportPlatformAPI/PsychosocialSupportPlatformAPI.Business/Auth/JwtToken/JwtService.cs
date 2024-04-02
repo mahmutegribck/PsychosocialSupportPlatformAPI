@@ -36,7 +36,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.JwtToken
 
             var claims = new List<Claim>
             {
-                new(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new(ClaimTypes.Name, user.Id.ToString()),
                 new(ClaimTypes.Email, user.Email)
             };
 

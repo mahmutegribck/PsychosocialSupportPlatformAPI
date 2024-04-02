@@ -1,18 +1,21 @@
-﻿    using AutoMapper;
-using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using PsychosocialSupportPlatformAPI.Business.Messages.DTOs;
 using PsychosocialSupportPlatformAPI.Business.Messages;
+using PsychosocialSupportPlatformAPI.Business.Messages.DTOs;
 using PsychosocialSupportPlatformAPI.Business.Users;
 using PsychosocialSupportPlatformAPI.Business.Users.DTOs;
+using PsychosocialSupportPlatformAPI.Business.Users.DTOs.DoctorDTOs;
+using PsychosocialSupportPlatformAPI.Business.Users.DTOs.PatientDTOs;
 using PsychosocialSupportPlatformAPI.Entity.Entities.Users;
 
 namespace PsychosocialSupportPlatformAPI.API.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
+    [Authorize]
     public class UserController : ControllerBase
     {
         private readonly UserManager<ApplicationUser> _userManager;
@@ -39,7 +42,6 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
             if (doctors.Count != 0)
             {
                 return Ok(doctors);
-
             }
             return NotFound("Kullanici Bulunamadi");
         }
@@ -51,7 +53,6 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
             if (patients.Count != 0)
             {
                 return Ok(patients);
-
             }
             return NotFound("Kullanici Bulunamadi");
         }
@@ -103,7 +104,6 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
                 return NotFound();
             }
             return Unauthorized();
-
         }
 
 
@@ -112,14 +112,52 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
         {
             if (id != null)
             {
-                var result = await _userService.DeleteUser(id);
+                IdentityResult result = await _userService.DeleteUser(id);
                 if (result.Succeeded)
                 {
                     return Ok();
                 }
+                return BadRequest(result.Errors);
             }
             return NotFound();
         }
+
+
+
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateDoctor([FromBody] UpdateDoctorDTO updateDoctorDTO)
+        {
+            var currentUserID = User.Identity?.Name;
+            if (currentUserID == null) return Unauthorized();
+
+            IdentityResult result = await _userService.UpdateDoctor(currentUserID, updateDoctorDTO);
+            if (result.Succeeded)
+            {
+                return Ok();
+            }
+            return BadRequest();
+        }
+
+
+        [HttpPut]
+        public async Task<IActionResult> UpdatePatient([FromBody] UpdatePatientDTO updatePatientDTO)
+        {
+            var currentUserID = User.Identity?.Name;
+            if (currentUserID == null) return Unauthorized();
+
+            IdentityResult result = await _userService.UpdatePatient(currentUserID, updatePatientDTO);
+
+            if (result.Succeeded)
+            {
+                return Ok();
+            }
+            return BadRequest();
+        }
+
+
+
+
 
         [HttpPost]
         public async Task<IActionResult> AddMessageDeneme(string SenderId, string ReceiverId, string Text)

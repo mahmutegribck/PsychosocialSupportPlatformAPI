@@ -2,13 +2,10 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using PsychosocialSupportPlatformAPI.Business.Users.DTOs;
+using PsychosocialSupportPlatformAPI.Business.Users.DTOs.DoctorDTOs;
+using PsychosocialSupportPlatformAPI.Business.Users.DTOs.PatientDTOs;
 using PsychosocialSupportPlatformAPI.DataAccess.Users;
 using PsychosocialSupportPlatformAPI.Entity.Entities.Users;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PsychosocialSupportPlatformAPI.Business.Users
 {
@@ -42,6 +39,16 @@ namespace PsychosocialSupportPlatformAPI.Business.Users
 
             }
             return _mapper.Map<GetDoctorDto>(user);
+        }
+
+        public async Task<IdentityResult> UpdateDoctor(string currentUserID, UpdateDoctorDTO updateDoctorDTO)
+        {
+            return await _userRepository.UpdateDoctor(currentUserID, _mapper.Map<Doctor>(updateDoctorDTO));
+        }
+
+        public async Task<IdentityResult> UpdatePatient(string currentUserID, UpdatePatientDTO updatePatientDTO)
+        {
+            return await _userRepository.UpdatePatient(currentUserID, _mapper.Map<Patient>(updatePatientDTO));
         }
     }
 }

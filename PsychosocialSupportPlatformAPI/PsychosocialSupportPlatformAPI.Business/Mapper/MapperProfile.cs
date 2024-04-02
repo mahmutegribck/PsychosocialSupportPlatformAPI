@@ -6,6 +6,8 @@ using PsychosocialSupportPlatformAPI.Business.Auth.AuthService.DTOs.PatientDTOs;
 using PsychosocialSupportPlatformAPI.Business.Messages.DTOs;
 using PsychosocialSupportPlatformAPI.Business.Statistics.DTOs;
 using PsychosocialSupportPlatformAPI.Business.Users.DTOs;
+using PsychosocialSupportPlatformAPI.Business.Users.DTOs.DoctorDTOs;
+using PsychosocialSupportPlatformAPI.Business.Users.DTOs.PatientDTOs;
 using PsychosocialSupportPlatformAPI.Business.Videos.DTOs;
 using PsychosocialSupportPlatformAPI.Entity.Entities;
 using PsychosocialSupportPlatformAPI.Entity.Entities.Messages;
@@ -53,6 +55,15 @@ namespace PsychosocialSupportPlatformAPI.Business.Mapper
             CreateMap<VideoStatistics, CreateVideoStatisticsDTO>().ReverseMap();
             CreateMap<VideoStatistics, UpdateVideoStatisticsDTO>().ReverseMap();
             CreateMap<VideoStatistics, GetVideoStatisticsDTO>().ReverseMap();
+
+            CreateMap<Doctor, UpdateDoctorDTO>().ReverseMap();
+            CreateMap<Patient, UpdatePatientDTO>().ReverseMap();
+
+            CreateMap<Patient, RegisterPatientDto>().ReverseMap();
+            CreateMap<Doctor, RegisterDoctorDto>().ReverseMap();
+
+
+
             //CreateMap<ApplicationUser, GetApplicationUserDto>().ReverseMap();
             //CreateMap<ApplicationUser, UpdateApplicationUserDto>().ReverseMap();
 
