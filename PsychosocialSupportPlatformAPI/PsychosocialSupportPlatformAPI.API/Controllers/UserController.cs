@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -15,7 +14,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class UserController : ControllerBase
     {
         private readonly UserManager<ApplicationUser> _userManager;
@@ -60,11 +59,11 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetCurrentUser()
         {
-            var currentUser = await _userManager.GetUserAsync(User);
+            var currentUserID = User.Identity?.Name;
 
-            if (currentUser != null)
+            if (currentUserID != null)
             {
-                var user = await _userService.GetUserByID(currentUser.Id);
+                var user = await _userService.GetUserByID(currentUserID);
 
                 if (user != null)
                 {
@@ -92,11 +91,11 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
         [HttpDelete]
         public async Task<IActionResult> DeleteCurrentUser()
         {
-            var currentUser = await _userManager.GetUserAsync(User);
+            var currentUserID = User.Identity?.Name;
 
-            if (currentUser != null)
+            if (currentUserID != null)
             {
-                var result = await _userService.DeleteUser(currentUser.Id);
+                var result = await _userService.DeleteUser(currentUserID);
                 if (result.Succeeded)
                 {
                     return Ok();

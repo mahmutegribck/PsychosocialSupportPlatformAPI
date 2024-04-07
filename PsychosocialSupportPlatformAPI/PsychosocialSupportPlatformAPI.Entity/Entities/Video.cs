@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace PsychosocialSupportPlatformAPI.Entity.Entities
 {
@@ -16,7 +11,6 @@ namespace PsychosocialSupportPlatformAPI.Entity.Entities
         public required string Url { get; set; }
         public required string Path { get; set; }
 
-        public VideoStatistics Statistics { get; set; }
-        public int StatisticsId { get; set; }
+        public VideoStatistics? Statistics { get; set; }
     }
 }

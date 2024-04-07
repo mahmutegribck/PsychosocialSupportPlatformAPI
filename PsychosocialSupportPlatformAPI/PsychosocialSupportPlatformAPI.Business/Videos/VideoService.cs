@@ -58,6 +58,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Videos
                 Path = filePath,
                 Description = uploadVideoDTO.Description,
                 Title = uploadVideoDTO.Title,
+
             });
         }
     }

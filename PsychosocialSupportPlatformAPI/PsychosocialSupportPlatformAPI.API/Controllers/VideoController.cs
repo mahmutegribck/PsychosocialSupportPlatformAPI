@@ -1,9 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Metadata;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ActionConstraints;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
-using Microsoft.IdentityModel.Protocols;
+﻿using Microsoft.AspNetCore.Mvc;
 using PsychosocialSupportPlatformAPI.Business.Videos;
 using PsychosocialSupportPlatformAPI.Business.Videos.DTOs;
 
@@ -14,12 +9,9 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
     public class VideoController : ControllerBase
     {
         private readonly IVideoService _videoService;
-        private readonly IWebHostEnvironment _webHostEnviroprivatenment;
-        public VideoController(IVideoService videoService, IWebHostEnvironment webHostEnviroprivatenment)
+        public VideoController(IVideoService videoService)
         {
             _videoService = videoService;
-            _webHostEnviroprivatenment = webHostEnviroprivatenment;
-
         }
 
         [HttpGet]
