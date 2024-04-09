@@ -18,14 +18,18 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateVideoStatistics([FromBody] CreateVideoStatisticsDTO createVideoStatisticsDTO)
         {
-            await _videoStatisticsService.CreateVideoStatistics(createVideoStatisticsDTO);
+            var currentUserID = User.Identity?.Name;
+            if (currentUserID == null) return NotFound();
+            await _videoStatisticsService.CreateVideoStatistics(currentUserID, createVideoStatisticsDTO);
             return Ok();
         }
 
         [HttpPut]
         public async Task<IActionResult> UpdateVideoStatistics([FromBody] UpdateVideoStatisticsDTO updateVideoStatisticsDTO)
         {
-            await _videoStatisticsService.UpdateVideoStatistics(updateVideoStatisticsDTO);
+            var currentUserID = User.Identity?.Name;
+            if (currentUserID == null) return NotFound();
+            await _videoStatisticsService.UpdateVideoStatistics(currentUserID, updateVideoStatisticsDTO);
             return Ok();
         }
 

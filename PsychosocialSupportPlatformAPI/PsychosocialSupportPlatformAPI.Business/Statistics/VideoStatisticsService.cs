@@ -21,9 +21,11 @@ namespace PsychosocialSupportPlatformAPI.Business.Statistics
             _videoStatisticsRepository = videoStatisticsRepository;
             _mapper = mapper;
         }
-        public async Task CreateVideoStatistics(CreateVideoStatisticsDTO createVideoStatisticsDTO)
+        public async Task CreateVideoStatistics(string userID, CreateVideoStatisticsDTO createVideoStatisticsDTO)
         {
-            await _videoStatisticsRepository.CreateVideoStatistics(_mapper.Map<VideoStatistics>(createVideoStatisticsDTO));
+            var videoStatistics = _mapper.Map<VideoStatistics>(createVideoStatisticsDTO);
+            videoStatistics.PatientId = userID;
+            await _videoStatisticsRepository.CreateVideoStatistics(videoStatistics);
         }
 
         public async Task DeleteVideoStatistics(int statisticsID)
@@ -51,9 +53,12 @@ namespace PsychosocialSupportPlatformAPI.Business.Statistics
             return _mapper.Map<GetVideoStatisticsDTO>(await _videoStatisticsRepository.GetVideoStatisticsByPatientID(patientID));
         }
 
-        public async Task UpdateVideoStatistics(UpdateVideoStatisticsDTO updateVideoStatisticsDTO)
+        public async Task UpdateVideoStatistics(string userID, UpdateVideoStatisticsDTO updateVideoStatisticsDTO)
         {
-            await _videoStatisticsRepository.UpdateVideoStatistics(_mapper.Map<VideoStatistics>(updateVideoStatisticsDTO));
+            var videoStatistics = _mapper.Map<VideoStatistics>(updateVideoStatisticsDTO);
+            videoStatistics.PatientId = userID;
+
+            await _videoStatisticsRepository.UpdateVideoStatistics(videoStatistics);
         }
     }
 }

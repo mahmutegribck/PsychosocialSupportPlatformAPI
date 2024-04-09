@@ -39,7 +39,7 @@ namespace PsychosocialSupportPlatformAPI.API.Chat
 
         public override async Task OnConnectedAsync()
         {
-            var kullaniciId = Context.UserIdentifier;
+            var kullaniciId = Context.User?.Identity?.Name;
 
             if (kullaniciId == null)
                 throw new Exception("Kullanıcı bulunamadı.");
@@ -64,7 +64,7 @@ namespace PsychosocialSupportPlatformAPI.API.Chat
 
         public override async Task OnDisconnectedAsync(Exception? exception)
         {
-            var kullaniciId = Context.UserIdentifier;
+            var kullaniciId = Context.User?.Identity?.Name;
 
             if (kullaniciId == null)
             {

@@ -10,8 +10,8 @@ namespace PsychosocialSupportPlatformAPI.Business.Statistics
 {
     public interface IVideoStatisticsService
     {
-        Task CreateVideoStatistics(CreateVideoStatisticsDTO createVideoStatisticsDTO);
-        Task UpdateVideoStatistics(UpdateVideoStatisticsDTO updateVideoStatisticsDTO);
+        Task CreateVideoStatistics(string userID, CreateVideoStatisticsDTO createVideoStatisticsDTO);
+        Task UpdateVideoStatistics(string userID, UpdateVideoStatisticsDTO updateVideoStatisticsDTO);
         Task DeleteVideoStatistics(int statisticsID);
         Task<IEnumerable<GetVideoStatisticsDTO>> GetAllVideoStatistics();
         Task<GetVideoStatisticsDTO> GetVideoStatisticsByID(int statisticsID);
