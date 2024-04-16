@@ -38,9 +38,9 @@ namespace PsychosocialSupportPlatformAPI.Business.Statistics
             return await _videoStatisticsRepository.GetAllVideoStatistics();
         }
 
-        public async Task<IEnumerable<GetVideoStatisticsDTO>> GetAllVideoStatisticsByPatientID(string patientID)
+        public async Task<IEnumerable<object>> GetAllVideoStatisticsByPatientID(string patientID)
         {
-            return _mapper.Map<List<GetVideoStatisticsDTO>>(await _videoStatisticsRepository.GetAllVideoStatisticsByPatientID(patientID));
+            return (await _videoStatisticsRepository.GetAllVideoStatisticsByPatientID(patientID);
         }
 
         public async Task<GetVideoStatisticsDTO> GetVideoStatisticsByID(int statisticsID)
