@@ -13,7 +13,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Statistics
         Task CreateVideoStatistics(string userID, CreateVideoStatisticsDTO createVideoStatisticsDTO);
         Task UpdateVideoStatistics(string userID, UpdateVideoStatisticsDTO updateVideoStatisticsDTO);
         Task DeleteVideoStatistics(int statisticsID);
-        Task<IEnumerable<GetVideoStatisticsDTO>> GetAllVideoStatistics();
+        Task<IEnumerable<object>> GetAllVideoStatistics();
         Task<GetVideoStatisticsDTO> GetVideoStatisticsByID(int statisticsID);
         Task<IEnumerable<GetVideoStatisticsDTO>> GetAllVideoStatisticsByPatientID(string patientID);
         Task<GetVideoStatisticsDTO> GetVideoStatisticsByPatientID(string patientID);

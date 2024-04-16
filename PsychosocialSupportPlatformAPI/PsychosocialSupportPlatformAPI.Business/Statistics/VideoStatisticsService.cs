@@ -33,9 +33,9 @@ namespace PsychosocialSupportPlatformAPI.Business.Statistics
             await _videoStatisticsRepository.DeleteVideoStatistics(statisticsID);
         }
 
-        public async Task<IEnumerable<GetVideoStatisticsDTO>> GetAllVideoStatistics()
+        public async Task<IEnumerable<object>> GetAllVideoStatistics()
         {
-            return _mapper.Map<List<GetVideoStatisticsDTO>>(await _videoStatisticsRepository.GetAllVideoStatistics());
+            return await _videoStatisticsRepository.GetAllVideoStatistics();
         }
 
         public async Task<IEnumerable<GetVideoStatisticsDTO>> GetAllVideoStatisticsByPatientID(string patientID)

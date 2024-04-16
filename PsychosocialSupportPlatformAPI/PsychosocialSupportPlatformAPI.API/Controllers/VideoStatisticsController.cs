@@ -42,9 +42,21 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin, Doctor")]
         public async Task<IActionResult> GetAllVideoStatistics()
         {
             var allVideoStatistics = await _videoStatisticsService.GetAllVideoStatistics();
+            if (!allVideoStatistics.Any()) return NotFound();
+            return Ok(allVideoStatistics);
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Patient")]
+        public async Task<IActionResult> GetCurrentUserAllVideoStatistics()
+        {
+            var currentUserID = User.Identity?.Name;
+            if (currentUserID == null) return NotFound();
+            var allVideoStatistics = await _videoStatisticsService.GetAllVideoStatisticsByPatientID(currentUserID);
             if (!allVideoStatistics.Any()) return NotFound();
             return Ok(allVideoStatistics);
         }
@@ -58,7 +70,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Patient")]
+        [Authorize(Roles = "Admin, Doctor")]
         public async Task<IActionResult> GetAllVideoStatisticsByPatientID([FromQuery] string patientID)
         {
             var allVideoStatisticsByPatientID = await _videoStatisticsService.GetAllVideoStatisticsByPatientID(patientID);
@@ -67,7 +79,6 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Patient")]
         public async Task<IActionResult> GetVideoStatisticsByPatientID([FromQuery] string patientID)
         {
             var videoStatisticsByPatientID = await _videoStatisticsService.GetVideoStatisticsByPatientID(patientID);

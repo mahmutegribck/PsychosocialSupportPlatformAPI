@@ -3,6 +3,7 @@ using PsychosocialSupportPlatformAPI.Entity.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -32,9 +33,14 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Statistics
             }
         }
 
-        public async Task<IEnumerable<VideoStatistics>> GetAllVideoStatistics()
+        public async Task<IEnumerable<object>> GetAllVideoStatistics()
         {
-            return await _context.VideoStatistics.ToListAsync();
+            return await _context.Videos.Select(v => new
+            {
+                VideoId = v.Id,
+                Title = v.Title,
+                Statistics = v.Statistics
+            }).ToListAsync();
         }
 
         public async Task<IEnumerable<VideoStatistics>> GetAllVideoStatisticsByPatientID(string patientID)
