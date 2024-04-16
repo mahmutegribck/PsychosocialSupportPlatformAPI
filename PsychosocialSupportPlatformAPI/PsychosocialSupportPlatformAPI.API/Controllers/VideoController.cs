@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using PsychosocialSupportPlatformAPI.Business.Videos;
 using PsychosocialSupportPlatformAPI.Business.Videos.DTOs;
 
@@ -6,6 +7,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
+    [Authorize]
     public class VideoController : ControllerBase
     {
         private readonly IVideoService _videoService;
@@ -26,6 +28,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
         }
 
         [HttpPost, DisableRequestSizeLimit]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UploadVideo([FromForm] UploadVideoDTO uploadVideoDTO)
         {
             try
@@ -45,6 +48,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
         }
 
         [HttpDelete]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteVideo([FromQuery] int videoID)
         {
             await _videoService.DeleteVideo(videoID);
@@ -52,6 +56,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
         }
 
         [HttpPut]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateVideo([FromBody] UpdateVideoDTO updateVideoDTO)
         {
             await _videoService.UpdateVideo(updateVideoDTO);

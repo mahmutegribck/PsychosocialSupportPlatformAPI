@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -14,7 +15,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    //[Authorize]
+    [Authorize]
     public class UserController : ControllerBase
     {
         private readonly UserManager<ApplicationUser> _userManager;
@@ -46,6 +47,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin, Doctor")]
         public async Task<IActionResult> GetAllPatients()
         {
             var patients = _mapper.Map<List<GetPatientDto>>(await _patientManager.Users.ToListAsync());
@@ -107,6 +109,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
 
 
         [HttpDelete]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteUser([FromBody] string id)
         {
             if (id != null)
@@ -125,6 +128,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
 
 
         [HttpPut]
+        [Authorize(Roles = "Doctor")]
         public async Task<IActionResult> UpdateDoctor([FromBody] UpdateDoctorDTO updateDoctorDTO)
         {
             var currentUserID = User.Identity?.Name;
@@ -140,6 +144,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
 
 
         [HttpPut]
+        [Authorize(Roles = "Patient")]
         public async Task<IActionResult> UpdatePatient([FromBody] UpdatePatientDTO updatePatientDTO)
         {
             var currentUserID = User.Identity?.Name;

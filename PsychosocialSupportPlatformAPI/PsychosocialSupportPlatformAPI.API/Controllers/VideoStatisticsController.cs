@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PsychosocialSupportPlatformAPI.Business.Statistics;
 using PsychosocialSupportPlatformAPI.Business.Statistics.DTOs;
@@ -7,6 +7,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
+    [Authorize]
     public class VideoStatisticsController : ControllerBase
     {
         private readonly IVideoStatisticsService _videoStatisticsService;
@@ -57,6 +58,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Patient")]
         public async Task<IActionResult> GetAllVideoStatisticsByPatientID([FromQuery] string patientID)
         {
             var allVideoStatisticsByPatientID = await _videoStatisticsService.GetAllVideoStatisticsByPatientID(patientID);
@@ -65,6 +67,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Patient")]
         public async Task<IActionResult> GetVideoStatisticsByPatientID([FromQuery] string patientID)
         {
             var videoStatisticsByPatientID = await _videoStatisticsService.GetVideoStatisticsByPatientID(patientID);

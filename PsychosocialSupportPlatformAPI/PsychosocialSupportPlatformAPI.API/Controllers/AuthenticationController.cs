@@ -1,21 +1,17 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using PsychosocialSupportPlatformAPI.Business.Auth.AuthService;
 using PsychosocialSupportPlatformAPI.Business.Auth.AuthService.DTOs;
 using PsychosocialSupportPlatformAPI.Business.Auth.AuthService.DTOs.DoctorDTOs;
 using PsychosocialSupportPlatformAPI.Business.Auth.AuthService.DTOs.PatientDTOs;
 using PsychosocialSupportPlatformAPI.Business.Auth.AuthService.ResponseModel;
 using PsychosocialSupportPlatformAPI.Business.Auth.JwtToken.DTOs;
-using PsychosocialSupportPlatformAPI.DataAccess;
-using PsychosocialSupportPlatformAPI.Entity.Entities.Users;
 
 namespace PsychosocialSupportPlatformAPI.API.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
+    [AllowAnonymous]
     public class AuthenticationController : ControllerBase
     {
         private readonly IAuthService _authService;
