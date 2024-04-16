@@ -40,11 +40,11 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.JwtToken
                 new(ClaimTypes.Email, user.Email)
             };
 
-            //var userRoles = await _userManager.GetRolesAsync(user);
-            //foreach (var role in userRoles)
-            //{
-            //    claims.Add(new Claim(ClaimTypes.Role, role));
-            //}
+            var userRoles = await _userManager.GetRolesAsync(user);
+            foreach (var role in userRoles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            }
 
             var tokendesc = new SecurityTokenDescriptor
             {
