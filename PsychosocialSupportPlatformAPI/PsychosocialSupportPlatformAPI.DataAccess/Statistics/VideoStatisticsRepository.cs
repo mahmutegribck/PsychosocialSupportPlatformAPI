@@ -45,11 +45,11 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Statistics
 
         public async Task<IEnumerable<object>> GetAllVideoStatisticsByPatientID(string patientID)
         {
-            return await _context.Videos.Where(v => v.Statistics.PatientId == patientID).Select(v => new
+            return await _context.Videos.Select(v => new
             {
                 VideoId = v.Id,
                 Title = v.Title,
-                Statistics = v.Statistics
+                Statistics = _context.VideoStatistics.Where(s => s.PatientId == patientID && s.VideoId == v.Id).ToList()
             }).ToListAsync();
         }
 

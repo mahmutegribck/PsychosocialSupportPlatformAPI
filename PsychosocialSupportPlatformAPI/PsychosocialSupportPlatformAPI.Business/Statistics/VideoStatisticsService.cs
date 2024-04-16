@@ -40,7 +40,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Statistics
 
         public async Task<IEnumerable<object>> GetAllVideoStatisticsByPatientID(string patientID)
         {
-            return (await _videoStatisticsRepository.GetAllVideoStatisticsByPatientID(patientID);
+            return (await _videoStatisticsRepository.GetAllVideoStatisticsByPatientID(patientID));
         }
 
         public async Task<GetVideoStatisticsDTO> GetVideoStatisticsByID(int statisticsID)
