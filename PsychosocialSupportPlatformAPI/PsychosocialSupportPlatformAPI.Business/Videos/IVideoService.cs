@@ -13,6 +13,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Videos
     {
         Task UploadVideo(UploadVideoDTO uploadVideoDTO);
         Task DeleteVideo(int videoID);
+        Task<GetVideoDTO> GetVideoById(int videoID);
         Task<List<GetVideoDTO>> GetAllVideos();
         Task UpdateVideo(UpdateVideoDTO updateVideoDTO);
     }

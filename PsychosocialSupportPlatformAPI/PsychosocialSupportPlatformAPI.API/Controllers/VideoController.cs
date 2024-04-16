@@ -24,7 +24,18 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
             {
                 return NotFound("Video Bulunamdı");
             }
-            return Ok(await _videoService.GetAllVideos());
+            return Ok(videos);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetVideoById([FromQuery] int videoID)
+        {
+            var video = await _videoService.GetVideoById(videoID);
+            if (video == null)
+            {
+                return NotFound("Video Bulunamdı");
+            }
+            return Ok(video);
         }
 
         [HttpPost, DisableRequestSizeLimit]

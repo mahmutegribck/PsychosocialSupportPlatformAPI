@@ -41,6 +41,11 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Videos
             return await _context.Videos.ToListAsync();
         }
 
+        public async Task<Video> GetVideoById(int videoID)
+        {
+            return await _context.Videos.Where(v => v.Id == videoID).FirstOrDefaultAsync();
+        }
+
         public async Task UpdateVideo(Video video)
         {
             var updatedVideo = await _context.Videos.FindAsync(video.Id);
