@@ -1,9 +1,4 @@
 ﻿using PsychosocialSupportPlatformAPI.Entity.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PsychosocialSupportPlatformAPI.DataAccess.Statistics
 {
@@ -16,6 +11,8 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Statistics
         Task<VideoStatistics> GetVideoStatisticsByID(int statisticsID);
         Task<IEnumerable<object>> GetAllVideoStatisticsByPatientID(string patientID);
         Task<VideoStatistics> GetVideoStatisticsByPatientID(string patientID);
+        Task<VideoStatistics> GetPatientVideoStatisticsByVideoID(string patientID, int videoID);
+
 
     }
 }

@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using PsychosocialSupportPlatformAPI.Business.DoctorSchedules.DTOs;
-using PsychosocialSupportPlatformAPI.Business.Videos.DTOs;
 using PsychosocialSupportPlatformAPI.DataAccess.DoctorSchedules;
 using PsychosocialSupportPlatformAPI.Entity.Entities;
 using PsychosocialSupportPlatformAPI.Entity.Enums;
@@ -21,6 +20,9 @@ namespace PsychosocialSupportPlatformAPI.Business.DoctorSchedules
         {
             var doctorSchedule = _mapper.Map<DoctorSchedule>(createDoctorScheduleDTO);
             doctorSchedule.DoctorId = currentUserID;
+
+            var existingSchedule = await _doctorScheduleRepository.GetDoctorScheduleById(currentUserID, doctorSchedule.Id);
+            if (existingSchedule != null) throw new Exception("Girilen Gune Ait Takvim Kaydi Mevcut.");
 
             if (createDoctorScheduleDTO.Day < DayOfWeek.Sunday || createDoctorScheduleDTO.Day > DayOfWeek.Saturday)
                 throw new Exception();
@@ -70,6 +72,11 @@ namespace PsychosocialSupportPlatformAPI.Business.DoctorSchedules
             await _doctorScheduleRepository.DeleteDoctorSchedule(doctorScheduleId);
         }
 
+        public async Task<IEnumerable<GetDoctorScheduleDTO>> GetAllDoctorSchedule()
+        {
+            return _mapper.Map<List<GetDoctorScheduleDTO>>(await _doctorScheduleRepository.GetAllDoctorSchedule());
+        }
+
         public async Task<IEnumerable<GetDoctorScheduleDTO>> GetAllDoctorScheduleById(string doctorId)
         {
             return _mapper.Map<List<GetDoctorScheduleDTO>>(await _doctorScheduleRepository.GetAllDoctorScheduleById(doctorId));
@@ -88,4 +95,3 @@ namespace PsychosocialSupportPlatformAPI.Business.DoctorSchedules
         }
     }
 }
-     

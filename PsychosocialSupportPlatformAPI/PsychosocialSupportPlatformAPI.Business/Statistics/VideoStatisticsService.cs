@@ -1,14 +1,7 @@
 ﻿using AutoMapper;
-using Google.Apis.Util;
 using PsychosocialSupportPlatformAPI.Business.Statistics.DTOs;
-using PsychosocialSupportPlatformAPI.Business.Videos;
 using PsychosocialSupportPlatformAPI.DataAccess.Statistics;
 using PsychosocialSupportPlatformAPI.Entity.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PsychosocialSupportPlatformAPI.Business.Statistics
 {
@@ -21,11 +14,30 @@ namespace PsychosocialSupportPlatformAPI.Business.Statistics
             _videoStatisticsRepository = videoStatisticsRepository;
             _mapper = mapper;
         }
-        public async Task CreateVideoStatistics(string userID, CreateVideoStatisticsDTO createVideoStatisticsDTO)
+        public async Task AddVideoStatistics(string userID, AddVideoStatisticsDTO addVideoStatisticsDTO)
         {
-            var videoStatistics = _mapper.Map<VideoStatistics>(createVideoStatisticsDTO);
+            var videoStatistics = _mapper.Map<VideoStatistics>(addVideoStatisticsDTO);
             videoStatistics.PatientId = userID;
-            await _videoStatisticsRepository.CreateVideoStatistics(videoStatistics);
+
+            var existingvideoStatistics = await _videoStatisticsRepository.GetPatientVideoStatisticsByVideoID(userID, videoStatistics.VideoId);
+
+            if (existingvideoStatistics == null)
+            {
+                await _videoStatisticsRepository.CreateVideoStatistics(videoStatistics);
+            }
+            else
+            {
+                videoStatistics.Id = existingvideoStatistics.Id;
+                await _videoStatisticsRepository.UpdateVideoStatistics(videoStatistics);
+            }
+        }
+
+        public async Task UpdateVideoStatistics(string userID, UpdateVideoStatisticsDTO updateVideoStatisticsDTO)
+        {
+            var videoStatistics = _mapper.Map<VideoStatistics>(updateVideoStatisticsDTO);
+            videoStatistics.PatientId = userID;
+
+            await _videoStatisticsRepository.UpdateVideoStatistics(videoStatistics);
         }
 
         public async Task DeleteVideoStatistics(int statisticsID)
@@ -51,14 +63,6 @@ namespace PsychosocialSupportPlatformAPI.Business.Statistics
         public async Task<GetVideoStatisticsDTO> GetVideoStatisticsByPatientID(string patientID)
         {
             return _mapper.Map<GetVideoStatisticsDTO>(await _videoStatisticsRepository.GetVideoStatisticsByPatientID(patientID));
-        }
-
-        public async Task UpdateVideoStatistics(string userID, UpdateVideoStatisticsDTO updateVideoStatisticsDTO)
-        {
-            var videoStatistics = _mapper.Map<VideoStatistics>(updateVideoStatisticsDTO);
-            videoStatistics.PatientId = userID;
-
-            await _videoStatisticsRepository.UpdateVideoStatistics(videoStatistics);
         }
     }
 }

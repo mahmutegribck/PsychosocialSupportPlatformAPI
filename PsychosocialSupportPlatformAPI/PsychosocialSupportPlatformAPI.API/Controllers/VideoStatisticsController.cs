@@ -17,22 +17,14 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateVideoStatistics([FromBody] CreateVideoStatisticsDTO createVideoStatisticsDTO)
+        public async Task<IActionResult> AddVideoStatistics([FromBody] AddVideoStatisticsDTO addVideoStatisticsDTO)
         {
             var currentUserID = User.Identity?.Name;
             if (currentUserID == null) return NotFound();
-            await _videoStatisticsService.CreateVideoStatistics(currentUserID, createVideoStatisticsDTO);
+            await _videoStatisticsService.AddVideoStatistics(currentUserID, addVideoStatisticsDTO);
             return Ok();
         }
 
-        [HttpPut]
-        public async Task<IActionResult> UpdateVideoStatistics([FromBody] UpdateVideoStatisticsDTO updateVideoStatisticsDTO)
-        {
-            var currentUserID = User.Identity?.Name;
-            if (currentUserID == null) return NotFound();
-            await _videoStatisticsService.UpdateVideoStatistics(currentUserID, updateVideoStatisticsDTO);
-            return Ok();
-        }
 
         [HttpDelete]
         public async Task<IActionResult> DeleteVideoStatistics([FromBody] int statisticsID)
@@ -40,6 +32,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
             await _videoStatisticsService.DeleteVideoStatistics(statisticsID);
             return Ok();
         }
+
 
         [HttpGet]
         [Authorize(Roles = "Admin, Doctor")]
@@ -49,6 +42,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
             if (!allVideoStatistics.Any()) return NotFound();
             return Ok(allVideoStatistics);
         }
+
 
         [HttpGet]
         [Authorize(Roles = "Patient")]
@@ -61,6 +55,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
             return Ok(allVideoStatistics);
         }
 
+
         [HttpGet]
         public async Task<IActionResult> GetVideoStatisticsByID([FromQuery] int statisticsID)
         {
@@ -68,6 +63,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
             if (videoStatisticsByID == null) return NotFound();
             return Ok(videoStatisticsByID);
         }
+
 
         [HttpGet]
         [Authorize(Roles = "Admin, Doctor")]

@@ -50,6 +50,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Mapper
             CreateMap<Video, GetVideoDTO>().ReverseMap();
             CreateMap<Video, UpdateVideoDTO>().ReverseMap();
 
+            CreateMap<VideoStatistics, AddVideoStatisticsDTO>().ReverseMap();
             CreateMap<VideoStatistics, CreateVideoStatisticsDTO>().ReverseMap();
             CreateMap<VideoStatistics, UpdateVideoStatisticsDTO>().ReverseMap();
             CreateMap<VideoStatistics, GetVideoStatisticsDTO>().ReverseMap();

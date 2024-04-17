@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PsychosocialSupportPlatformAPI.Entity.Entities;
-using PsychosocialSupportPlatformAPI.Entity.Entities.Users;
 
 namespace PsychosocialSupportPlatformAPI.DataAccess.Statistics
 {
@@ -62,6 +61,11 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Statistics
                     VideoViewingRate = s.ViewingRate
                 }),
             }).ToListAsync();
+        }
+
+        public async Task<VideoStatistics> GetPatientVideoStatisticsByVideoID(string patientID, int videoID)
+        {
+            return await _context.VideoStatistics.AsNoTracking().Where(v => v.VideoId == videoID && v.PatientId == patientID).FirstOrDefaultAsync();
         }
 
         public async Task<VideoStatistics> GetVideoStatisticsByID(int statisticsID)

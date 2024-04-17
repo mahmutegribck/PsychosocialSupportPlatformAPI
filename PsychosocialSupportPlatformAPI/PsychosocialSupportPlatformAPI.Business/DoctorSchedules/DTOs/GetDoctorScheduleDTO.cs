@@ -1,6 +1,4 @@
-﻿using PsychosocialSupportPlatformAPI.Entity.Enums;
-
-namespace PsychosocialSupportPlatformAPI.Business.DoctorSchedules.DTOs
+﻿namespace PsychosocialSupportPlatformAPI.Business.DoctorSchedules.DTOs
 {
     public class GetDoctorScheduleDTO
     {

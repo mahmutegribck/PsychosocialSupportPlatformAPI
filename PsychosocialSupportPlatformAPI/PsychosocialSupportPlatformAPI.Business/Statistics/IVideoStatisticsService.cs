@@ -1,16 +1,10 @@
 ﻿using PsychosocialSupportPlatformAPI.Business.Statistics.DTOs;
-using PsychosocialSupportPlatformAPI.Entity.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PsychosocialSupportPlatformAPI.Business.Statistics
 {
     public interface IVideoStatisticsService
     {
-        Task CreateVideoStatistics(string userID, CreateVideoStatisticsDTO createVideoStatisticsDTO);
+        Task AddVideoStatistics(string userID, AddVideoStatisticsDTO addVideoStatisticsDTO);
         Task UpdateVideoStatistics(string userID, UpdateVideoStatisticsDTO updateVideoStatisticsDTO);
         Task DeleteVideoStatistics(int statisticsID);
         Task<IEnumerable<object>> GetAllVideoStatistics();

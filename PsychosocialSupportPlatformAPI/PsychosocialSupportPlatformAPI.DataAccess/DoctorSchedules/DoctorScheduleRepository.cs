@@ -11,22 +11,26 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.DoctorSchedules
             _context = context;
         }
         public async Task CreateDoctorSchedule(DoctorSchedule doctorSchedule)
-        { 
+        {
             await _context.DoctorSchedules.AddAsync(doctorSchedule);
             await _context.SaveChangesAsync();
         }
 
         public async Task DeleteDoctorSchedule(int doctorScheduleId)
         {
-            var deleteDoctorSchedule = await _context.DoctorSchedules.FindAsync(doctorScheduleId);
+            var deleteDoctorSchedule = await _context.DoctorSchedules.FindAsync(doctorScheduleId) ?? throw new Exception();
             _context.DoctorSchedules.Remove(deleteDoctorSchedule);
             await _context.SaveChangesAsync();
         }
 
+        public async Task<IEnumerable<DoctorSchedule>> GetAllDoctorSchedule()
+        {
+            return await _context.DoctorSchedules.ToListAsync();
+        }
+
         public async Task<IEnumerable<DoctorSchedule>> GetAllDoctorScheduleById(string doctorId)
         {
-           var denne =  await _context.DoctorSchedules.Where(s => s.DoctorId == doctorId).ToListAsync();
-            return denne;
+            return await _context.DoctorSchedules.Where(s => s.DoctorId == doctorId).ToListAsync();
         }
 
         public async Task<DoctorSchedule> GetDoctorScheduleById(string doctorId, int scheduleId)

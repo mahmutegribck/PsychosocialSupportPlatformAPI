@@ -9,5 +9,6 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.DoctorSchedules
         Task DeleteDoctorSchedule(int doctorScheduleId);
         Task<DoctorSchedule> GetDoctorScheduleById(string doctorId, int scheduleId);
         Task<IEnumerable<DoctorSchedule>> GetAllDoctorScheduleById(string doctorId);
+        Task<IEnumerable<DoctorSchedule>> GetAllDoctorSchedule();
     }
 }

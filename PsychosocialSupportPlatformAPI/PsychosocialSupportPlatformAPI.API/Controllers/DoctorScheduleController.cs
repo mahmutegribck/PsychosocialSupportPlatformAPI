@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PsychosocialSupportPlatformAPI.Business.DoctorSchedules;
 using PsychosocialSupportPlatformAPI.Business.DoctorSchedules.DTOs;
-using PsychosocialSupportPlatformAPI.Entity.Entities;
 
 namespace PsychosocialSupportPlatformAPI.API.Controllers
 {
@@ -37,12 +36,22 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllDoctorSchedule()
         {
+            var allDoctorSchedule = await _doctorScheduleService.GetAllDoctorSchedule();
+            if (allDoctorSchedule == null) return NotFound();
+            return Ok(allDoctorSchedule);
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> GetDoctorSchedule()
+        {
             var currentUserID = User.Identity?.Name;
             if (currentUserID == null) return Unauthorized();
             var allDoctorSchedule = await _doctorScheduleService.GetAllDoctorScheduleById(currentUserID);
             if (allDoctorSchedule == null) return NotFound();
             return Ok(allDoctorSchedule);
         }
+
 
         [HttpGet]
         public async Task<IActionResult> GetDoctorScheduleById([FromQuery] int scheduleId)
