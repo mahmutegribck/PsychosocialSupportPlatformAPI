@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PsychosocialSupportPlatformAPI.Entity.Entities;
+using PsychosocialSupportPlatformAPI.Entity.Entities.Users;
 
 namespace PsychosocialSupportPlatformAPI.DataAccess.Statistics
 {
@@ -34,10 +35,18 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Statistics
             {
                 VideoId = v.Id,
                 VideoTitle = v.Title,
-                VideoStatistics = v.Statistics
+                VideoStatistics = v.Statistics.Select(s => new
+                {
+                    PatientNameId = s.PatientId,
+                    PatientName = s.Patient.Name,
+                    PatientSurname = s.Patient.Surname,
+                    PatientProfileImageUrl = s.Patient.ProfileImageUrl,
+                    VideoClicksNumber = s.ClicksNumber,
+                    VideoViewingRate = s.ViewingRate
+                }),
 
             }).ToListAsync();
-s        }
+        }
 
         public async Task<IEnumerable<object>> GetAllVideoStatisticsByPatientID(string patientID)
         {
@@ -45,8 +54,13 @@ s        }
             return await _context.Videos.Select(v => new
             {
                 VideoId = v.Id,
-                Title = v.Title,
-                Statistics = _context.VideoStatistics.Where(s => s.PatientId == patientID && s.VideoId == v.Id).ToList()
+                VideoTitle = v.Title,
+                VideoStatistics = v.Statistics.Where(s => s.PatientId == patientID).Select(s => new
+                {
+                    PatientProfileImageUrl = s.Patient.ProfileImageUrl,
+                    VideoClicksNumber = s.ClicksNumber,
+                    VideoViewingRate = s.ViewingRate
+                }),
             }).ToListAsync();
         }
 
@@ -65,12 +79,6 @@ s        }
             _context.VideoStatistics.Update(statistics);
             await _context.SaveChangesAsync();
 
-            //var updateVideoStatistics = await _context.VideoStatistics.FindAsync(statistics.Id);
-
-            //updateVideoStatistics.ViewingRate = statistics.ViewingRate;
-            //updateVideoStatistics.ClicksNumber = statistics.ClicksNumber;
-            //_context.VideoStatistics.Update(updateVideoStatistics);
-            //await _context.SaveChangesAsync();
         }
     }
 }

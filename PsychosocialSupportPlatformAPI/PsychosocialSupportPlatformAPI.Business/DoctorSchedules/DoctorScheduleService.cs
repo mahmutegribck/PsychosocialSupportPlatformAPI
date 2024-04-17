@@ -3,6 +3,7 @@ using PsychosocialSupportPlatformAPI.Business.DoctorSchedules.DTOs;
 using PsychosocialSupportPlatformAPI.Business.Videos.DTOs;
 using PsychosocialSupportPlatformAPI.DataAccess.DoctorSchedules;
 using PsychosocialSupportPlatformAPI.Entity.Entities;
+using PsychosocialSupportPlatformAPI.Entity.Enums;
 
 namespace PsychosocialSupportPlatformAPI.Business.DoctorSchedules
 {
@@ -19,14 +20,48 @@ namespace PsychosocialSupportPlatformAPI.Business.DoctorSchedules
         public async Task CreateDoctorSchedule(CreateDoctorScheduleDTO createDoctorScheduleDTO, string currentUserID)
         {
             var doctorSchedule = _mapper.Map<DoctorSchedule>(createDoctorScheduleDTO);
+            doctorSchedule.DoctorId = currentUserID;
+
+            if (createDoctorScheduleDTO.Day < DayOfWeek.Sunday || createDoctorScheduleDTO.Day > DayOfWeek.Saturday)
+                throw new Exception();
+
 
             foreach (var timeRange in createDoctorScheduleDTO.TimeRanges)
             {
-
+                switch (timeRange)
+                {
+                    case TimeRange.EightToNine:
+                        doctorSchedule.EightToNine = true;
+                        break;
+                    case TimeRange.NineToTen:
+                        doctorSchedule.NineToTen = true;
+                        break;
+                    case TimeRange.TenToEleven:
+                        doctorSchedule.TenToEleven = true;
+                        break;
+                    case TimeRange.ElevenToTwelve:
+                        doctorSchedule.ElevenToTwelve = true;
+                        break;
+                    case TimeRange.TwelveToThirteen:
+                        doctorSchedule.TwelveToThirteen = true;
+                        break;
+                    case TimeRange.ThirteenToFourteen:
+                        doctorSchedule.ThirteenToFourteen = true;
+                        break;
+                    case TimeRange.FourteenToFifteen:
+                        doctorSchedule.FourteenToFifteen = true;
+                        break;
+                    case TimeRange.FifteenToSixteen:
+                        doctorSchedule.FifteenToSixteen = true;
+                        break;
+                    case TimeRange.SixteenToSeventeen:
+                        doctorSchedule.SixteenToSeventeen = true;
+                        break;
+                    default:
+                        // Belirtilen saat aralığı tanımlı değilse, hata fırlatılabilir veya atlanabilir.
+                        break;
+                }
             }
-            
-            doctorSchedule.DoctorId = currentUserID;
-
             await _doctorScheduleRepository.CreateDoctorSchedule(doctorSchedule);
         }
 
@@ -53,3 +88,4 @@ namespace PsychosocialSupportPlatformAPI.Business.DoctorSchedules
         }
     }
 }
+     

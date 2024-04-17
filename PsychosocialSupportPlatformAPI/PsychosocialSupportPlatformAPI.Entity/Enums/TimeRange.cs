@@ -29,6 +29,6 @@ namespace PsychosocialSupportPlatformAPI.Entity.Enums
         FifteenToSixteen,
 
         [Description("16:00 - 17:00")]
-        SixteenToSeventeen
+        SixteenToSeventeen = 16
     }
 }

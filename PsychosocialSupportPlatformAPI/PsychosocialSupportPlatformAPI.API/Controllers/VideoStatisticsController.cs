@@ -78,12 +78,12 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
             return Ok(allVideoStatisticsByPatientID);
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetVideoStatisticsByPatientID([FromQuery] string patientID)
-        {
-            var videoStatisticsByPatientID = await _videoStatisticsService.GetVideoStatisticsByPatientID(patientID);
-            if (videoStatisticsByPatientID == null) return NotFound();
-            return Ok(videoStatisticsByPatientID);
-        }
+        //[HttpGet]
+        //public async Task<IActionResult> GetVideoStatisticsByPatientID([FromQuery] string patientID)
+        //{
+        //    var videoStatisticsByPatientID = await _videoStatisticsService.GetVideoStatisticsByPatientID(patientID);
+        //    if (videoStatisticsByPatientID == null) return NotFound();
+        //    return Ok(videoStatisticsByPatientID);
+        //}
     }
 }
