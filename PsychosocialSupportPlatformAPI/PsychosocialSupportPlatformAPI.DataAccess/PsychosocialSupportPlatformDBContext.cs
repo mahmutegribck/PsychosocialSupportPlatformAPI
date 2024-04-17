@@ -18,6 +18,7 @@ namespace PsychosocialSupportPlatformAPI.DataAccess
         public DbSet<Appointment> Appointments { get; set; }
         public DbSet<Video> Videos { get; set; }
         public DbSet<VideoStatistics> VideoStatistics { get; set; }
+        public DbSet<DoctorSchedule> DoctorSchedules { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

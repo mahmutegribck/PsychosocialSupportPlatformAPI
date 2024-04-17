@@ -35,21 +35,29 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Statistics
 
         public async Task<IEnumerable<object>> GetAllVideoStatistics()
         {
-            return await _context.Videos.Select(v => new
+            return await _context.VideoStatistics.Select(vs => new
             {
-                VideoId = v.Id,
-                Title = v.Title,
-                Statistics = v.Statistics
+                vs.Id,
+                vs.ViewingRate,
+                vs.ClicksNumber,
+                vs.PatientId,
+                vs.VideoId,
+                vs.Video.Title
+
             }).ToListAsync();
         }
 
         public async Task<IEnumerable<object>> GetAllVideoStatisticsByPatientID(string patientID)
         {
-            return await _context.Videos.Select(v => new
+
+            return await _context.VideoStatistics.Where(vs => vs.PatientId == patientID).Select(vs => new
             {
-                VideoId = v.Id,
-                Title = v.Title,
-                Statistics = _context.VideoStatistics.Where(s => s.PatientId == patientID && s.VideoId == v.Id).ToList()
+                vs.Id,
+                vs.ViewingRate,
+                vs.ClicksNumber,
+                vs.VideoId,
+                vs.Video.Title
+
             }).ToListAsync();
         }
 

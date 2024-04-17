@@ -1,22 +1,18 @@
 ﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore.Migrations.Operations.Builders;
 using PsychosocialSupportPlatformAPI.Business.Auth.AuthService.DTOs;
 using PsychosocialSupportPlatformAPI.Business.Auth.AuthService.DTOs.DoctorDTOs;
 using PsychosocialSupportPlatformAPI.Business.Auth.AuthService.DTOs.PatientDTOs;
+using PsychosocialSupportPlatformAPI.Business.DoctorSchedules.DTOs;
 using PsychosocialSupportPlatformAPI.Business.Messages.DTOs;
 using PsychosocialSupportPlatformAPI.Business.Statistics.DTOs;
 using PsychosocialSupportPlatformAPI.Business.Users.DTOs;
+using PsychosocialSupportPlatformAPI.Business.Users.DTOs.Admin;
 using PsychosocialSupportPlatformAPI.Business.Users.DTOs.DoctorDTOs;
 using PsychosocialSupportPlatformAPI.Business.Users.DTOs.PatientDTOs;
 using PsychosocialSupportPlatformAPI.Business.Videos.DTOs;
 using PsychosocialSupportPlatformAPI.Entity.Entities;
 using PsychosocialSupportPlatformAPI.Entity.Entities.Messages;
 using PsychosocialSupportPlatformAPI.Entity.Entities.Users;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PsychosocialSupportPlatformAPI.Business.Mapper
 {
@@ -36,8 +32,10 @@ namespace PsychosocialSupportPlatformAPI.Business.Mapper
             CreateMap<Patient, ResetPasswordDto>().ReverseMap();
 
             CreateMap<ApplicationUser, GetApplicationUserDto>().ReverseMap();
+            CreateMap<ApplicationUser, GetAdminDto>().ReverseMap();
             CreateMap<Doctor, GetDoctorDto>().ReverseMap();
             CreateMap<Patient, GetPatientDto>().ReverseMap();
+
 
             CreateMap<Message, SendMessageDto>().ReverseMap();
             CreateMap<Message, GetMessageDto>()
@@ -62,6 +60,10 @@ namespace PsychosocialSupportPlatformAPI.Business.Mapper
             CreateMap<Patient, RegisterPatientDto>().ReverseMap();
             CreateMap<Doctor, RegisterDoctorDto>().ReverseMap();
 
+
+            CreateMap<DoctorSchedule, CreateDoctorScheduleDTO>().ReverseMap();
+            CreateMap<DoctorSchedule, UpdateDoctorScheduleDTO>().ReverseMap();
+            CreateMap<DoctorSchedule, GetDoctorScheduleDTO>().ReverseMap();
 
 
             //CreateMap<ApplicationUser, GetApplicationUserDto>().ReverseMap();

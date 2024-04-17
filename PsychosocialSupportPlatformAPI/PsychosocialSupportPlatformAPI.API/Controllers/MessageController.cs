@@ -36,7 +36,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
             if (ModelState.IsValid)
             {
                 var messages = await _messageService.GetMessages(getUserMessageDto);
-                if (messages == null) return NotFound();
+                if (!messages.Any()) return NotFound();
                 return Ok(messages);
             }
             return BadRequest();
