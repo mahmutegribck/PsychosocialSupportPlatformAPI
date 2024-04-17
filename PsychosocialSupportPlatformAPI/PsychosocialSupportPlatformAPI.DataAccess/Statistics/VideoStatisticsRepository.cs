@@ -1,11 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PsychosocialSupportPlatformAPI.Entity.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PsychosocialSupportPlatformAPI.DataAccess.Statistics
 {
@@ -35,29 +29,24 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Statistics
 
         public async Task<IEnumerable<object>> GetAllVideoStatistics()
         {
-            return await _context.VideoStatistics.Select(vs => new
+
+            return await _context.Videos.Select(v => new
             {
-                vs.Id,
-                vs.ViewingRate,
-                vs.ClicksNumber,
-                vs.PatientId,
-                vs.VideoId,
-                vs.Video.Title
+                VideoId = v.Id,
+                VideoTitle = v.Title,
+                VideoStatistics = v.Statistics
 
             }).ToListAsync();
-        }
+s        }
 
         public async Task<IEnumerable<object>> GetAllVideoStatisticsByPatientID(string patientID)
         {
 
-            return await _context.VideoStatistics.Where(vs => vs.PatientId == patientID).Select(vs => new
+            return await _context.Videos.Select(v => new
             {
-                vs.Id,
-                vs.ViewingRate,
-                vs.ClicksNumber,
-                vs.VideoId,
-                vs.Video.Title
-
+                VideoId = v.Id,
+                Title = v.Title,
+                Statistics = _context.VideoStatistics.Where(s => s.PatientId == patientID && s.VideoId == v.Id).ToList()
             }).ToListAsync();
         }
 
