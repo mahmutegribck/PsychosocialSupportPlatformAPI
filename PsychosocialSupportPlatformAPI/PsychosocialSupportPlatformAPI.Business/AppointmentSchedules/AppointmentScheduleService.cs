@@ -126,55 +126,73 @@ namespace PsychosocialSupportPlatformAPI.Business.AppointmentSchedules
                         {
                             AppointmentSchedule appointment = new()
                             {
-                                Day = DateTime.Now.AddDays(i).Date,
+                                //Day = DateTime.Now.AddDays(i).Date,
                                 DoctorId = item.DoctorId
                             };
 
                             if (item.EightToNine == true)
                             {
                                 appointment.TimeRange = TimeRange.EightToNine;
+                                appointment.Day = DateTime.Now.AddDays(i).Date;
+
                                 appointmentList.Add(appointment);
 
                             }
                             if (item.NineToTen == true)
                             {
                                 appointment.TimeRange = TimeRange.NineToTen;
+                                appointment.Day = DateTime.Now.AddDays(i).Date;
+
                                 appointmentList.Add(appointment);
                             }
                             if (item.TenToEleven == true)
                             {
                                 appointment.TimeRange = TimeRange.TenToEleven;
+                                appointment.Day = DateTime.Now.AddDays(i).Date;
+
                                 appointmentList.Add(appointment);
                             }
                             if (item.ElevenToTwelve == true)
                             {
                                 appointment.TimeRange = TimeRange.ElevenToTwelve;
+                                appointment.Day = DateTime.Now.AddDays(i).Date;
+
                                 appointmentList.Add(appointment);
 
                             }
                             if (item.TwelveToThirteen == true)
                             {
                                 appointment.TimeRange = TimeRange.TwelveToThirteen;
+                                appointment.Day = DateTime.Now.AddDays(i).Date;
+
                                 appointmentList.Add(appointment);
                             }
                             if (item.ThirteenToFourteen == true)
                             {
                                 appointment.TimeRange = TimeRange.ThirteenToFourteen;
+                                appointment.Day = DateTime.Now.AddDays(i).Date;
+
                                 appointmentList.Add(appointment);
                             }
                             if (item.FourteenToFifteen == true)
                             {
                                 appointment.TimeRange = TimeRange.FourteenToFifteen;
+                                appointment.Day = DateTime.Now.AddDays(i).Date;
+
                                 appointmentList.Add(appointment);
                             }
                             if (item.FifteenToSixteen == true)
                             {
                                 appointment.TimeRange = TimeRange.FifteenToSixteen;
+                                appointment.Day = DateTime.Now.AddDays(i).Date;
+
                                 appointmentList.Add(appointment);
                             }
                             if (item.SixteenToSeventeen == true)
                             {
                                 appointment.TimeRange = TimeRange.SixteenToSeventeen;
+                                appointment.Day = DateTime.Now.AddDays(i).Date;
+
                                 appointmentList.Add(appointment);
                             }
                         }
@@ -189,7 +207,7 @@ namespace PsychosocialSupportPlatformAPI.Business.AppointmentSchedules
                         {
                             AppointmentSchedule appointment = new()
                             {
-                                Day = DateTime.Now.AddDays(i).Date,
+                                //Day = DateTime.Now.AddDays(i).Date,
 
                                 DoctorId = item.DoctorId
                             };
@@ -198,12 +216,14 @@ namespace PsychosocialSupportPlatformAPI.Business.AppointmentSchedules
                             {
                                 appointment.TimeRange = TimeRange.EightToNine;
                                 appointment.Day = DateTime.Now.AddDays(i).Date;
+
                                 appointmentList.Add(appointment);
                             }
                             if (item.NineToTen == true)
                             {
                                 appointment.TimeRange = TimeRange.NineToTen;
                                 appointment.Day = DateTime.Now.AddDays(i).Date;
+
                                 appointmentList.Add(appointment);
                             }
                             if (item.TenToEleven == true)
@@ -267,54 +287,72 @@ namespace PsychosocialSupportPlatformAPI.Business.AppointmentSchedules
                         {
                             AppointmentSchedule appointment = new()
                             {
-                                Day = DateTime.Now.AddDays(i).Date,
+                                //Day = DateTime.Now.AddDays(i).Date,
                                 DoctorId = item.DoctorId
                             };
 
                             if (item.EightToNine == true)
                             {
                                 appointment.TimeRange = TimeRange.EightToNine;
+                                appointment.Day = DateTime.Now.AddDays(i).Date;
+
                                 appointmentList.Add(appointment);
                             }
                             if (item.NineToTen == true)
                             {
                                 appointment.TimeRange = TimeRange.NineToTen;
+                                appointment.Day = DateTime.Now.AddDays(i).Date;
+
                                 appointmentList.Add(appointment);
                             }
                             if (item.TenToEleven == true)
                             {
                                 appointment.TimeRange = TimeRange.TenToEleven;
+                                appointment.Day = DateTime.Now.AddDays(i).Date;
+
                                 appointmentList.Add(appointment);
                             }
                             if (item.ElevenToTwelve == true)
                             {
                                 appointment.TimeRange = TimeRange.ElevenToTwelve;
+                                appointment.Day = DateTime.Now.AddDays(i).Date;
+
                                 appointmentList.Add(appointment);
 
                             }
                             if (item.TwelveToThirteen == true)
                             {
                                 appointment.TimeRange = TimeRange.TwelveToThirteen;
+                                appointment.Day = DateTime.Now.AddDays(i).Date;
+
                                 appointmentList.Add(appointment);
                             }
                             if (item.ThirteenToFourteen == true)
                             {
                                 appointment.TimeRange = TimeRange.ThirteenToFourteen;
+                                appointment.Day = DateTime.Now.AddDays(i).Date;
+
                                 appointmentList.Add(appointment);
                             }
                             if (item.FourteenToFifteen == true)
                             {
                                 appointment.TimeRange = TimeRange.FourteenToFifteen;
+                                appointment.Day = DateTime.Now.AddDays(i).Date;
+
                                 appointmentList.Add(appointment);
                             }
                             if (item.FifteenToSixteen == true)
                             {
                                 appointment.TimeRange = TimeRange.FifteenToSixteen;
+                                appointment.Day = DateTime.Now.AddDays(i).Date;
+
                                 appointmentList.Add(appointment);
                             }
                             if (item.SixteenToSeventeen == true)
                             {
                                 appointment.TimeRange = TimeRange.SixteenToSeventeen;
+                                appointment.Day = DateTime.Now.AddDays(i).Date;
+
                                 appointmentList.Add(appointment);
                             }
                         }
@@ -328,54 +366,72 @@ namespace PsychosocialSupportPlatformAPI.Business.AppointmentSchedules
                         {
                             AppointmentSchedule appointment = new()
                             {
-                                Day = DateTime.Now.AddDays(i).Date,
+                                //Day = DateTime.Now.AddDays(i).Date,
                                 DoctorId = item.DoctorId
                             };
 
                             if (item.EightToNine == true)
                             {
                                 appointment.TimeRange = TimeRange.EightToNine;
+                                appointment.Day = DateTime.Now.AddDays(i).Date;
+
                                 appointmentList.Add(appointment);
                             }
                             if (item.NineToTen == true)
                             {
                                 appointment.TimeRange = TimeRange.NineToTen;
+                                appointment.Day = DateTime.Now.AddDays(i).Date;
+
                                 appointmentList.Add(appointment);
                             }
                             if (item.TenToEleven == true)
                             {
                                 appointment.TimeRange = TimeRange.TenToEleven;
+                                appointment.Day = DateTime.Now.AddDays(i).Date;
+
                                 appointmentList.Add(appointment);
                             }
                             if (item.ElevenToTwelve == true)
                             {
                                 appointment.TimeRange = TimeRange.ElevenToTwelve;
+                                appointment.Day = DateTime.Now.AddDays(i).Date;
+
                                 appointmentList.Add(appointment);
 
                             }
                             if (item.TwelveToThirteen == true)
                             {
                                 appointment.TimeRange = TimeRange.TwelveToThirteen;
+                                appointment.Day = DateTime.Now.AddDays(i).Date;
+
                                 appointmentList.Add(appointment);
                             }
                             if (item.ThirteenToFourteen == true)
                             {
                                 appointment.TimeRange = TimeRange.ThirteenToFourteen;
+                                appointment.Day = DateTime.Now.AddDays(i).Date;
+
                                 appointmentList.Add(appointment);
                             }
                             if (item.FourteenToFifteen == true)
                             {
                                 appointment.TimeRange = TimeRange.FourteenToFifteen;
+                                appointment.Day = DateTime.Now.AddDays(i).Date;
+
                                 appointmentList.Add(appointment);
                             }
                             if (item.FifteenToSixteen == true)
                             {
                                 appointment.TimeRange = TimeRange.FifteenToSixteen;
+                                appointment.Day = DateTime.Now.AddDays(i).Date;
+
                                 appointmentList.Add(appointment);
                             }
                             if (item.SixteenToSeventeen == true)
                             {
                                 appointment.TimeRange = TimeRange.SixteenToSeventeen;
+                                appointment.Day = DateTime.Now.AddDays(i).Date;
+
                                 appointmentList.Add(appointment);
                             }
                         }
@@ -389,54 +445,72 @@ namespace PsychosocialSupportPlatformAPI.Business.AppointmentSchedules
                         {
                             AppointmentSchedule appointment = new()
                             {
-                                Day = DateTime.Now.AddDays(i).Date,
+                                //Day = DateTime.Now.AddDays(i).Date,
                                 DoctorId = item.DoctorId
                             };
 
                             if (item.EightToNine == true)
                             {
                                 appointment.TimeRange = TimeRange.EightToNine;
+                                appointment.Day = DateTime.Now.AddDays(i).Date;
+
                                 appointmentList.Add(appointment);
                             }
                             if (item.NineToTen == true)
                             {
                                 appointment.TimeRange = TimeRange.NineToTen;
+                                appointment.Day = DateTime.Now.AddDays(i).Date;
+
                                 appointmentList.Add(appointment);
                             }
                             if (item.TenToEleven == true)
                             {
                                 appointment.TimeRange = TimeRange.TenToEleven;
+                                appointment.Day = DateTime.Now.AddDays(i).Date;
+
                                 appointmentList.Add(appointment);
                             }
                             if (item.ElevenToTwelve == true)
                             {
                                 appointment.TimeRange = TimeRange.ElevenToTwelve;
+                                appointment.Day = DateTime.Now.AddDays(i).Date;
+
                                 appointmentList.Add(appointment);
 
                             }
                             if (item.TwelveToThirteen == true)
                             {
                                 appointment.TimeRange = TimeRange.TwelveToThirteen;
+                                appointment.Day = DateTime.Now.AddDays(i).Date;
+
                                 appointmentList.Add(appointment);
                             }
                             if (item.ThirteenToFourteen == true)
                             {
                                 appointment.TimeRange = TimeRange.ThirteenToFourteen;
+                                appointment.Day = DateTime.Now.AddDays(i).Date;
+
                                 appointmentList.Add(appointment);
                             }
                             if (item.FourteenToFifteen == true)
                             {
                                 appointment.TimeRange = TimeRange.FourteenToFifteen;
+                                appointment.Day = DateTime.Now.AddDays(i).Date;
+
                                 appointmentList.Add(appointment);
                             }
                             if (item.FifteenToSixteen == true)
                             {
                                 appointment.TimeRange = TimeRange.FifteenToSixteen;
+                                appointment.Day = DateTime.Now.AddDays(i).Date;
+
                                 appointmentList.Add(appointment);
                             }
                             if (item.SixteenToSeventeen == true)
                             {
                                 appointment.TimeRange = TimeRange.SixteenToSeventeen;
+                                appointment.Day = DateTime.Now.AddDays(i).Date;
+
                                 appointmentList.Add(appointment);
                             }
                         }
@@ -450,54 +524,72 @@ namespace PsychosocialSupportPlatformAPI.Business.AppointmentSchedules
                         {
                             AppointmentSchedule appointment = new()
                             {
-                                Day = DateTime.Now.AddDays(i).Date,
+                                //Day = DateTime.Now.AddDays(i).Date,
                                 DoctorId = item.DoctorId
                             };
 
                             if (item.EightToNine == true)
                             {
                                 appointment.TimeRange = TimeRange.EightToNine;
+                                appointment.Day = DateTime.Now.AddDays(i).Date;
+
                                 appointmentList.Add(appointment);
                             }
                             if (item.NineToTen == true)
                             {
                                 appointment.TimeRange = TimeRange.NineToTen;
+                                appointment.Day = DateTime.Now.AddDays(i).Date;
+
                                 appointmentList.Add(appointment);
                             }
                             if (item.TenToEleven == true)
                             {
                                 appointment.TimeRange = TimeRange.TenToEleven;
+                                appointment.Day = DateTime.Now.AddDays(i).Date;
+
                                 appointmentList.Add(appointment);
                             }
                             if (item.ElevenToTwelve == true)
                             {
                                 appointment.TimeRange = TimeRange.ElevenToTwelve;
+                                appointment.Day = DateTime.Now.AddDays(i).Date;
+
                                 appointmentList.Add(appointment);
 
                             }
                             if (item.TwelveToThirteen == true)
                             {
                                 appointment.TimeRange = TimeRange.TwelveToThirteen;
+                                appointment.Day = DateTime.Now.AddDays(i).Date;
+
                                 appointmentList.Add(appointment);
                             }
                             if (item.ThirteenToFourteen == true)
                             {
                                 appointment.TimeRange = TimeRange.ThirteenToFourteen;
+                                appointment.Day = DateTime.Now.AddDays(i).Date;
+
                                 appointmentList.Add(appointment);
                             }
                             if (item.FourteenToFifteen == true)
                             {
                                 appointment.TimeRange = TimeRange.FourteenToFifteen;
+                                appointment.Day = DateTime.Now.AddDays(i).Date;
+
                                 appointmentList.Add(appointment);
                             }
                             if (item.FifteenToSixteen == true)
                             {
                                 appointment.TimeRange = TimeRange.FifteenToSixteen;
+                                appointment.Day = DateTime.Now.AddDays(i).Date;
+
                                 appointmentList.Add(appointment);
                             }
                             if (item.SixteenToSeventeen == true)
                             {
                                 appointment.TimeRange = TimeRange.SixteenToSeventeen;
+                                appointment.Day = DateTime.Now.AddDays(i).Date;
+
                                 appointmentList.Add(appointment);
                             }
                         }
