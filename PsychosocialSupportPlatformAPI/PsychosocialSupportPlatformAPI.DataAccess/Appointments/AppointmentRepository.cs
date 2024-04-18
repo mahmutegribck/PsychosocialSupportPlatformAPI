@@ -1,42 +1,48 @@
-﻿using PsychosocialSupportPlatformAPI.Entity.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.EntityFrameworkCore;
+using PsychosocialSupportPlatformAPI.Entity.Entities;
 
 namespace PsychosocialSupportPlatformAPI.DataAccess.Appointments
 {
     public class AppointmentRepository : IAppointmentRepository
     {
-        public Task CreateAppointment(Appointment appointment)
+        private readonly PsychosocialSupportPlatformDBContext _context;
+        public AppointmentRepository(PsychosocialSupportPlatformDBContext context)
         {
-            throw new NotImplementedException();
+
+            _context = context;
+
+        }
+        public async Task CreatePatientAppointment(Appointment appointment)
+        {
+            await _context.Appointments.AddAsync(appointment);
+            await _context.SaveChangesAsync();
         }
 
-        public Task DeleteAppointment(Appointment appointment)
+        public async Task DeletePatientAppointment(Appointment appointment)
         {
-            throw new NotImplementedException();
+            _context.Appointments.Remove(appointment);
+            await _context.SaveChangesAsync();
         }
 
-        public Task<Appointment> GetAppointment(Appointment appointment)
+        public async Task<IEnumerable<Appointment>> GetAllDoctorAppointments(string doctorID)
         {
-            throw new NotImplementedException();
+            return await _context.Appointments.Where(a => a.DoctorId == doctorID).ToListAsync();
         }
 
-        public Task<List<Appointment>> GetDoctorAppointments()
+        public async Task<IEnumerable<Appointment>> GetAllPatientAppointments(string patientID)
         {
-            throw new NotImplementedException();
+            return await _context.Appointments.Where(a => a.PatientId == patientID).ToListAsync();
         }
 
-        public Task<List<Appointment>> GetPatientAppointments()
+        public async Task<Appointment> GetPatientAppointmentById(int appointmentID, string patientID)
         {
-            throw new NotImplementedException();
+            return await _context.Appointments.Where(a => a.Id == appointmentID && a.PatientId == patientID).FirstOrDefaultAsync();
         }
 
-        public Task UpdateAppointment(Appointment appointment)
+        public async Task<Appointment> GetDoctorAppointmentById(int appointmentID, string doctorID)
         {
-            throw new NotImplementedException();
+            return await _context.Appointments.Where(a => a.Id == appointmentID && a.DoctorId == doctorID).FirstOrDefaultAsync();
+
         }
     }
 }

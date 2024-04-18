@@ -19,25 +19,19 @@ namespace PsychosocialSupportPlatformAPI.Business.Statistics
             var videoStatistics = _mapper.Map<VideoStatistics>(addVideoStatisticsDTO);
             videoStatistics.PatientId = userID;
 
-            var existingvideoStatistics = await _videoStatisticsRepository.GetPatientVideoStatisticsByVideoID(userID, videoStatistics.VideoId);
+            var existingVideoStatistics = await _videoStatisticsRepository.GetPatientVideoStatisticsByVideoID(userID, videoStatistics.VideoId);
 
-            if (existingvideoStatistics == null)
+            if (existingVideoStatistics == null)
             {
                 await _videoStatisticsRepository.CreateVideoStatistics(videoStatistics);
             }
             else
             {
-                videoStatistics.Id = existingvideoStatistics.Id;
+                videoStatistics.Id = existingVideoStatistics.Id;
+                videoStatistics.ClicksNumber = existingVideoStatistics.ClicksNumber + 1;
+
                 await _videoStatisticsRepository.UpdateVideoStatistics(videoStatistics);
             }
-        }
-
-        public async Task UpdateVideoStatistics(string userID, UpdateVideoStatisticsDTO updateVideoStatisticsDTO)
-        {
-            var videoStatistics = _mapper.Map<VideoStatistics>(updateVideoStatisticsDTO);
-            videoStatistics.PatientId = userID;
-
-            await _videoStatisticsRepository.UpdateVideoStatistics(videoStatistics);
         }
 
         public async Task DeleteVideoStatistics(int statisticsID)

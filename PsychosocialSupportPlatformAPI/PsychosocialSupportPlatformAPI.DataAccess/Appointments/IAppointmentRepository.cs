@@ -1,19 +1,14 @@
 ﻿using PsychosocialSupportPlatformAPI.Entity.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PsychosocialSupportPlatformAPI.DataAccess.Appointments
 {
     public interface IAppointmentRepository
     {
-        Task CreateAppointment(Appointment appointment);
-        Task DeleteAppointment(Appointment appointment);
-        Task UpdateAppointment(Appointment appointment);
-        Task<Appointment> GetAppointment(Appointment appointment);
-        Task<List<Appointment>> GetPatientAppointments();
-        Task<List<Appointment>> GetDoctorAppointments();
+        Task CreatePatientAppointment(Appointment appointment);
+        Task DeletePatientAppointment(Appointment appointment);
+        Task<Appointment> GetPatientAppointmentById(int appointmentID, string patientID);
+        Task<Appointment> GetDoctorAppointmentById(int appointmentID, string doctorID);
+        Task<IEnumerable<Appointment>> GetAllPatientAppointments(string patientID);
+        Task<IEnumerable<Appointment>> GetAllDoctorAppointments(string doctorID);
     }
 }

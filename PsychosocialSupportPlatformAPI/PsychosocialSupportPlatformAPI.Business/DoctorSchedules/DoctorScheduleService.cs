@@ -16,55 +16,60 @@ namespace PsychosocialSupportPlatformAPI.Business.DoctorSchedules
             _mapper = mapper;
         }
 
-        public async Task CreateDoctorSchedule(CreateDoctorScheduleDTO createDoctorScheduleDTO, string currentUserID)
+        public async Task CreateDoctorSchedule(CreateDoctorScheduleDTO[] createDoctorScheduleDTOs, string currentUserID)
         {
-            var doctorSchedule = _mapper.Map<DoctorSchedule>(createDoctorScheduleDTO);
-            doctorSchedule.DoctorId = currentUserID;
-
-            var existingSchedule = await _doctorScheduleRepository.GetDoctorScheduleById(currentUserID, doctorSchedule.Id);
-            if (existingSchedule != null) throw new Exception("Girilen Gune Ait Takvim Kaydi Mevcut.");
-
-            if (createDoctorScheduleDTO.Day < DayOfWeek.Sunday || createDoctorScheduleDTO.Day > DayOfWeek.Saturday)
-                throw new Exception();
-
-
-            foreach (var timeRange in createDoctorScheduleDTO.TimeRanges)
+            foreach (var createDoctorScheduleDTO in createDoctorScheduleDTOs)
             {
-                switch (timeRange)
+                var doctorSchedule = _mapper.Map<DoctorSchedule>(createDoctorScheduleDTO);
+                doctorSchedule.DoctorId = currentUserID;
+
+                var existingSchedule = await _doctorScheduleRepository.GetDoctorSchedule(currentUserID, doctorSchedule);
+                if (existingSchedule != null) throw new Exception("Girilen Gune Ait Takvim Kaydi Mevcut.");
+                foreach (var day in createDoctorScheduleDTO.Days)
                 {
-                    case TimeRange.EightToNine:
-                        doctorSchedule.EightToNine = true;
-                        break;
-                    case TimeRange.NineToTen:
-                        doctorSchedule.NineToTen = true;
-                        break;
-                    case TimeRange.TenToEleven:
-                        doctorSchedule.TenToEleven = true;
-                        break;
-                    case TimeRange.ElevenToTwelve:
-                        doctorSchedule.ElevenToTwelve = true;
-                        break;
-                    case TimeRange.TwelveToThirteen:
-                        doctorSchedule.TwelveToThirteen = true;
-                        break;
-                    case TimeRange.ThirteenToFourteen:
-                        doctorSchedule.ThirteenToFourteen = true;
-                        break;
-                    case TimeRange.FourteenToFifteen:
-                        doctorSchedule.FourteenToFifteen = true;
-                        break;
-                    case TimeRange.FifteenToSixteen:
-                        doctorSchedule.FifteenToSixteen = true;
-                        break;
-                    case TimeRange.SixteenToSeventeen:
-                        doctorSchedule.SixteenToSeventeen = true;
-                        break;
-                    default:
-                        // Belirtilen saat aralığı tanımlı değilse, hata fırlatılabilir veya atlanabilir.
-                        break;
+                    if (day < DayOfWeek.Sunday || day > DayOfWeek.Saturday)
+                        throw new Exception();
+
+
+                    foreach (var timeRange in createDoctorScheduleDTO.TimeRanges)
+                    {
+                        switch (timeRange)
+                        {
+                            case TimeRange.EightToNine:
+                                doctorSchedule.EightToNine = true;
+                                break;
+                            case TimeRange.NineToTen:
+                                doctorSchedule.NineToTen = true;
+                                break;
+                            case TimeRange.TenToEleven:
+                                doctorSchedule.TenToEleven = true;
+                                break;
+                            case TimeRange.ElevenToTwelve:
+                                doctorSchedule.ElevenToTwelve = true;
+                                break;
+                            case TimeRange.TwelveToThirteen:
+                                doctorSchedule.TwelveToThirteen = true;
+                                break;
+                            case TimeRange.ThirteenToFourteen:
+                                doctorSchedule.ThirteenToFourteen = true;
+                                break;
+                            case TimeRange.FourteenToFifteen:
+                                doctorSchedule.FourteenToFifteen = true;
+                                break;
+                            case TimeRange.FifteenToSixteen:
+                                doctorSchedule.FifteenToSixteen = true;
+                                break;
+                            case TimeRange.SixteenToSeventeen:
+                                doctorSchedule.SixteenToSeventeen = true;
+                                break;
+                            default:
+                                // Belirtilen saat aralığı tanımlı değilse, hata fırlatılabilir veya atlanabilir.
+                                break;
+                        }
+                    }
+                    await _doctorScheduleRepository.CreateDoctorSchedule(doctorSchedule);
                 }
             }
-            await _doctorScheduleRepository.CreateDoctorSchedule(doctorSchedule);
         }
 
         public async Task DeleteDoctorSchedule(int doctorScheduleId)

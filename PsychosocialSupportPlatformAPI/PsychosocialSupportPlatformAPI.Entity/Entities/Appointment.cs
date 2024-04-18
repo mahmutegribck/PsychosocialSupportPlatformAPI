@@ -1,15 +1,11 @@
 ﻿using PsychosocialSupportPlatformAPI.Entity.Entities.Users;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PsychosocialSupportPlatformAPI.Entity.Entities
 {
     public class Appointment
     {
+
         [Key]
         public int Id { get; set; }
         public DateTime Date { get; set; }
@@ -19,5 +15,10 @@ namespace PsychosocialSupportPlatformAPI.Entity.Entities
         public Doctor Doctor { get; set; }
         public string PatientId { get; set; }
         public Patient Patient { get; set; }
+
+        public int AppointmentScheduleId { get; set; }
+        public AppointmentSchedule AppointmentSchedule { get; set; }
+
+
     }
 }

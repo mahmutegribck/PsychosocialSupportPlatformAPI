@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace PsychosocialSupportPlatformAPI.Entity.Entities.Users
+﻿namespace PsychosocialSupportPlatformAPI.Entity.Entities.Users
 {
     public class Patient : ApplicationUser
     {
@@ -12,9 +6,14 @@ namespace PsychosocialSupportPlatformAPI.Entity.Entities.Users
         {
             Appointments = new HashSet<Appointment>();
             Statistics = new HashSet<VideoStatistics>();
+         
         }
         public ICollection<Appointment> Appointments { get; set; }
         public ICollection<VideoStatistics> Statistics { get; set; }
+      
+
+
+
 
     }
 }

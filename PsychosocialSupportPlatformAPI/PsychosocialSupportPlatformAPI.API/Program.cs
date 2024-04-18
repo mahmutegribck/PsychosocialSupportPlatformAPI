@@ -4,6 +4,7 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using PsychosocialSupportPlatformAPI.API.Chat;
 using PsychosocialSupportPlatformAPI.API.Configurators;
+using PsychosocialSupportPlatformAPI.Business.Appointments;
 using PsychosocialSupportPlatformAPI.Business.Auth.AuthService;
 using PsychosocialSupportPlatformAPI.Business.Auth.JwtToken;
 using PsychosocialSupportPlatformAPI.Business.DoctorSchedules;
@@ -12,6 +13,8 @@ using PsychosocialSupportPlatformAPI.Business.Statistics;
 using PsychosocialSupportPlatformAPI.Business.Users;
 using PsychosocialSupportPlatformAPI.Business.Videos;
 using PsychosocialSupportPlatformAPI.DataAccess;
+using PsychosocialSupportPlatformAPI.DataAccess.Appointments;
+using PsychosocialSupportPlatformAPI.DataAccess.AppointmentSchedules;
 using PsychosocialSupportPlatformAPI.DataAccess.DoctorSchedules;
 using PsychosocialSupportPlatformAPI.DataAccess.Messages;
 using PsychosocialSupportPlatformAPI.DataAccess.Statistics;
@@ -88,18 +91,30 @@ IdentityConfigurator.ConfigureIdentity(builder.Services);
 
 
 builder.Services.AddSignalR();
+
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
+
 builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<IUserRepository, UserRepository>();
+
 builder.Services.AddScoped<IMessageService, MessageService>();
 builder.Services.AddScoped<IMessageRepository, MessageRepository>();
+
 builder.Services.AddTransient<IVideoService, VideoService>();
 builder.Services.AddScoped<IVideoRepository, VideoRepository>();
+
 builder.Services.AddScoped<IVideoStatisticsRepository, VideoStatisticsRepository>();
 builder.Services.AddScoped<IVideoStatisticsService, VideoStatisticsService>();
+
 builder.Services.AddScoped<IDoctorScheduleRepository, DoctorScheduleRepository>();
 builder.Services.AddScoped<IDoctorScheduleService, DoctorScheduleService>();
+
+builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
+builder.Services.AddScoped<IAppointmentService, AppointmentService>();
+
+builder.Services.AddScoped<IAppointmentScheduleRepository, AppointmentScheduleRepository>();
+
 
 
 builder.Services.AddHttpClient();

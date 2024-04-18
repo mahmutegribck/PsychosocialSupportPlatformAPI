@@ -16,11 +16,11 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateDoctorSchedule([FromBody] CreateDoctorScheduleDTO createDoctorScheduleDTO)
+        public async Task<IActionResult> CreateDoctorSchedule([FromBody] CreateDoctorScheduleDTO[] createDoctorScheduleDTOs)
         {
             var currentUserID = User.Identity?.Name;
             if (currentUserID == null) return Unauthorized();
-            await _doctorScheduleService.CreateDoctorSchedule(createDoctorScheduleDTO, currentUserID);
+            await _doctorScheduleService.CreateDoctorSchedule(createDoctorScheduleDTOs, currentUserID);
             return Ok();
         }
 
