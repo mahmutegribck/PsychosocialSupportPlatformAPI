@@ -36,7 +36,7 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.DoctorSchedules
 
         public async Task<DoctorSchedule> GetDoctorSchedule(string doctorId, DoctorSchedule doctorSchedule)
         {
-            return await _context.DoctorSchedules.Where(s => s.DoctorId == doctorId && s.Day != doctorSchedule.Day).FirstOrDefaultAsync();
+            return await _context.DoctorSchedules.Where(s => s.DoctorId == doctorId && s.Day == doctorSchedule.Day).FirstOrDefaultAsync();
         }
 
         public async Task<DoctorSchedule> GetDoctorScheduleById(string doctorId, int scheduleId)

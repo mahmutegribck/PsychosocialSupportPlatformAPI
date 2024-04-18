@@ -5,6 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using PsychosocialSupportPlatformAPI.API.Chat;
 using PsychosocialSupportPlatformAPI.API.Configurators;
 using PsychosocialSupportPlatformAPI.Business.Appointments;
+using PsychosocialSupportPlatformAPI.Business.AppointmentSchedules;
 using PsychosocialSupportPlatformAPI.Business.Auth.AuthService;
 using PsychosocialSupportPlatformAPI.Business.Auth.JwtToken;
 using PsychosocialSupportPlatformAPI.Business.DoctorSchedules;
@@ -114,6 +115,8 @@ builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
 builder.Services.AddScoped<IAppointmentService, AppointmentService>();
 
 builder.Services.AddScoped<IAppointmentScheduleRepository, AppointmentScheduleRepository>();
+builder.Services.AddScoped<IAppointmentScheduleService, AppointmentScheduleService>();
+
 
 
 

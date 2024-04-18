@@ -6,7 +6,7 @@ using PsychosocialSupportPlatformAPI.Entity.Entities;
 
 namespace PsychosocialSupportPlatformAPI.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class AppointmentController : ControllerBase
     {
@@ -30,7 +30,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> DENEMECreatePatientAppointment([FromBody] AppointmentSchedule appointmentSchedule)
+        public async Task<IActionResult> DenemeCreatePatientAppointment([FromBody] AppointmentSchedule appointmentSchedule)
         {
             await _appointmentScheduleRepository.AddAppointmentSchedule(appointmentSchedule);
             return Ok();
