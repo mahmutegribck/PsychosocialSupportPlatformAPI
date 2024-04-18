@@ -8,6 +8,8 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.AppointmentSchedules
         Task AddAppointmentScheduleList(List<AppointmentSchedule> appointmentSchedules);
         Task AddAppointmentSchedule(AppointmentSchedule appointmentSchedule);
         Task DeleteAppointmentSchedule(AppointmentSchedule appointmentSchedule);
+        Task UpdateAppointmentSchedule(AppointmentSchedule appointmentSchedule);
+
 
 
 

@@ -28,7 +28,7 @@ namespace PsychosocialSupportPlatformAPI.Business.AppointmentSchedules
 
             List<AppointmentSchedule> appointmentList = new List<AppointmentSchedule>();
 
-            for (int i = 0; i < 15; i++)
+            for (int i = 0; i < 14; i++)
             {
                 //int dayOfWeekValue = (int)startDay + i;
                 //DayOfWeek currentDasy = (DayOfWeek)(dayOfWeekValue % 7);
@@ -54,65 +54,74 @@ namespace PsychosocialSupportPlatformAPI.Business.AppointmentSchedules
                             {
                                 appointment.TimeRange = TimeRange.EightToNine;
                                 appointment.Day = DateTime.Now.AddDays(i).Date;
+                                await _appointmentScheduleRepository.AddAppointmentSchedule(appointment);
 
-                                appointmentList.Add(appointment);
+                                //appointmentList.Add(appointment);
                             }
                             if (item.NineToTen == true)
                             {
                                 appointment.TimeRange = TimeRange.NineToTen;
                                 appointment.Day = DateTime.Now.AddDays(i).Date;
+                                await _appointmentScheduleRepository.AddAppointmentSchedule(appointment);
 
-                                appointmentList.Add(appointment);
+                                //appointmentList.Add(appointment);
                             }
                             if (item.TenToEleven == true)
                             {
                                 appointment.TimeRange = TimeRange.TenToEleven;
                                 appointment.Day = DateTime.Now.AddDays(i).Date;
+                                await _appointmentScheduleRepository.AddAppointmentSchedule(appointment);
 
-                                appointmentList.Add(appointment);
+                                //appointmentList.Add(appointment);
                             }
                             if (item.ElevenToTwelve == true)
                             {
                                 appointment.TimeRange = TimeRange.ElevenToTwelve;
                                 appointment.Day = DateTime.Now.AddDays(i).Date;
+                                await _appointmentScheduleRepository.AddAppointmentSchedule(appointment);
 
-                                appointmentList.Add(appointment);
+                                //appointmentList.Add(appointment);
 
                             }
                             if (item.TwelveToThirteen == true)
                             {
                                 appointment.TimeRange = TimeRange.TwelveToThirteen;
                                 appointment.Day = DateTime.Now.AddDays(i).Date;
+                                await _appointmentScheduleRepository.AddAppointmentSchedule(appointment);
 
-                                appointmentList.Add(appointment);
+                                //appointmentList.Add(appointment);
                             }
                             if (item.ThirteenToFourteen == true)
                             {
                                 appointment.TimeRange = TimeRange.ThirteenToFourteen;
                                 appointment.Day = DateTime.Now.AddDays(i).Date;
+                                await _appointmentScheduleRepository.AddAppointmentSchedule(appointment);
 
-                                appointmentList.Add(appointment);
+                                //appointmentList.Add(appointment);
                             }
                             if (item.FourteenToFifteen == true)
                             {
                                 appointment.TimeRange = TimeRange.FourteenToFifteen;
                                 appointment.Day = DateTime.Now.AddDays(i).Date;
+                                await _appointmentScheduleRepository.AddAppointmentSchedule(appointment);
 
-                                appointmentList.Add(appointment);
+                                //appointmentList.Add(appointment);
                             }
                             if (item.FifteenToSixteen == true)
                             {
                                 appointment.TimeRange = TimeRange.FifteenToSixteen;
                                 appointment.Day = DateTime.Now.AddDays(i).Date;
+                                await _appointmentScheduleRepository.AddAppointmentSchedule(appointment);
 
-                                appointmentList.Add(appointment);
+                                //appointmentList.Add(appointment);
                             }
                             if (item.SixteenToSeventeen == true)
                             {
                                 appointment.TimeRange = TimeRange.SixteenToSeventeen;
                                 appointment.Day = DateTime.Now.AddDays(i).Date;
+                                await _appointmentScheduleRepository.AddAppointmentSchedule(appointment);
 
-                                appointmentList.Add(appointment);
+                                // appointmentList.Add(appointment);
                             }
                         };
                         break;
@@ -134,66 +143,75 @@ namespace PsychosocialSupportPlatformAPI.Business.AppointmentSchedules
                             {
                                 appointment.TimeRange = TimeRange.EightToNine;
                                 appointment.Day = DateTime.Now.AddDays(i).Date;
+                                await _appointmentScheduleRepository.AddAppointmentSchedule(appointment);
 
-                                appointmentList.Add(appointment);
+                                //appointmentList.Add(appointment);
 
                             }
                             if (item.NineToTen == true)
                             {
                                 appointment.TimeRange = TimeRange.NineToTen;
                                 appointment.Day = DateTime.Now.AddDays(i).Date;
+                                await _appointmentScheduleRepository.AddAppointmentSchedule(appointment);
 
-                                appointmentList.Add(appointment);
+                                // appointmentList.Add(appointment);
                             }
                             if (item.TenToEleven == true)
                             {
                                 appointment.TimeRange = TimeRange.TenToEleven;
                                 appointment.Day = DateTime.Now.AddDays(i).Date;
+                                await _appointmentScheduleRepository.AddAppointmentSchedule(appointment);
 
-                                appointmentList.Add(appointment);
+                                //appointmentList.Add(appointment);
                             }
                             if (item.ElevenToTwelve == true)
                             {
                                 appointment.TimeRange = TimeRange.ElevenToTwelve;
                                 appointment.Day = DateTime.Now.AddDays(i).Date;
+                                await _appointmentScheduleRepository.AddAppointmentSchedule(appointment);
 
-                                appointmentList.Add(appointment);
+                                //appointmentList.Add(appointment);
 
                             }
                             if (item.TwelveToThirteen == true)
                             {
                                 appointment.TimeRange = TimeRange.TwelveToThirteen;
                                 appointment.Day = DateTime.Now.AddDays(i).Date;
+                                await _appointmentScheduleRepository.AddAppointmentSchedule(appointment);
 
-                                appointmentList.Add(appointment);
+                                //appointmentList.Add(appointment);
                             }
                             if (item.ThirteenToFourteen == true)
                             {
                                 appointment.TimeRange = TimeRange.ThirteenToFourteen;
                                 appointment.Day = DateTime.Now.AddDays(i).Date;
+                                await _appointmentScheduleRepository.AddAppointmentSchedule(appointment);
 
-                                appointmentList.Add(appointment);
+                                //appointmentList.Add(appointment);
                             }
                             if (item.FourteenToFifteen == true)
                             {
                                 appointment.TimeRange = TimeRange.FourteenToFifteen;
                                 appointment.Day = DateTime.Now.AddDays(i).Date;
+                                await _appointmentScheduleRepository.AddAppointmentSchedule(appointment);
 
-                                appointmentList.Add(appointment);
+                                //appointmentList.Add(appointment);
                             }
                             if (item.FifteenToSixteen == true)
                             {
                                 appointment.TimeRange = TimeRange.FifteenToSixteen;
                                 appointment.Day = DateTime.Now.AddDays(i).Date;
+                                await _appointmentScheduleRepository.AddAppointmentSchedule(appointment);
 
-                                appointmentList.Add(appointment);
+                                //appointmentList.Add(appointment);
                             }
                             if (item.SixteenToSeventeen == true)
                             {
                                 appointment.TimeRange = TimeRange.SixteenToSeventeen;
                                 appointment.Day = DateTime.Now.AddDays(i).Date;
+                                await _appointmentScheduleRepository.AddAppointmentSchedule(appointment);
 
-                                appointmentList.Add(appointment);
+                                //appointmentList.Add(appointment);
                             }
                         }
                         break;
@@ -216,65 +234,74 @@ namespace PsychosocialSupportPlatformAPI.Business.AppointmentSchedules
                             {
                                 appointment.TimeRange = TimeRange.EightToNine;
                                 appointment.Day = DateTime.Now.AddDays(i).Date;
+                                await _appointmentScheduleRepository.AddAppointmentSchedule(appointment);
 
-                                appointmentList.Add(appointment);
+                                //appointmentList.Add(appointment);
                             }
                             if (item.NineToTen == true)
                             {
                                 appointment.TimeRange = TimeRange.NineToTen;
                                 appointment.Day = DateTime.Now.AddDays(i).Date;
+                                await _appointmentScheduleRepository.AddAppointmentSchedule(appointment);
 
-                                appointmentList.Add(appointment);
+                                //appointmentList.Add(appointment);
                             }
                             if (item.TenToEleven == true)
                             {
                                 appointment.TimeRange = TimeRange.TenToEleven;
                                 appointment.Day = DateTime.Now.AddDays(i).Date;
+                                await _appointmentScheduleRepository.AddAppointmentSchedule(appointment);
 
-                                appointmentList.Add(appointment);
+                                //appointmentList.Add(appointment);
                             }
                             if (item.ElevenToTwelve == true)
                             {
                                 appointment.TimeRange = TimeRange.ElevenToTwelve;
                                 appointment.Day = DateTime.Now.AddDays(i).Date;
+                                await _appointmentScheduleRepository.AddAppointmentSchedule(appointment);
 
-                                appointmentList.Add(appointment);
+                                //appointmentList.Add(appointment);
 
                             }
                             if (item.TwelveToThirteen == true)
                             {
                                 appointment.TimeRange = TimeRange.TwelveToThirteen;
                                 appointment.Day = DateTime.Now.AddDays(i).Date;
+                                await _appointmentScheduleRepository.AddAppointmentSchedule(appointment);
 
-                                appointmentList.Add(appointment);
+                                //appointmentList.Add(appointment);
                             }
                             if (item.ThirteenToFourteen == true)
                             {
                                 appointment.TimeRange = TimeRange.ThirteenToFourteen;
                                 appointment.Day = DateTime.Now.AddDays(i).Date;
+                                await _appointmentScheduleRepository.AddAppointmentSchedule(appointment);
 
-                                appointmentList.Add(appointment);
+                                //appointmentList.Add(appointment);
                             }
                             if (item.FourteenToFifteen == true)
                             {
                                 appointment.TimeRange = TimeRange.FourteenToFifteen;
                                 appointment.Day = DateTime.Now.AddDays(i).Date;
+                                await _appointmentScheduleRepository.AddAppointmentSchedule(appointment);
 
-                                appointmentList.Add(appointment);
+                                //appointmentList.Add(appointment);
                             }
                             if (item.FifteenToSixteen == true)
                             {
                                 appointment.TimeRange = TimeRange.FifteenToSixteen;
                                 appointment.Day = DateTime.Now.AddDays(i).Date;
+                                await _appointmentScheduleRepository.AddAppointmentSchedule(appointment);
 
-                                appointmentList.Add(appointment);
+                                //appointmentList.Add(appointment);
                             }
                             if (item.SixteenToSeventeen == true)
                             {
                                 appointment.TimeRange = TimeRange.SixteenToSeventeen;
                                 appointment.Day = DateTime.Now.AddDays(i).Date;
+                                await _appointmentScheduleRepository.AddAppointmentSchedule(appointment);
 
-                                appointmentList.Add(appointment);
+                                //appointmentList.Add(appointment);
                             }
                         }
                         break;
@@ -295,65 +322,74 @@ namespace PsychosocialSupportPlatformAPI.Business.AppointmentSchedules
                             {
                                 appointment.TimeRange = TimeRange.EightToNine;
                                 appointment.Day = DateTime.Now.AddDays(i).Date;
+                                await _appointmentScheduleRepository.AddAppointmentSchedule(appointment);
 
-                                appointmentList.Add(appointment);
+                                //appointmentList.Add(appointment);
                             }
                             if (item.NineToTen == true)
                             {
                                 appointment.TimeRange = TimeRange.NineToTen;
                                 appointment.Day = DateTime.Now.AddDays(i).Date;
+                                await _appointmentScheduleRepository.AddAppointmentSchedule(appointment);
 
-                                appointmentList.Add(appointment);
+                                //appointmentList.Add(appointment);
                             }
                             if (item.TenToEleven == true)
                             {
                                 appointment.TimeRange = TimeRange.TenToEleven;
                                 appointment.Day = DateTime.Now.AddDays(i).Date;
+                                await _appointmentScheduleRepository.AddAppointmentSchedule(appointment);
 
-                                appointmentList.Add(appointment);
+                                //appointmentList.Add(appointment);
                             }
                             if (item.ElevenToTwelve == true)
                             {
                                 appointment.TimeRange = TimeRange.ElevenToTwelve;
                                 appointment.Day = DateTime.Now.AddDays(i).Date;
+                                await _appointmentScheduleRepository.AddAppointmentSchedule(appointment);
 
-                                appointmentList.Add(appointment);
+                                //appointmentList.Add(appointment);
 
                             }
                             if (item.TwelveToThirteen == true)
                             {
                                 appointment.TimeRange = TimeRange.TwelveToThirteen;
                                 appointment.Day = DateTime.Now.AddDays(i).Date;
+                                await _appointmentScheduleRepository.AddAppointmentSchedule(appointment);
 
-                                appointmentList.Add(appointment);
+                                //appointmentList.Add(appointment);
                             }
                             if (item.ThirteenToFourteen == true)
                             {
                                 appointment.TimeRange = TimeRange.ThirteenToFourteen;
                                 appointment.Day = DateTime.Now.AddDays(i).Date;
+                                await _appointmentScheduleRepository.AddAppointmentSchedule(appointment);
 
-                                appointmentList.Add(appointment);
+                                //appointmentList.Add(appointment);
                             }
                             if (item.FourteenToFifteen == true)
                             {
                                 appointment.TimeRange = TimeRange.FourteenToFifteen;
                                 appointment.Day = DateTime.Now.AddDays(i).Date;
+                                await _appointmentScheduleRepository.AddAppointmentSchedule(appointment);
 
-                                appointmentList.Add(appointment);
+                                //appointmentList.Add(appointment);
                             }
                             if (item.FifteenToSixteen == true)
                             {
                                 appointment.TimeRange = TimeRange.FifteenToSixteen;
                                 appointment.Day = DateTime.Now.AddDays(i).Date;
+                                await _appointmentScheduleRepository.AddAppointmentSchedule(appointment);
 
-                                appointmentList.Add(appointment);
+                                //appointmentList.Add(appointment);
                             }
                             if (item.SixteenToSeventeen == true)
                             {
                                 appointment.TimeRange = TimeRange.SixteenToSeventeen;
                                 appointment.Day = DateTime.Now.AddDays(i).Date;
+                                await _appointmentScheduleRepository.AddAppointmentSchedule(appointment);
 
-                                appointmentList.Add(appointment);
+                                //appointmentList.Add(appointment);
                             }
                         }
                         break;
@@ -372,67 +408,136 @@ namespace PsychosocialSupportPlatformAPI.Business.AppointmentSchedules
 
                             if (item.EightToNine == true)
                             {
-                                appointment.TimeRange = TimeRange.EightToNine;
-                                appointment.Day = DateTime.Now.AddDays(i).Date;
+                                AppointmentSchedule appointmentEightToNine = new()
+                                {
+                                    TimeRange = TimeRange.EightToNine,
+                                    Day = DateTime.Now.AddDays(i).Date,
+                                    DoctorId = item.DoctorId
+                                };
+                                //appointment.TimeRange = TimeRange.EightToNine;
+                                //appointment.Day = DateTime.Now.AddDays(i).Date;
+                                //await _appointmentScheduleRepository.AddAppointmentSchedule(appointment);
 
-                                appointmentList.Add(appointment);
+                                appointmentList.Add(appointmentEightToNine);
                             }
                             if (item.NineToTen == true)
                             {
-                                appointment.TimeRange = TimeRange.NineToTen;
-                                appointment.Day = DateTime.Now.AddDays(i).Date;
+                                AppointmentSchedule appointmentNineToTen = new()
+                                {
+                                    TimeRange = TimeRange.NineToTen,
+                                    Day = DateTime.Now.AddDays(i).Date,
+                                    DoctorId = item.DoctorId
+                                };
+                                //appointment.TimeRange = TimeRange.NineToTen;
+                                //appointment.Day = DateTime.Now.AddDays(i).Date;
+                                //await _appointmentScheduleRepository.AddAppointmentSchedule(appointment);
 
-                                appointmentList.Add(appointment);
+                                appointmentList.Add(appointmentNineToTen);
                             }
                             if (item.TenToEleven == true)
                             {
-                                appointment.TimeRange = TimeRange.TenToEleven;
-                                appointment.Day = DateTime.Now.AddDays(i).Date;
+                                AppointmentSchedule appointmentTenToEleven = new()
+                                {
+                                    TimeRange = TimeRange.TenToEleven,
+                                    Day = DateTime.Now.AddDays(i).Date,
+                                    DoctorId = item.DoctorId
+                                };
+                                //appointment.TimeRange = TimeRange.TenToEleven;
+                                //appointment.Day = DateTime.Now.AddDays(i).Date;
+                                //await _appointmentScheduleRepository.AddAppointmentSchedule(appointment);
 
-                                appointmentList.Add(appointment);
+                                appointmentList.Add(appointmentTenToEleven);
                             }
                             if (item.ElevenToTwelve == true)
                             {
-                                appointment.TimeRange = TimeRange.ElevenToTwelve;
-                                appointment.Day = DateTime.Now.AddDays(i).Date;
+                                AppointmentSchedule appointmentElevenToTwelve = new()
+                                {
+                                    TimeRange = TimeRange.ElevenToTwelve,
+                                    Day = DateTime.Now.AddDays(i).Date,
+                                    DoctorId = item.DoctorId
+                                };
+                                //appointment.TimeRange = TimeRange.ElevenToTwelve;
+                                //appointment.Day = DateTime.Now.AddDays(i).Date;
+                                //await _appointmentScheduleRepository.AddAppointmentSchedule(appointment);
 
-                                appointmentList.Add(appointment);
+                                appointmentList.Add(appointmentElevenToTwelve);
 
                             }
                             if (item.TwelveToThirteen == true)
                             {
-                                appointment.TimeRange = TimeRange.TwelveToThirteen;
-                                appointment.Day = DateTime.Now.AddDays(i).Date;
+                                AppointmentSchedule appointmentTwelveToThirteen = new()
+                                {
+                                    TimeRange = TimeRange.TwelveToThirteen,
+                                    Day = DateTime.Now.AddDays(i).Date,
+                                    DoctorId = item.DoctorId
+                                };
 
-                                appointmentList.Add(appointment);
+                                //appointment.TimeRange = TimeRange.TwelveToThirteen;
+                                //appointment.Day = DateTime.Now.AddDays(i).Date;
+                                //await _appointmentScheduleRepository.AddAppointmentSchedule(appointment);
+
+                                appointmentList.Add(appointmentTwelveToThirteen);
                             }
                             if (item.ThirteenToFourteen == true)
                             {
-                                appointment.TimeRange = TimeRange.ThirteenToFourteen;
-                                appointment.Day = DateTime.Now.AddDays(i).Date;
+                                AppointmentSchedule appointmentThirteenToFourteen = new()
+                                {
+                                    TimeRange = TimeRange.ThirteenToFourteen,
+                                    Day = DateTime.Now.AddDays(i).Date,
+                                    DoctorId = item.DoctorId
+                                };
 
-                                appointmentList.Add(appointment);
+                                //appointment.TimeRange = TimeRange.ThirteenToFourteen;
+                                //appointment.Day = DateTime.Now.AddDays(i).Date;
+                                //await _appointmentScheduleRepository.AddAppointmentSchedule(appointment);
+
+                                appointmentList.Add(appointmentThirteenToFourteen);
                             }
                             if (item.FourteenToFifteen == true)
                             {
-                                appointment.TimeRange = TimeRange.FourteenToFifteen;
-                                appointment.Day = DateTime.Now.AddDays(i).Date;
+                                AppointmentSchedule appointmentFourteenToFifteen = new()
+                                {
+                                    TimeRange = TimeRange.ThirteenToFourteen,
+                                    Day = DateTime.Now.AddDays(i).Date,
+                                    DoctorId = item.DoctorId
+                                };
 
-                                appointmentList.Add(appointment);
+                                //appointment.TimeRange = TimeRange.FourteenToFifteen;
+                                //appointment.Day = DateTime.Now.AddDays(i).Date;
+                                //await _appointmentScheduleRepository.AddAppointmentSchedule(appointment);
+
+                                appointmentList.Add(appointmentFourteenToFifteen);
                             }
                             if (item.FifteenToSixteen == true)
                             {
-                                appointment.TimeRange = TimeRange.FifteenToSixteen;
-                                appointment.Day = DateTime.Now.AddDays(i).Date;
 
-                                appointmentList.Add(appointment);
+                                AppointmentSchedule appointmentFifteenToSixteen = new()
+                                {
+                                    TimeRange = TimeRange.FifteenToSixteen,
+                                    Day = DateTime.Now.AddDays(i).Date,
+                                    DoctorId = item.DoctorId
+                                };
+                                //appointment.TimeRange = TimeRange.FifteenToSixteen;
+                                //appointment.Day = DateTime.Now.AddDays(i).Date;
+                                //await _appointmentScheduleRepository.AddAppointmentSchedule(appointment);
+
+                                appointmentList.Add(appointmentFifteenToSixteen);
                             }
                             if (item.SixteenToSeventeen == true)
                             {
-                                appointment.TimeRange = TimeRange.SixteenToSeventeen;
-                                appointment.Day = DateTime.Now.AddDays(i).Date;
 
-                                appointmentList.Add(appointment);
+                                AppointmentSchedule appointmentSixteenToSeventeen = new()
+                                {
+                                    TimeRange = TimeRange.SixteenToSeventeen,
+                                    Day = DateTime.Now.AddDays(i).Date,
+                                    DoctorId = item.DoctorId
+                                };
+
+                                //appointment.TimeRange = TimeRange.SixteenToSeventeen;
+                                //appointment.Day = DateTime.Now.AddDays(i).Date;
+                                //await _appointmentScheduleRepository.AddAppointmentSchedule(appointment);
+
+                                appointmentList.Add(appointmentSixteenToSeventeen);
                             }
                         }
                         break;
@@ -453,65 +558,74 @@ namespace PsychosocialSupportPlatformAPI.Business.AppointmentSchedules
                             {
                                 appointment.TimeRange = TimeRange.EightToNine;
                                 appointment.Day = DateTime.Now.AddDays(i).Date;
+                                await _appointmentScheduleRepository.AddAppointmentSchedule(appointment);
 
-                                appointmentList.Add(appointment);
+                                //appointmentList.Add(appointment);
                             }
                             if (item.NineToTen == true)
                             {
                                 appointment.TimeRange = TimeRange.NineToTen;
                                 appointment.Day = DateTime.Now.AddDays(i).Date;
+                                await _appointmentScheduleRepository.AddAppointmentSchedule(appointment);
 
-                                appointmentList.Add(appointment);
+                                //appointmentList.Add(appointment);
                             }
                             if (item.TenToEleven == true)
                             {
                                 appointment.TimeRange = TimeRange.TenToEleven;
                                 appointment.Day = DateTime.Now.AddDays(i).Date;
+                                await _appointmentScheduleRepository.AddAppointmentSchedule(appointment);
 
-                                appointmentList.Add(appointment);
+                                // appointmentList.Add(appointment);
                             }
                             if (item.ElevenToTwelve == true)
                             {
                                 appointment.TimeRange = TimeRange.ElevenToTwelve;
                                 appointment.Day = DateTime.Now.AddDays(i).Date;
+                                await _appointmentScheduleRepository.AddAppointmentSchedule(appointment);
 
-                                appointmentList.Add(appointment);
+                                //appointmentList.Add(appointment);
 
                             }
                             if (item.TwelveToThirteen == true)
                             {
                                 appointment.TimeRange = TimeRange.TwelveToThirteen;
                                 appointment.Day = DateTime.Now.AddDays(i).Date;
+                                await _appointmentScheduleRepository.AddAppointmentSchedule(appointment);
 
-                                appointmentList.Add(appointment);
+                                //appointmentList.Add(appointment);
                             }
                             if (item.ThirteenToFourteen == true)
                             {
                                 appointment.TimeRange = TimeRange.ThirteenToFourteen;
                                 appointment.Day = DateTime.Now.AddDays(i).Date;
+                                await _appointmentScheduleRepository.AddAppointmentSchedule(appointment);
 
-                                appointmentList.Add(appointment);
+                                //appointmentList.Add(appointment);
                             }
                             if (item.FourteenToFifteen == true)
                             {
                                 appointment.TimeRange = TimeRange.FourteenToFifteen;
                                 appointment.Day = DateTime.Now.AddDays(i).Date;
+                                await _appointmentScheduleRepository.AddAppointmentSchedule(appointment);
 
-                                appointmentList.Add(appointment);
+                                //appointmentList.Add(appointment);
                             }
                             if (item.FifteenToSixteen == true)
                             {
                                 appointment.TimeRange = TimeRange.FifteenToSixteen;
                                 appointment.Day = DateTime.Now.AddDays(i).Date;
+                                await _appointmentScheduleRepository.AddAppointmentSchedule(appointment);
 
-                                appointmentList.Add(appointment);
+                                //appointmentList.Add(appointment);
                             }
                             if (item.SixteenToSeventeen == true)
                             {
                                 appointment.TimeRange = TimeRange.SixteenToSeventeen;
                                 appointment.Day = DateTime.Now.AddDays(i).Date;
+                                await _appointmentScheduleRepository.AddAppointmentSchedule(appointment);
 
-                                appointmentList.Add(appointment);
+                                //appointmentList.Add(appointment);
                             }
                         }
                         break;
@@ -532,65 +646,76 @@ namespace PsychosocialSupportPlatformAPI.Business.AppointmentSchedules
                             {
                                 appointment.TimeRange = TimeRange.EightToNine;
                                 appointment.Day = DateTime.Now.AddDays(i).Date;
+                                await _appointmentScheduleRepository.AddAppointmentSchedule(appointment);
 
-                                appointmentList.Add(appointment);
+                                //appointmentList.Add(appointment);
                             }
                             if (item.NineToTen == true)
                             {
                                 appointment.TimeRange = TimeRange.NineToTen;
                                 appointment.Day = DateTime.Now.AddDays(i).Date;
+                                await _appointmentScheduleRepository.AddAppointmentSchedule(appointment);
 
-                                appointmentList.Add(appointment);
+                                //appointmentList.Add(appointment);
                             }
                             if (item.TenToEleven == true)
                             {
                                 appointment.TimeRange = TimeRange.TenToEleven;
                                 appointment.Day = DateTime.Now.AddDays(i).Date;
+                                await _appointmentScheduleRepository.AddAppointmentSchedule(appointment);
 
-                                appointmentList.Add(appointment);
+                                //appointmentList.Add(appointment);
                             }
                             if (item.ElevenToTwelve == true)
                             {
                                 appointment.TimeRange = TimeRange.ElevenToTwelve;
                                 appointment.Day = DateTime.Now.AddDays(i).Date;
+                                await _appointmentScheduleRepository.AddAppointmentSchedule(appointment);
 
-                                appointmentList.Add(appointment);
+                                //appointmentList.Add(appointment);
 
                             }
                             if (item.TwelveToThirteen == true)
                             {
                                 appointment.TimeRange = TimeRange.TwelveToThirteen;
                                 appointment.Day = DateTime.Now.AddDays(i).Date;
+                                await _appointmentScheduleRepository.AddAppointmentSchedule(appointment);
 
-                                appointmentList.Add(appointment);
+                                //appointmentList.Add(appointment);
                             }
                             if (item.ThirteenToFourteen == true)
                             {
                                 appointment.TimeRange = TimeRange.ThirteenToFourteen;
                                 appointment.Day = DateTime.Now.AddDays(i).Date;
 
-                                appointmentList.Add(appointment);
+                                await _appointmentScheduleRepository.AddAppointmentSchedule(appointment);
+                                //appointmentList.Add(appointment);
                             }
                             if (item.FourteenToFifteen == true)
                             {
                                 appointment.TimeRange = TimeRange.FourteenToFifteen;
                                 appointment.Day = DateTime.Now.AddDays(i).Date;
 
-                                appointmentList.Add(appointment);
+                                await _appointmentScheduleRepository.AddAppointmentSchedule(appointment);
+
+                                //appointmentList.Add(appointment);
                             }
                             if (item.FifteenToSixteen == true)
                             {
                                 appointment.TimeRange = TimeRange.FifteenToSixteen;
                                 appointment.Day = DateTime.Now.AddDays(i).Date;
 
-                                appointmentList.Add(appointment);
+                                await _appointmentScheduleRepository.AddAppointmentSchedule(appointment);
+
+                                //appointmentList.Add(appointment);
                             }
                             if (item.SixteenToSeventeen == true)
                             {
                                 appointment.TimeRange = TimeRange.SixteenToSeventeen;
                                 appointment.Day = DateTime.Now.AddDays(i).Date;
 
-                                appointmentList.Add(appointment);
+                                await _appointmentScheduleRepository.AddAppointmentSchedule(appointment);
+                                // appointmentList.Add(appointment);
                             }
                         }
                         break;

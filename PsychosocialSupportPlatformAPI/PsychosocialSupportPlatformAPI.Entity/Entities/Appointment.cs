@@ -1,4 +1,5 @@
 ﻿using PsychosocialSupportPlatformAPI.Entity.Entities.Users;
+using PsychosocialSupportPlatformAPI.Entity.Enums;
 using System.ComponentModel.DataAnnotations;
 
 namespace PsychosocialSupportPlatformAPI.Entity.Entities
@@ -8,8 +9,8 @@ namespace PsychosocialSupportPlatformAPI.Entity.Entities
 
         [Key]
         public int Id { get; set; }
-        public DateTime Date { get; set; }
-        public TimeSpan Time { get; set; }
+        public DateTime Day { get; set; }
+        public TimeRange TimeRange { get; set; }
         public string URL { get; set; }
         public string DoctorId { get; set; }
         public Doctor Doctor { get; set; }

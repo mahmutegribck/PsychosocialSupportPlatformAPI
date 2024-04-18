@@ -66,9 +66,16 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.AppointmentSchedules
 
         public async Task<AppointmentSchedule?> GetAppointmentScheduleByTimeRange(string doctorId, TimeRange timeRange, DateTime day)
         {
-            return null;
-            //return await _context.AppointmentSchedules.Where(a => a.Status == false && a.DoctorId == doctorId && GetTimeRangeProperty(a.Doctor.DoctorSchedules, timeRange) && a.Date == day).FirstOrDefaultAsync();
+
+            return await _context.AppointmentSchedules.Where(a => a.Status == false && a.DoctorId == doctorId && a.TimeRange == timeRange && a.Day == day).FirstOrDefaultAsync();
         }
+
+        public async Task UpdateAppointmentSchedule(AppointmentSchedule appointmentSchedule)
+        {
+            _context.AppointmentSchedules.Update(appointmentSchedule);
+            await _context.SaveChangesAsync();
+        }
+
         private bool GetTimeRangeProperty(DoctorSchedule schedule, TimeRange timeRange)
         {
             switch (timeRange)
