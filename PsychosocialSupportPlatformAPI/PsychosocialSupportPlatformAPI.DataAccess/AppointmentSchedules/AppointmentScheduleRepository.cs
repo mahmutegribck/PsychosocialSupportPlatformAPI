@@ -33,16 +33,16 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.AppointmentSchedules
 
         public async Task<IEnumerable<object>> GetAllAppointmentSchedules()
         {
-            var mergedSchedules = await _context.AppointmentSchedules.OrderBy(a => a.Day).ThenBy(a => a.TimeRange).Select(a => new 
+            var mergedSchedules = await _context.AppointmentSchedules.OrderBy(a => a.Day).ThenBy(a => a.TimeRange).Select(a => new
             {
                 a.Day,
                 a.TimeRange,
                 a.Status,
                 DoctorName = a.Doctor.Name,
                 DoctorSurname = a.Doctor.Surname,
-                DoctorTitle = a.Doctor.Title 
+                DoctorTitle = a.Doctor.Title
             }).ToListAsync();
-
+            //ToString("yyyy-MM-dd");
             var groupedSchedules = mergedSchedules
                 .GroupBy(a => a.Day)
                 .Select(group => new
@@ -59,7 +59,6 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.AppointmentSchedules
                 });
 
             return groupedSchedules;
-
 
         }
 
