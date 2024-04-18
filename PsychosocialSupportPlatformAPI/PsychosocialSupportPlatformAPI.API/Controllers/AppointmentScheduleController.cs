@@ -21,5 +21,14 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
             await _appointmentScheduleService.AddAppointmentSchedule(addAppointmentScheduleDTO);
             return Ok();
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllAppointmentSchedules()
+        {
+            var allAppointmentSchedules = await _appointmentScheduleService.GetAllAppointmentSchedules();
+            if (!allAppointmentSchedules.Any()) return NotFound();
+
+            return Ok(allAppointmentSchedules);
+        }
     }
 }

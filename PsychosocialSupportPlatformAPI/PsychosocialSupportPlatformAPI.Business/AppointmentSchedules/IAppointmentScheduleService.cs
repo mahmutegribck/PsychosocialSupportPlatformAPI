@@ -7,5 +7,8 @@ namespace PsychosocialSupportPlatformAPI.Business.AppointmentSchedules
     {
         Task AddAppointmentSchedule(AddAppointmentScheduleDTO addAppointmentScheduleDTO);
         Task DeleteAppointmentSchedule(int appointmentScheduleId);
+
+        Task<IEnumerable<IEnumerable<object>>> GetAllAppointmentSchedules();
+
     }
 }

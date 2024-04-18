@@ -44,5 +44,11 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Appointments
             return await _context.Appointments.Where(a => a.Id == appointmentID && a.DoctorId == doctorID).FirstOrDefaultAsync();
 
         }
+
+        public async Task<IEnumerable<Appointment>> GetAllPatientAppointmentsByDoctor(string patientID, string doctorID)
+        {
+            var appointments = await _context.Appointments.Include(a => a.Doctor).Include(a => a.Patient).Include(a => a.AppointmentSchedule).Where(a => a.PatientId == patientID && a.DoctorId == doctorID).ToListAsync();
+            return appointments;
+        }
     }
 }

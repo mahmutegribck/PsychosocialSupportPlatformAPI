@@ -30,6 +30,28 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.AppointmentSchedules
             await _context.SaveChangesAsync();
         }
 
+        public async Task<IEnumerable<IEnumerable<object>>> GetAllAppointmentSchedules()
+        {
+            var mergedSchedules = await _context.AppointmentSchedules.OrderBy(a => a.Day).Select(a => new
+            {
+                a.Day,
+                a.TimeRange,
+                a.Status,
+                a.Doctor.Name,
+                a.Doctor.Surname,
+                a.Doctor.Title
+            }).ToListAsync();
+
+            var groupedSchedules = mergedSchedules
+                .GroupBy(a => a.Day)
+                .Select(group => group.ToList())
+                .ToList();
+
+            return groupedSchedules;
+
+
+        }
+
         public async Task<object> GetAllAppointmentSchedulesByDoctor()
         {
             return await _context.AppointmentSchedules.Select(a => new
