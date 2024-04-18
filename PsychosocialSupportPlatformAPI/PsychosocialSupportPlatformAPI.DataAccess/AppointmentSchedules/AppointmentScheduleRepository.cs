@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PsychosocialSupportPlatformAPI.Entity.Entities;
+using PsychosocialSupportPlatformAPI.Entity.Entities.Users;
 using PsychosocialSupportPlatformAPI.Entity.Enums;
 
 namespace PsychosocialSupportPlatformAPI.DataAccess.AppointmentSchedules
@@ -30,22 +31,32 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.AppointmentSchedules
             await _context.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<IEnumerable<object>>> GetAllAppointmentSchedules()
+        public async Task<IEnumerable<object>> GetAllAppointmentSchedules()
         {
-            var mergedSchedules = await _context.AppointmentSchedules.OrderBy(a => a.Day).Select(a => new
+            var mergedSchedules = await _context.AppointmentSchedules.OrderBy(a => a.Day).ThenBy(a => a.TimeRange).Select(a => new 
             {
                 a.Day,
                 a.TimeRange,
                 a.Status,
-                a.Doctor.Name,
-                a.Doctor.Surname,
-                a.Doctor.Title
+                DoctorName = a.Doctor.Name,
+                DoctorSurname = a.Doctor.Surname,
+                DoctorTitle = a.Doctor.Title 
             }).ToListAsync();
 
             var groupedSchedules = mergedSchedules
                 .GroupBy(a => a.Day)
-                .Select(group => group.ToList())
-                .ToList();
+                .Select(group => new
+                {
+                    Day = group.Key,
+                    Appointments = group.Select(a => new
+                    {
+                        a.TimeRange,
+                        a.Status,
+                        a.DoctorName,
+                        a.DoctorSurname,
+                        a.DoctorTitle
+                    })
+                });
 
             return groupedSchedules;
 

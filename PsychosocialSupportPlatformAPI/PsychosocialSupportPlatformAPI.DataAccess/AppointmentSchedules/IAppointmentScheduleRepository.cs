@@ -9,7 +9,7 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.AppointmentSchedules
         Task AddAppointmentSchedule(AppointmentSchedule appointmentSchedule);
         Task DeleteAppointmentSchedule(AppointmentSchedule appointmentSchedule);
         Task UpdateAppointmentSchedule(AppointmentSchedule appointmentSchedule);
-        Task<IEnumerable<IEnumerable<object>>> GetAllAppointmentSchedules();
+        Task<IEnumerable<object>> GetAllAppointmentSchedules();
 
 
 

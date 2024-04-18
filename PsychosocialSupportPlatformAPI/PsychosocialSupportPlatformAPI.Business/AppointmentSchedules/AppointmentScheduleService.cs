@@ -735,7 +735,7 @@ namespace PsychosocialSupportPlatformAPI.Business.AppointmentSchedules
             throw new NotImplementedException();
         }
 
-        public async Task<IEnumerable<IEnumerable<object>>> GetAllAppointmentSchedules()
+        public async Task<IEnumerable<object>> GetAllAppointmentSchedules()
         {
             return await _appointmentScheduleRepository.GetAllAppointmentSchedules();
         }
