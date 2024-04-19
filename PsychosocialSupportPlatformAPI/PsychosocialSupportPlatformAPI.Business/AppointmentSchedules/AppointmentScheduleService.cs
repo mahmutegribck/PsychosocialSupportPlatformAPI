@@ -77,9 +77,9 @@ namespace PsychosocialSupportPlatformAPI.Business.AppointmentSchedules
             throw new NotImplementedException();
         }
 
-        public async Task<IEnumerable<object>> GetAllAppointmentSchedules()
+        public async Task<IEnumerable<object>> GetAllAppointmentSchedules(DateTime day)
         {
-            return await _appointmentScheduleRepository.GetAllAppointmentSchedules();
+            return await _appointmentScheduleRepository.GetAllAppointmentSchedules(day);
         }
 
         private async Task GetAppointmentSchedules(IEnumerable<DoctorSchedule> doctorSchedules, DayOfWeek day, int index)
