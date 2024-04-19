@@ -33,21 +33,27 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.AppointmentSchedules
 
         public async Task<IEnumerable<object>> GetAllAppointmentSchedules()
         {
-            var mergedSchedules = await _context.AppointmentSchedules.OrderBy(a => a.Day).ThenBy(a => a.TimeRange).Select(a => new
-            {
-                a.Day,
-                a.TimeRange,
-                a.Status,
-                DoctorName = a.Doctor.Name,
-                DoctorSurname = a.Doctor.Surname,
-                DoctorTitle = a.Doctor.Title
-            }).ToListAsync();
-            //ToString("yyyy-MM-dd");
+            var mergedSchedules = await _context.AppointmentSchedules
+        .OrderBy(a => a.Day)
+        .ThenBy(a => a.TimeRange)
+        .Select(a => new
+        {
+            a.Day,
+            a.TimeRange,
+            a.Status,
+            DoctorID = a.DoctorId,
+            DoctorName = a.Doctor.Name,
+            DoctorSurname = a.Doctor.Surname,
+            DoctorTitle = a.Doctor.Title
+        })
+        .ToListAsync();
+
             var groupedSchedules = mergedSchedules
-                .GroupBy(a => a.Day)
+                .GroupBy(a => new { a.Day, a.DoctorID })
                 .Select(group => new
                 {
-                    Day = group.Key,
+                    group.Key.Day,
+                    group.Key.DoctorID,
                     Appointments = group.Select(a => new
                     {
                         a.TimeRange,
@@ -55,6 +61,23 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.AppointmentSchedules
                         a.DoctorName,
                         a.DoctorSurname,
                         a.DoctorTitle
+                    })
+                })
+                .GroupBy(a => a.Day)
+                .Select(group => new
+                {
+                    Day = group.Key,
+                    Doctors = group.Select(d => new
+                    {
+                        DoctorID = d.DoctorID,
+                        DoctorName = d.Appointments.FirstOrDefault()?.DoctorName,
+                        DoctorSurname = d.Appointments.FirstOrDefault()?.DoctorSurname,
+                        DoctorTitle = d.Appointments.FirstOrDefault()?.DoctorTitle,
+                        Appointments = d.Appointments.Select(a => new
+                        {
+                            a.TimeRange,
+                            a.Status
+                        })
                     })
                 });
 
