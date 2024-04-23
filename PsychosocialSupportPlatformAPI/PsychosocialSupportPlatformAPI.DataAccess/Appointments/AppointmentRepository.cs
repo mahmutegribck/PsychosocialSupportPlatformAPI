@@ -14,13 +14,13 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Appointments
         }
         public async Task CreatePatientAppointment(Appointment appointment)
         {
-            await _context.Appointments.AddAsync(appointment);
+            //await _context.Appointments.AddAsync(appointment);
             await _context.SaveChangesAsync();
         }
 
         public async Task DeletePatientAppointment(Appointment appointment)
         {
-            _context.Appointments.Remove(appointment);
+            //_context.Appointments.Remove(appointment);
             await _context.SaveChangesAsync();
         }
 

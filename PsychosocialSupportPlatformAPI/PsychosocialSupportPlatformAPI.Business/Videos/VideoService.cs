@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using PsychosocialSupportPlatformAPI.Business.Videos.DTOs;
 using PsychosocialSupportPlatformAPI.DataAccess.Videos;
-using PsychosocialSupportPlatformAPI.Entity.Entities;
+using PsychosocialSupportPlatformAPI.Entity.Entities.Videos;
 
 namespace PsychosocialSupportPlatformAPI.Business.Videos
 {

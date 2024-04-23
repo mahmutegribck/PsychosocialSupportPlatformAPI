@@ -35,7 +35,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Appointments
 
             var patientAppointment = _mapper.Map<Appointment>(createAppointmentDTO);
             //patientAppointment.AppointmentScheduleId = existingAppointmentSchedule.Id;
-            patientAppointment.URL = "deneme";
+
             //patientAppointment.Day = existingAppointmentSchedule.Day.Date;
             //patientAppointment.TimeRange = existingAppointmentSchedule.TimeRange;
             await _appointmentRepository.CreatePatientAppointment(patientAppointment);

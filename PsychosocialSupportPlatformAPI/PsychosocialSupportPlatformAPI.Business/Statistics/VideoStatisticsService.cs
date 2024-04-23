@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using PsychosocialSupportPlatformAPI.Business.Statistics.DTOs;
 using PsychosocialSupportPlatformAPI.DataAccess.Statistics;
-using PsychosocialSupportPlatformAPI.Entity.Entities;
+using PsychosocialSupportPlatformAPI.Entity.Entities.Videos;
 
 namespace PsychosocialSupportPlatformAPI.Business.Statistics
 {

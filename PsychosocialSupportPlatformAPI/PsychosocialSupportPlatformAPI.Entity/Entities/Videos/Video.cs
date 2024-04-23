@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace PsychosocialSupportPlatformAPI.Entity.Entities
+namespace PsychosocialSupportPlatformAPI.Entity.Entities.Videos
 {
     public class Video
     {
