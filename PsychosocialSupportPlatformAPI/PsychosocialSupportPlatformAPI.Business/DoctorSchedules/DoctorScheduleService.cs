@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using PsychosocialSupportPlatformAPI.Business.DoctorSchedules.DTOs;
 using PsychosocialSupportPlatformAPI.DataAccess.DoctorSchedules;
-using PsychosocialSupportPlatformAPI.Entity.Entities;
+using PsychosocialSupportPlatformAPI.Entity.Entities.Appointments;
 using PsychosocialSupportPlatformAPI.Entity.Enums;
 
 namespace PsychosocialSupportPlatformAPI.Business.DoctorSchedules
@@ -20,13 +20,13 @@ namespace PsychosocialSupportPlatformAPI.Business.DoctorSchedules
         {
             foreach (var createDoctorScheduleDTO in createDoctorScheduleDTOs)
             {
-                var doctorSchedule = _mapper.Map<DoctorSchedule>(createDoctorScheduleDTO);
+                DoctorSchedule doctorSchedule = _mapper.Map<DoctorSchedule>(createDoctorScheduleDTO);
                 doctorSchedule.DoctorId = currentUserID;
 
-                var existingSchedule = await _doctorScheduleRepository.GetDoctorSchedule(currentUserID, doctorSchedule);
+                DoctorSchedule existingSchedule = await _doctorScheduleRepository.GetDoctorScheduleByDay(currentUserID, doctorSchedule.Day);
                 if (existingSchedule != null) throw new Exception("Girilen Gune Ait Takvim Kaydi Mevcut.");
 
-                if (createDoctorScheduleDTO.Day < DayOfWeek.Sunday || createDoctorScheduleDTO.Day > DayOfWeek.Saturday)
+                if (createDoctorScheduleDTO.Day < DateTime.Now.Date || createDoctorScheduleDTO.Day > DateTime.Now.Date.AddDays(14))
                     throw new Exception();
 
 
@@ -72,19 +72,29 @@ namespace PsychosocialSupportPlatformAPI.Business.DoctorSchedules
             }
         }
 
-        public async Task DeleteDoctorSchedule(int doctorScheduleId)
+        public async Task UpdateDoctorSchedule(UpdateDoctorScheduleDTO updateDoctorScheduleDTO, string currentUserID)
         {
-            await _doctorScheduleRepository.DeleteDoctorSchedule(doctorScheduleId);
+            DoctorSchedule doctorSchedule = _mapper.Map<DoctorSchedule>(updateDoctorScheduleDTO);
+            doctorSchedule.DoctorId = currentUserID;
+
+            DoctorSchedule existingSchedule = await _doctorScheduleRepository.GetDoctorScheduleByDay(currentUserID, doctorSchedule.Day);
+            if (existingSchedule == null) throw new Exception("Girilen Gune Ait Takvim Kaydi Mevcut Degil.");
+
+            if (updateDoctorScheduleDTO.Day < DateTime.Now.Date || updateDoctorScheduleDTO.Day > DateTime.Now.Date.AddDays(14))
+                throw new Exception();
+
+            await _doctorScheduleRepository.UpdateDoctorSchedule(doctorSchedule);
         }
 
-        public async Task<IEnumerable<GetDoctorScheduleDTO>> GetAllDoctorSchedule()
+        public async Task DeleteDoctorSchedule(string doctorId, int scheduleId)
         {
-            return _mapper.Map<List<GetDoctorScheduleDTO>>(await _doctorScheduleRepository.GetAllDoctorSchedule());
+            DoctorSchedule doctorSchedule = await _doctorScheduleRepository.GetDoctorScheduleById(doctorId, scheduleId) ?? throw new ArgumentNullException();
+            await _doctorScheduleRepository.DeleteDoctorSchedule(doctorSchedule);
         }
 
-        public async Task<IEnumerable<GetDoctorScheduleDTO>> GetAllDoctorScheduleById(string doctorId)
+        public async Task<GetDoctorScheduleDTO> GetDoctorScheduleByDay(string doctorId, DateTime day)
         {
-            return _mapper.Map<List<GetDoctorScheduleDTO>>(await _doctorScheduleRepository.GetAllDoctorScheduleById(doctorId));
+            return _mapper.Map<GetDoctorScheduleDTO>(await _doctorScheduleRepository.GetDoctorScheduleByDay(doctorId, day));
         }
 
         public async Task<GetDoctorScheduleDTO> GetDoctorScheduleById(string doctorId, int scheduleId)
@@ -92,11 +102,14 @@ namespace PsychosocialSupportPlatformAPI.Business.DoctorSchedules
             return _mapper.Map<GetDoctorScheduleDTO>(await _doctorScheduleRepository.GetDoctorScheduleById(doctorId, scheduleId));
         }
 
-        public async Task UpdateDoctorSchedule(UpdateDoctorScheduleDTO updateDoctorScheduleDTO, string currentUserID)
+        public async Task<IEnumerable<GetDoctorScheduleDTO>> GetAllDoctorScheduleById(string doctorId)
         {
-            var doctorSchedule = _mapper.Map<DoctorSchedule>(updateDoctorScheduleDTO);
-            doctorSchedule.DoctorId = currentUserID;
-            await _doctorScheduleRepository.UpdateDoctorSchedule(doctorSchedule);
+            return _mapper.Map<List<GetDoctorScheduleDTO>>(await _doctorScheduleRepository.GetAllDoctorScheduleById(doctorId));
+        }
+
+        public async Task<IEnumerable<GetDoctorScheduleDTO>> GetAllDoctorSchedule()
+        {
+            return _mapper.Map<List<GetDoctorScheduleDTO>>(await _doctorScheduleRepository.GetAllDoctorSchedule());
         }
     }
 }

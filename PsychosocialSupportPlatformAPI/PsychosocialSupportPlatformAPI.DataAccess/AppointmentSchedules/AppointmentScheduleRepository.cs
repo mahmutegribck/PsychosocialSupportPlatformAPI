@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using PsychosocialSupportPlatformAPI.Entity.Entities;
+using PsychosocialSupportPlatformAPI.Entity.Entities.Appointments;
 using PsychosocialSupportPlatformAPI.Entity.Entities.Users;
 using PsychosocialSupportPlatformAPI.Entity.Enums;
 
@@ -90,27 +90,27 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.AppointmentSchedules
             return await _context.AppointmentSchedules.Select(a => new
             {
 
-                Doctor = a.Appointments.Select(d => new
-                {
-                    DoctorId = d.DoctorId,
-                    DoctorName = d.Doctor.Name,
-                    DoctorSurname = d.Doctor.Surname,
-                    DoctorTitle = d.Doctor.Title,
-                    DoctorProfileImage = d.Doctor.ProfileImageUrl,
-                    DoctorSchedule = a.Doctor.DoctorSchedules.Select(ds => new
-                    {
-                        DoctorScheduleId = ds.Id,
-                        ds.EightToNine,
-                        ds.NineToTen,
-                        ds.TenToEleven,
-                        ds.ElevenToTwelve,
-                        ds.TwelveToThirteen,
-                        ds.ThirteenToFourteen,
-                        ds.FourteenToFifteen,
-                        ds.FifteenToSixteen,
-                        ds.SixteenToSeventeen
-                    })
-                }),
+                //Doctor = a.Appointments.Select(d => new
+                //{
+                //    DoctorId = d.DoctorId,
+                //    DoctorName = d.Doctor.Name,
+                //    DoctorSurname = d.Doctor.Surname,
+                //    DoctorTitle = d.Doctor.Title,
+                //    DoctorProfileImage = d.Doctor.ProfileImageUrl,
+                //    DoctorSchedule = a.Doctor.DoctorSchedules.Select(ds => new
+                //    {
+                //        DoctorScheduleId = ds.Id,
+                //        ds.EightToNine,
+                //        ds.NineToTen,
+                //        ds.TenToEleven,
+                //        ds.ElevenToTwelve,
+                //        ds.TwelveToThirteen,
+                //        ds.ThirteenToFourteen,
+                //        ds.FourteenToFifteen,
+                //        ds.FifteenToSixteen,
+                //        ds.SixteenToSeventeen
+                //    })
+                //}),
             }).ToListAsync();
         }
 

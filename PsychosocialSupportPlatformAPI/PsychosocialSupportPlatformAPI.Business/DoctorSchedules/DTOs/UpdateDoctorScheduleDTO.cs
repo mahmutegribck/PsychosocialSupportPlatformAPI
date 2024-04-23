@@ -6,7 +6,7 @@ namespace PsychosocialSupportPlatformAPI.Business.DoctorSchedules.DTOs
     public class UpdateDoctorScheduleDTO
     {
         public int Id { get; set; }
-        public DayOfWeek Day { get; set; }
+        public DateTime Day { get; set; }
 
         [DefaultValue(false)]
         public bool EightToNine { get; set; }

@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using PsychosocialSupportPlatformAPI.Entity.Entities;
+using PsychosocialSupportPlatformAPI.Entity.Entities.Appointments;
 using PsychosocialSupportPlatformAPI.Entity.Enums;
 
 namespace PsychosocialSupportPlatformAPI.DataAccess.DoctorSchedules
@@ -17,33 +17,6 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.DoctorSchedules
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteDoctorSchedule(int doctorScheduleId)
-        {
-            var deleteDoctorSchedule = await _context.DoctorSchedules.FindAsync(doctorScheduleId) ?? throw new Exception();
-            _context.DoctorSchedules.Remove(deleteDoctorSchedule);
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task<IEnumerable<DoctorSchedule>> GetAllDoctorSchedule()
-        {
-            return await _context.DoctorSchedules.ToListAsync();
-        }
-
-        public async Task<IEnumerable<DoctorSchedule>> GetAllDoctorScheduleById(string doctorId)
-        {
-            return await _context.DoctorSchedules.AsNoTracking().Where(s => s.DoctorId == doctorId).ToListAsync();
-        }
-
-        public async Task<DoctorSchedule> GetDoctorSchedule(string doctorId, DoctorSchedule doctorSchedule)
-        {
-            return await _context.DoctorSchedules.Where(s => s.DoctorId == doctorId && s.Day == doctorSchedule.Day).FirstOrDefaultAsync();
-        }
-
-        public async Task<DoctorSchedule> GetDoctorScheduleById(string doctorId, int scheduleId)
-        {
-            return await _context.DoctorSchedules.Where(s => s.DoctorId == doctorId && s.Id == scheduleId).FirstOrDefaultAsync();
-        }
-
         public async Task UpdateDoctorSchedule(DoctorSchedule doctorSchedule)
         {
             var updateDoctorSchedule = await _context.DoctorSchedules.AsNoTracking().Where(s => s.Id == doctorSchedule.Id && s.DoctorId == doctorSchedule.DoctorId).FirstOrDefaultAsync() ?? throw new Exception();
@@ -51,10 +24,37 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.DoctorSchedules
             await _context.SaveChangesAsync();
         }
 
-        public async Task<DoctorSchedule> GetDoctorScheduleByTimeRange(string doctorId, TimeRange timeRange, DayOfWeek day)
+        public async Task DeleteDoctorSchedule(DoctorSchedule doctorSchedule)
         {
-            return await _context.DoctorSchedules.Where(s => s.DoctorId == doctorId && GetTimeRangeProperty(s, timeRange) && s.Day == day).FirstOrDefaultAsync();
+            _context.DoctorSchedules.Remove(doctorSchedule);
+            await _context.SaveChangesAsync();
         }
+
+        public async Task<DoctorSchedule> GetDoctorScheduleByDay(string doctorId, DateTime day)
+        {
+            return await _context.DoctorSchedules.Where(s => s.DoctorId == doctorId && s.Day == day).FirstOrDefaultAsync();
+        }
+
+        public async Task<DoctorSchedule> GetDoctorScheduleById(string doctorId, int scheduleId)
+        {
+            return await _context.DoctorSchedules.Where(s => s.DoctorId == doctorId && s.Id == scheduleId).FirstOrDefaultAsync();
+        }
+
+        public async Task<DoctorSchedule> GetDoctorScheduleByTimeRange(string doctorId, TimeRange timeRange, DateTime day)
+        {
+            return await _context.DoctorSchedules.Where(s => s.DoctorId == doctorId && s.Day == day).FirstOrDefaultAsync();
+        }
+
+        public async Task<IEnumerable<DoctorSchedule>> GetAllDoctorScheduleById(string doctorId)
+        {
+            return await _context.DoctorSchedules.AsNoTracking().Where(s => s.DoctorId == doctorId).ToListAsync();
+        }
+
+        public async Task<IEnumerable<DoctorSchedule>> GetAllDoctorSchedule()
+        {
+            return await _context.DoctorSchedules.ToListAsync();
+        }
+
 
         private bool GetTimeRangeProperty(DoctorSchedule schedule, TimeRange timeRange)
         {

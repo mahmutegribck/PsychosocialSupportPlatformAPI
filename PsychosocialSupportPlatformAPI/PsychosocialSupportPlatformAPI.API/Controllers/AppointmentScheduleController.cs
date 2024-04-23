@@ -23,7 +23,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllAppointmentSchedules([FromRoute] string date)
+        public async Task<IActionResult> GetAllAppointmentSchedules([FromQuery] string date)
         {
             var allAppointmentSchedules = await _appointmentScheduleService.GetAllAppointmentSchedules(DateTime.Parse(date));
             if (!allAppointmentSchedules.Any()) return NotFound();

@@ -13,6 +13,7 @@ using PsychosocialSupportPlatformAPI.Business.Users.DTOs.DoctorDTOs;
 using PsychosocialSupportPlatformAPI.Business.Users.DTOs.PatientDTOs;
 using PsychosocialSupportPlatformAPI.Business.Videos.DTOs;
 using PsychosocialSupportPlatformAPI.Entity.Entities;
+using PsychosocialSupportPlatformAPI.Entity.Entities.Appointments;
 using PsychosocialSupportPlatformAPI.Entity.Entities.Messages;
 using PsychosocialSupportPlatformAPI.Entity.Entities.Users;
 

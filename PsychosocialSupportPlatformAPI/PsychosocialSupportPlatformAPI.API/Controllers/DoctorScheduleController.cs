@@ -18,7 +18,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateDoctorSchedule([FromBody] CreateDoctorScheduleDTO[] createDoctorScheduleDTOs)
         {
-            var currentUserID = User.Identity?.Name;
+            string? currentUserID = User.Identity?.Name;
             if (currentUserID == null) return Unauthorized();
             await _doctorScheduleService.CreateDoctorSchedule(createDoctorScheduleDTOs, currentUserID);
             return Ok();
@@ -28,7 +28,9 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
         [HttpDelete]
         public async Task<IActionResult> DeleteDoctorSchedule([FromQuery] int doctorScheduleId)
         {
-            await _doctorScheduleService.DeleteDoctorSchedule(doctorScheduleId);
+            string? currentUserID = User.Identity?.Name;
+            if (currentUserID == null) return Unauthorized();
+            await _doctorScheduleService.DeleteDoctorSchedule(currentUserID, doctorScheduleId);
             return Ok();
         }
 
@@ -45,9 +47,9 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetDoctorSchedule()
         {
-            var currentUserID = User.Identity?.Name;
+            string? currentUserID = User.Identity?.Name;
             if (currentUserID == null) return Unauthorized();
-            var allDoctorSchedule = await _doctorScheduleService.GetAllDoctorScheduleById(currentUserID);
+            IEnumerable<GetDoctorScheduleDTO> allDoctorSchedule = await _doctorScheduleService.GetAllDoctorScheduleById(currentUserID);
             if (allDoctorSchedule == null) return NotFound();
             return Ok(allDoctorSchedule);
         }
@@ -56,9 +58,9 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetDoctorScheduleById([FromQuery] int scheduleId)
         {
-            var currentUserID = User.Identity?.Name;
+            string? currentUserID = User.Identity?.Name;
             if (currentUserID == null) return Unauthorized();
-            var doctorSchedule = await _doctorScheduleService.GetDoctorScheduleById(currentUserID, scheduleId);
+            GetDoctorScheduleDTO doctorSchedule = await _doctorScheduleService.GetDoctorScheduleById(currentUserID, scheduleId);
             if (doctorSchedule == null) return NotFound();
             return Ok(doctorSchedule);
         }
@@ -67,7 +69,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
         [HttpPut]
         public async Task<IActionResult> UpdateDoctorSchedule([FromBody] UpdateDoctorScheduleDTO updateDoctorScheduleDTO)
         {
-            var currentUserID = User.Identity?.Name;
+            string? currentUserID = User.Identity?.Name;
             if (currentUserID == null) return Unauthorized();
             await _doctorScheduleService.UpdateDoctorSchedule(updateDoctorScheduleDTO, currentUserID);
             return Ok();

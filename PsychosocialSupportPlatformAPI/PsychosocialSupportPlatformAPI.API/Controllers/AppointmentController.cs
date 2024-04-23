@@ -2,7 +2,7 @@
 using PsychosocialSupportPlatformAPI.Business.Appointments;
 using PsychosocialSupportPlatformAPI.Business.Appointments.DTOs;
 using PsychosocialSupportPlatformAPI.DataAccess.AppointmentSchedules;
-using PsychosocialSupportPlatformAPI.Entity.Entities;
+using PsychosocialSupportPlatformAPI.Entity.Entities.Appointments;
 
 namespace PsychosocialSupportPlatformAPI.API.Controllers
 {

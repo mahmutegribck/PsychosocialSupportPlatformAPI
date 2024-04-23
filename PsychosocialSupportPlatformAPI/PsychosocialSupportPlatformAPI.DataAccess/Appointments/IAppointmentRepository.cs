@@ -1,4 +1,4 @@
-﻿using PsychosocialSupportPlatformAPI.Entity.Entities;
+﻿using PsychosocialSupportPlatformAPI.Entity.Entities.Appointments;
 
 namespace PsychosocialSupportPlatformAPI.DataAccess.Appointments
 {

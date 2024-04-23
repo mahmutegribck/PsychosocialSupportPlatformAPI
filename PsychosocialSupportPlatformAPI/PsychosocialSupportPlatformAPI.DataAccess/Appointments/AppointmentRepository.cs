@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using PsychosocialSupportPlatformAPI.Entity.Entities;
+using PsychosocialSupportPlatformAPI.Entity.Entities.Appointments;
 
 namespace PsychosocialSupportPlatformAPI.DataAccess.Appointments
 {
@@ -26,29 +26,38 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Appointments
 
         public async Task<IEnumerable<Appointment>> GetAllDoctorAppointments(string doctorID)
         {
-            return await _context.Appointments.Where(a => a.DoctorId == doctorID).ToListAsync();
+            return null;
+            //return await _context.Appointments.Where(a => a.DoctorId == doctorID).ToListAsync();
         }
 
         public async Task<IEnumerable<Appointment>> GetAllPatientAppointments(string patientID)
         {
-            return await _context.Appointments.Where(a => a.PatientId == patientID).ToListAsync();
+            return null;
+
+            //return await _context.Appointments.Where(a => a.PatientId == patientID).ToListAsync();
         }
 
         public async Task<Appointment> GetPatientAppointmentById(int appointmentID, string patientID)
         {
-            return await _context.Appointments.Where(a => a.Id == appointmentID && a.PatientId == patientID).FirstOrDefaultAsync();
+            return null;
+
+            //return await _context.Appointments.Where(a => a.Id == appointmentID && a.PatientId == patientID).FirstOrDefaultAsync();
         }
 
         public async Task<Appointment> GetDoctorAppointmentById(int appointmentID, string doctorID)
         {
-            return await _context.Appointments.Where(a => a.Id == appointmentID && a.DoctorId == doctorID).FirstOrDefaultAsync();
+            return null;
+
+            //return await _context.Appointments.Where(a => a.Id == appointmentID && a.DoctorId == doctorID).FirstOrDefaultAsync();
 
         }
 
         public async Task<IEnumerable<Appointment>> GetAllPatientAppointmentsByDoctor(string patientID, string doctorID)
         {
-            var appointments = await _context.Appointments.Include(a => a.Doctor).Include(a => a.Patient).Include(a => a.AppointmentSchedule).Where(a => a.PatientId == patientID && a.DoctorId == doctorID).ToListAsync();
-            return appointments;
+            return null;
+
+            //var appointments = await _context.Appointments.Include(a => a.Doctor).Include(a => a.Patient).Include(a => a.AppointmentSchedule).Where(a => a.PatientId == patientID && a.DoctorId == doctorID).ToListAsync();
+            //return appointments;
         }
     }
 }

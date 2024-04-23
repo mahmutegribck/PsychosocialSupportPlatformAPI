@@ -2,7 +2,7 @@
 using PsychosocialSupportPlatformAPI.Business.AppointmentSchedules.DTOs;
 using PsychosocialSupportPlatformAPI.DataAccess.AppointmentSchedules;
 using PsychosocialSupportPlatformAPI.DataAccess.DoctorSchedules;
-using PsychosocialSupportPlatformAPI.Entity.Entities;
+using PsychosocialSupportPlatformAPI.Entity.Entities.Appointments;
 using PsychosocialSupportPlatformAPI.Entity.Enums;
 
 namespace PsychosocialSupportPlatformAPI.Business.AppointmentSchedules
@@ -28,47 +28,47 @@ namespace PsychosocialSupportPlatformAPI.Business.AppointmentSchedules
 
             for (int i = 0; i < 14; i++)
             {
-                switch ((DayOfWeek)(((int)startDay + i) % 7))
-                {
+                //switch ((DayOfWeek)(((int)startDay + i) % 7))
+                //{
 
-                    case DayOfWeek.Sunday:
-                        await GetAppointmentSchedules(doctorSchedule, DayOfWeek.Sunday, i);
-                        break;
-
-
-                    case DayOfWeek.Monday:
-                        await GetAppointmentSchedules(doctorSchedule, DayOfWeek.Monday, i);
-                        break;
+                //    case DayOfWeek.Sunday:
+                //        await GetAppointmentSchedules(doctorSchedule, DayOfWeek.Sunday, i);
+                //        break;
 
 
-                    case DayOfWeek.Tuesday:
-                        await GetAppointmentSchedules(doctorSchedule, DayOfWeek.Tuesday, i);
-                        break;
+                //    case DayOfWeek.Monday:
+                //        await GetAppointmentSchedules(doctorSchedule, DayOfWeek.Monday, i);
+                //        break;
 
 
-                    case DayOfWeek.Wednesday:
-                        await GetAppointmentSchedules(doctorSchedule, DayOfWeek.Wednesday, i);
-                        break;
+                //    case DayOfWeek.Tuesday:
+                //        await GetAppointmentSchedules(doctorSchedule, DayOfWeek.Tuesday, i);
+                //        break;
 
 
-                    case DayOfWeek.Thursday:
-                        await GetAppointmentSchedules(doctorSchedule, DayOfWeek.Thursday, i);
-                        break;
+                //    case DayOfWeek.Wednesday:
+                //        await GetAppointmentSchedules(doctorSchedule, DayOfWeek.Wednesday, i);
+                //        break;
 
 
-                    case DayOfWeek.Friday:
-                        await GetAppointmentSchedules(doctorSchedule, DayOfWeek.Friday, i);
-                        break;
+                //    case DayOfWeek.Thursday:
+                //        await GetAppointmentSchedules(doctorSchedule, DayOfWeek.Thursday, i);
+                //        break;
 
 
-                    case DayOfWeek.Saturday:
-                        await GetAppointmentSchedules(doctorSchedule, DayOfWeek.Saturday, i);
-                        break;
+                //    case DayOfWeek.Friday:
+                //        await GetAppointmentSchedules(doctorSchedule, DayOfWeek.Friday, i);
+                //        break;
 
-                    default:
-                        return;
 
-                }
+                //    case DayOfWeek.Saturday:
+                //        await GetAppointmentSchedules(doctorSchedule, DayOfWeek.Saturday, i);
+                //        break;
+
+                //    default:
+                //        return;
+
+                //}
             }
         }
 
@@ -82,7 +82,7 @@ namespace PsychosocialSupportPlatformAPI.Business.AppointmentSchedules
             return await _appointmentScheduleRepository.GetAllAppointmentSchedules(day);
         }
 
-        private async Task GetAppointmentSchedules(IEnumerable<DoctorSchedule> doctorSchedules, DayOfWeek day, int index)
+        private async Task GetAppointmentSchedules(IEnumerable<DoctorSchedule> doctorSchedules, DateTime day, int index)
         {
             List<AppointmentSchedule> appointmentList = new List<AppointmentSchedule>();
 

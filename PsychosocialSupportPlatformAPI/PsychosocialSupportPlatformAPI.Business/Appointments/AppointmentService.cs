@@ -3,7 +3,7 @@ using PsychosocialSupportPlatformAPI.Business.Appointments.DTOs;
 using PsychosocialSupportPlatformAPI.DataAccess.Appointments;
 using PsychosocialSupportPlatformAPI.DataAccess.AppointmentSchedules;
 using PsychosocialSupportPlatformAPI.DataAccess.DoctorSchedules;
-using PsychosocialSupportPlatformAPI.Entity.Entities;
+using PsychosocialSupportPlatformAPI.Entity.Entities.Appointments;
 
 namespace PsychosocialSupportPlatformAPI.Business.Appointments
 {
@@ -34,10 +34,10 @@ namespace PsychosocialSupportPlatformAPI.Business.Appointments
             await _appointmentScheduleRepository.UpdateAppointmentSchedule(existingAppointmentSchedule);
 
             var patientAppointment = _mapper.Map<Appointment>(createAppointmentDTO);
-            patientAppointment.AppointmentScheduleId = existingAppointmentSchedule.Id;
+            //patientAppointment.AppointmentScheduleId = existingAppointmentSchedule.Id;
             patientAppointment.URL = "deneme";
-            patientAppointment.Day = existingAppointmentSchedule.Day.Date;
-            patientAppointment.TimeRange = existingAppointmentSchedule.TimeRange;
+            //patientAppointment.Day = existingAppointmentSchedule.Day.Date;
+            //patientAppointment.TimeRange = existingAppointmentSchedule.TimeRange;
             await _appointmentRepository.CreatePatientAppointment(patientAppointment);
         }
 

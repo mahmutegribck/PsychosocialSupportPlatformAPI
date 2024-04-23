@@ -1,4 +1,4 @@
-﻿using PsychosocialSupportPlatformAPI.Entity.Entities;
+﻿using PsychosocialSupportPlatformAPI.Entity.Entities.Appointments;
 using PsychosocialSupportPlatformAPI.Entity.Enums;
 
 namespace PsychosocialSupportPlatformAPI.DataAccess.AppointmentSchedules

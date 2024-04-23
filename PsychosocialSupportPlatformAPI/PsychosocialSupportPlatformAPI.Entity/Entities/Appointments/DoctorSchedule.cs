@@ -1,18 +1,14 @@
 ﻿using PsychosocialSupportPlatformAPI.Entity.Entities.Users;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace PsychosocialSupportPlatformAPI.Entity.Entities
+namespace PsychosocialSupportPlatformAPI.Entity.Entities.Appointments
 {
     public class DoctorSchedule
     {
-        public DoctorSchedule()
-        {
-            AppointmentSchedules = new HashSet<AppointmentSchedule>();
-        }
-
         [Key]
         public int Id { get; set; }
-        public DayOfWeek Day { get; set; }
+        public DateTime Day { get; set; }
         public bool EightToNine { get; set; }
         public bool NineToTen { get; set; }
         public bool TenToEleven { get; set; }
@@ -22,10 +18,9 @@ namespace PsychosocialSupportPlatformAPI.Entity.Entities
         public bool FourteenToFifteen { get; set; }
         public bool FifteenToSixteen { get; set; }
         public bool SixteenToSeventeen { get; set; }
+
         public required string DoctorId { get; set; }
         public required Doctor Doctor { get; set; }
-
-        public ICollection<AppointmentSchedule> AppointmentSchedules { get; set; }
 
     }
 }

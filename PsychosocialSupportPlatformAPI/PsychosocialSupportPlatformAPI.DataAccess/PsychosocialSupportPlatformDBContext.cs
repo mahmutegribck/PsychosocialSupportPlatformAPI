@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using PsychosocialSupportPlatformAPI.DataAccess.DataSeeding;
 using PsychosocialSupportPlatformAPI.Entity.Entities;
+using PsychosocialSupportPlatformAPI.Entity.Entities.Appointments;
 using PsychosocialSupportPlatformAPI.Entity.Entities.Messages;
 using PsychosocialSupportPlatformAPI.Entity.Entities.Users;
 
@@ -15,7 +16,6 @@ namespace PsychosocialSupportPlatformAPI.DataAccess
         public DbSet<MessageOutbox> MessageOutboxes { get; set; }
         public DbSet<Patient> Patients { get; set; }
         public DbSet<Doctor> Doctors { get; set; }
-        public DbSet<Appointment> Appointments { get; set; }
         public DbSet<Video> Videos { get; set; }
         public DbSet<VideoStatistics> VideoStatistics { get; set; }
         public DbSet<DoctorSchedule> DoctorSchedules { get; set; }
@@ -43,18 +43,22 @@ namespace PsychosocialSupportPlatformAPI.DataAccess
                 .HasForeignKey(m => m.ReceiverId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            builder.Entity<Appointment>()
+            builder.Entity<AppointmentSchedule>()
                 .HasOne(a => a.Doctor)
-                .WithMany(d => d.Appointments)
+                .WithMany(d => d.AppointmentSchedules)
                 .HasForeignKey(a => a.DoctorId)
-                .OnDelete(DeleteBehavior.ClientCascade);
+                .OnDelete(DeleteBehavior.Cascade);
 
-            builder.Entity<Appointment>()
+            builder.Entity<AppointmentSchedule>()
                .HasOne(a => a.Patient)
-               .WithMany(p => p.Appointments)
+               .WithMany(p => p.AppointmentSchedules)
                .HasForeignKey(a => a.PatientId)
-               .OnDelete(DeleteBehavior.ClientCascade);
+               .OnDelete(DeleteBehavior.ClientSetNull);
 
+            builder.Entity<Doctor>()
+               .HasMany(d => d.DoctorSchedules) 
+               .WithOne(a => a.Doctor) 
+               .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }
