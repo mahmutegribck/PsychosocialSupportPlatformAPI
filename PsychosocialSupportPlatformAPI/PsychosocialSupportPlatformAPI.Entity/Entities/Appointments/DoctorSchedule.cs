@@ -1,6 +1,5 @@
 ﻿using PsychosocialSupportPlatformAPI.Entity.Entities.Users;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PsychosocialSupportPlatformAPI.Entity.Entities.Appointments
 {

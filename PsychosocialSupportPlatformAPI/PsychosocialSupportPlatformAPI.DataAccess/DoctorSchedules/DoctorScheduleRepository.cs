@@ -19,7 +19,6 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.DoctorSchedules
 
         public async Task UpdateDoctorSchedule(DoctorSchedule doctorSchedule)
         {
-            var updateDoctorSchedule = await _context.DoctorSchedules.AsNoTracking().Where(s => s.Id == doctorSchedule.Id && s.DoctorId == doctorSchedule.DoctorId).FirstOrDefaultAsync() ?? throw new Exception();
             _context.DoctorSchedules.Update(doctorSchedule);
             await _context.SaveChangesAsync();
         }
@@ -32,7 +31,7 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.DoctorSchedules
 
         public async Task<DoctorSchedule> GetDoctorScheduleByDay(string doctorId, DateTime day)
         {
-            return await _context.DoctorSchedules.Where(s => s.DoctorId == doctorId && s.Day == day).FirstOrDefaultAsync();
+            return await _context.DoctorSchedules.AsNoTracking().Where(s => s.DoctorId == doctorId && s.Day == day).FirstOrDefaultAsync();
         }
 
         public async Task<DoctorSchedule> GetDoctorScheduleById(string doctorId, int scheduleId)

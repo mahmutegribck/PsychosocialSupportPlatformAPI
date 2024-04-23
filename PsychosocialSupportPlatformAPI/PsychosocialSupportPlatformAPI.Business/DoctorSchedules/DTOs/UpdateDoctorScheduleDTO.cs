@@ -1,12 +1,11 @@
-﻿using PsychosocialSupportPlatformAPI.Entity.Enums;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 
 namespace PsychosocialSupportPlatformAPI.Business.DoctorSchedules.DTOs
 {
     public class UpdateDoctorScheduleDTO
     {
         public int Id { get; set; }
-        public DateTime Day { get; set; }
+        public required string Day { get; set; }
 
         [DefaultValue(false)]
         public bool EightToNine { get; set; }

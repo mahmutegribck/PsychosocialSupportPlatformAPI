@@ -3,7 +3,7 @@
     public class GetDoctorScheduleDTO
     {
         public int Id { get; set; }
-        public DayOfWeek Day { get; set; }
+        public DateTime Day { get; set; }
         public bool EightToNine { get; set; }
         public bool NineToTen { get; set; }
         public bool TenToEleven { get; set; }

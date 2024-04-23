@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using PsychosocialSupportPlatformAPI.Business.DoctorSchedules;
 using PsychosocialSupportPlatformAPI.Business.DoctorSchedules.DTOs;
 
@@ -15,7 +16,9 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
             _doctorScheduleService = doctorScheduleService;
         }
 
+
         [HttpPost]
+        [Authorize(Roles = "Doctor")]
         public async Task<IActionResult> CreateDoctorSchedule([FromBody] CreateDoctorScheduleDTO[] createDoctorScheduleDTOs)
         {
             string? currentUserID = User.Identity?.Name;
@@ -26,6 +29,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
 
 
         [HttpDelete]
+        [Authorize(Roles = "Doctor")]
         public async Task<IActionResult> DeleteDoctorSchedule([FromQuery] int doctorScheduleId)
         {
             string? currentUserID = User.Identity?.Name;
@@ -36,6 +40,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
 
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetAllDoctorSchedule()
         {
             var allDoctorSchedule = await _doctorScheduleService.GetAllDoctorSchedule();
@@ -45,6 +50,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
 
 
         [HttpGet]
+        [Authorize(Roles = "Doctor")]
         public async Task<IActionResult> GetDoctorSchedule()
         {
             string? currentUserID = User.Identity?.Name;
@@ -56,6 +62,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
 
 
         [HttpGet]
+        [Authorize(Roles = "Doctor")]
         public async Task<IActionResult> GetDoctorScheduleById([FromQuery] int scheduleId)
         {
             string? currentUserID = User.Identity?.Name;
@@ -67,6 +74,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
 
 
         [HttpPut]
+        [Authorize(Roles = "Doctor")]
         public async Task<IActionResult> UpdateDoctorSchedule([FromBody] UpdateDoctorScheduleDTO updateDoctorScheduleDTO)
         {
             string? currentUserID = User.Identity?.Name;
