@@ -15,12 +15,6 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
             _appointmentScheduleService = appointmentScheduleService;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> AddAppointmentSchedule([FromBody] AddAppointmentScheduleDTO addAppointmentScheduleDTO)
-        {
-            await _appointmentScheduleService.AddAppointmentSchedule(addAppointmentScheduleDTO);
-            return Ok();
-        }
 
         [HttpGet]
         public async Task<IActionResult> GetAllAppointmentSchedules([FromQuery] string date)

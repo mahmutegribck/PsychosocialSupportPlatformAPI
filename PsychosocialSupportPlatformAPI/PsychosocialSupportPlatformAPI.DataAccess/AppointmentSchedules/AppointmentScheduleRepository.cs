@@ -1,7 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PsychosocialSupportPlatformAPI.Entity.Entities.Appointments;
-using PsychosocialSupportPlatformAPI.Entity.Entities.Users;
-using PsychosocialSupportPlatformAPI.Entity.Enums;
 
 namespace PsychosocialSupportPlatformAPI.DataAccess.AppointmentSchedules
 {
@@ -13,11 +11,6 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.AppointmentSchedules
             _context = context;
         }
 
-        public async Task AddAppointmentSchedule(AppointmentSchedule appointmentSchedule)
-        {
-            await _context.AppointmentSchedules.AddAsync(appointmentSchedule);
-            await _context.SaveChangesAsync();
-        }
 
         public async Task AddAppointmentScheduleList(List<AppointmentSchedule> appointmentSchedules)
         {
@@ -25,28 +18,30 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.AppointmentSchedules
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteAppointmentSchedule(AppointmentSchedule appointmentSchedule)
+
+        public async Task DeleteAppointmentScheduleList(IEnumerable<AppointmentSchedule> appointmentSchedules)
         {
-            _context.AppointmentSchedules.Remove(appointmentSchedule);
+            _context.AppointmentSchedules.RemoveRange(appointmentSchedules);
             await _context.SaveChangesAsync();
         }
+
 
         public async Task<IEnumerable<object>> GetAllAppointmentSchedules(DateTime day)
         {
             var mergedSchedules = await _context.AppointmentSchedules.Where(s => s.Day == day.Date)
-        .OrderBy(a => a.Day)
-        .ThenBy(a => a.TimeRange)
-        .Select(a => new
-        {
-            a.Day,
-            a.TimeRange,
-            a.Status,
-            DoctorID = a.DoctorId,
-            DoctorName = a.Doctor.Name,
-            DoctorSurname = a.Doctor.Surname,
-            DoctorTitle = a.Doctor.Title
-        })
-        .ToListAsync();
+                .OrderBy(a => a.Day)
+                .ThenBy(a => a.TimeRange)
+                .Select(a => new
+                {
+                    a.Day,
+                    a.TimeRange,
+                    a.Status,
+                    DoctorID = a.DoctorId,
+                    DoctorName = a.Doctor.Name,
+                    DoctorSurname = a.Doctor.Surname,
+                    DoctorTitle = a.Doctor.Title
+
+                }).ToListAsync();
 
             var groupedSchedules = mergedSchedules
                 .GroupBy(a => new { a.Day, a.DoctorID })
@@ -80,10 +75,16 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.AppointmentSchedules
                         })
                     })
                 });
-
             return groupedSchedules;
 
         }
+
+
+        public async Task<IEnumerable<AppointmentSchedule>> GetAppointmentScheduleByDay(string doctorId, DateTime day)
+        {
+            return await _context.AppointmentSchedules.AsNoTracking().Where(a => a.DoctorId == doctorId && a.Day == day).ToListAsync();
+        }
+
 
         public async Task<object> GetAllAppointmentSchedulesByDoctor()
         {
@@ -112,51 +113,6 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.AppointmentSchedules
                 //    })
                 //}),
             }).ToListAsync();
-        }
-
-        public Task<AppointmentSchedule> GetAllAppointmentSchedulesByTimeRange()
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<AppointmentSchedule?> GetAppointmentScheduleByTimeRange(string doctorId, TimeRange timeRange, DateTime day)
-        {
-
-            return await _context.AppointmentSchedules.Where(a => a.Status == false && a.DoctorId == doctorId && a.TimeRange == timeRange && a.Day == day).FirstOrDefaultAsync();
-        }
-
-        public async Task UpdateAppointmentSchedule(AppointmentSchedule appointmentSchedule)
-        {
-            _context.AppointmentSchedules.Update(appointmentSchedule);
-            await _context.SaveChangesAsync();
-        }
-
-        private bool GetTimeRangeProperty(DoctorSchedule schedule, TimeRange timeRange)
-        {
-            switch (timeRange)
-            {
-                case TimeRange.EightToNine:
-                    return schedule.EightToNine;
-                case TimeRange.NineToTen:
-                    return schedule.NineToTen;
-                case TimeRange.TenToEleven:
-                    return schedule.TenToEleven;
-                case TimeRange.ElevenToTwelve:
-                    return schedule.ElevenToTwelve;
-                case TimeRange.TwelveToThirteen:
-                    return schedule.TwelveToThirteen;
-                case TimeRange.ThirteenToFourteen:
-                    return schedule.ThirteenToFourteen;
-                case TimeRange.FourteenToFifteen:
-                    return schedule.FourteenToFifteen;
-                case TimeRange.FifteenToSixteen:
-                    return schedule.FifteenToSixteen;
-                case TimeRange.SixteenToSeventeen:
-                    return schedule.SixteenToSeventeen;
-                default:
-                    return false; // Handle any other cases if needed
-            }
-
         }
     }
 }

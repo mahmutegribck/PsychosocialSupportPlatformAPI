@@ -25,20 +25,20 @@ namespace PsychosocialSupportPlatformAPI.Business.Appointments
         {
             //var cexistingDoctorSchedule = await _doctorScheduleRepository.GetDoctorScheduleByTimeRange(createAppointmentDTO.DoctorId, createAppointmentDTO.TimeRange, createAppointmentDTO.Day.DayOfWeek);,
 
-            var existingAppointmentSchedule = await _appointmentScheduleRepository.GetAppointmentScheduleByTimeRange(createAppointmentDTO.DoctorId, createAppointmentDTO.TimeRange, createAppointmentDTO.Day.Date);
+            //var existingAppointmentSchedule = await _appointmentScheduleRepository.GetAppointmentScheduleByTimeRange(createAppointmentDTO.DoctorId, createAppointmentDTO.TimeRange, createAppointmentDTO.Day.Date);
 
 
-            //if (existingAppointmentSchedule != null) throw new Exception("Randevu Alınmış.");
+            ////if (existingAppointmentSchedule != null) throw new Exception("Randevu Alınmış.");
 
-            existingAppointmentSchedule.Status = true;
-            await _appointmentScheduleRepository.UpdateAppointmentSchedule(existingAppointmentSchedule);
+            //existingAppointmentSchedule.Status = true;
+            //await _appointmentScheduleRepository.UpdateAppointmentSchedule(existingAppointmentSchedule);
 
-            var patientAppointment = _mapper.Map<Appointment>(createAppointmentDTO);
-            //patientAppointment.AppointmentScheduleId = existingAppointmentSchedule.Id;
+            //var patientAppointment = _mapper.Map<Appointment>(createAppointmentDTO);
+            ////patientAppointment.AppointmentScheduleId = existingAppointmentSchedule.Id;
 
-            //patientAppointment.Day = existingAppointmentSchedule.Day.Date;
-            //patientAppointment.TimeRange = existingAppointmentSchedule.TimeRange;
-            await _appointmentRepository.CreatePatientAppointment(patientAppointment);
+            ////patientAppointment.Day = existingAppointmentSchedule.Day.Date;
+            ////patientAppointment.TimeRange = existingAppointmentSchedule.TimeRange;
+            //await _appointmentRepository.CreatePatientAppointment(patientAppointment);
         }
 
         public async Task DeletePatientAppointment(int appointmentID, string patientID)

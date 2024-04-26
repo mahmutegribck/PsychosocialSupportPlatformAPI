@@ -17,9 +17,10 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
         }
 
 
+
         [HttpPost]
         [Authorize(Roles = "Doctor")]
-        public async Task<IActionResult> CreateDoctorSchedule([FromBody] CreateDoctorScheduleDTO[] createDoctorScheduleDTOs)
+        public async Task<IActionResult> CreateDoctorSchedule([FromBody] List<CreateDoctorScheduleDTO> createDoctorScheduleDTOs)
         {
             string? currentUserID = User.Identity?.Name;
             if (currentUserID == null) return Unauthorized();
@@ -43,7 +44,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetAllDoctorSchedule()
         {
-            var allDoctorSchedule = await _doctorScheduleService.GetAllDoctorSchedule();
+            IEnumerable<GetDoctorScheduleDTO?> allDoctorSchedule = await _doctorScheduleService.GetAllDoctorSchedule();
             if (allDoctorSchedule == null) return NotFound();
             return Ok(allDoctorSchedule);
         }
@@ -55,7 +56,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
         {
             string? currentUserID = User.Identity?.Name;
             if (currentUserID == null) return Unauthorized();
-            IEnumerable<GetDoctorScheduleDTO> allDoctorSchedule = await _doctorScheduleService.GetAllDoctorScheduleById(currentUserID);
+            IEnumerable<GetDoctorScheduleDTO?> allDoctorSchedule = await _doctorScheduleService.GetAllDoctorScheduleById(currentUserID);
             if (allDoctorSchedule == null) return NotFound();
             return Ok(allDoctorSchedule);
         }
@@ -67,7 +68,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
         {
             string? currentUserID = User.Identity?.Name;
             if (currentUserID == null) return Unauthorized();
-            GetDoctorScheduleDTO doctorSchedule = await _doctorScheduleService.GetDoctorScheduleById(currentUserID, scheduleId);
+            GetDoctorScheduleDTO? doctorSchedule = await _doctorScheduleService.GetDoctorScheduleById(currentUserID, scheduleId);
             if (doctorSchedule == null) return NotFound();
             return Ok(doctorSchedule);
         }

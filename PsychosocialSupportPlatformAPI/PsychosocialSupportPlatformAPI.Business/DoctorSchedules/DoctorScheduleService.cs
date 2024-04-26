@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using PsychosocialSupportPlatformAPI.Business.AppointmentSchedules;
 using PsychosocialSupportPlatformAPI.Business.DoctorSchedules.DTOs;
 using PsychosocialSupportPlatformAPI.DataAccess.DoctorSchedules;
 using PsychosocialSupportPlatformAPI.Entity.Entities.Appointments;
@@ -9,17 +10,26 @@ namespace PsychosocialSupportPlatformAPI.Business.DoctorSchedules
     public class DoctorScheduleService : IDoctorScheduleService
     {
         private readonly IDoctorScheduleRepository _doctorScheduleRepository;
+        private readonly IAppointmentScheduleService _appointmentScheduleService;
         private readonly IMapper _mapper;
-        public DoctorScheduleService(IDoctorScheduleRepository doctorScheduleRepository, IMapper mapper)
+
+        public DoctorScheduleService(IDoctorScheduleRepository doctorScheduleRepository, IAppointmentScheduleService appointmentScheduleService, IMapper mapper)
         {
             _doctorScheduleRepository = doctorScheduleRepository;
+            _appointmentScheduleService = appointmentScheduleService;
             _mapper = mapper;
         }
 
-        public async Task CreateDoctorSchedule(CreateDoctorScheduleDTO[] createDoctorScheduleDTOs, string currentUserID)
+
+
+        public async Task CreateDoctorSchedule(List<CreateDoctorScheduleDTO> createDoctorScheduleDTOs, string currentUserID)
         {
+            if (!createDoctorScheduleDTOs.Any() || currentUserID == null) throw new Exception();
+
             foreach (var createDoctorScheduleDTO in createDoctorScheduleDTOs)
             {
+                if(!createDoctorScheduleDTO.TimeRanges.Any()) throw new Exception();
+
                 DateTime day = DateTime.Parse(createDoctorScheduleDTO.Day);
                 if (day < DateTime.Now.Date || day > DateTime.Now.Date.AddDays(14))
                     throw new Exception();
@@ -27,10 +37,8 @@ namespace PsychosocialSupportPlatformAPI.Business.DoctorSchedules
                 DoctorSchedule doctorSchedule = _mapper.Map<DoctorSchedule>(createDoctorScheduleDTO);
                 doctorSchedule.DoctorId = currentUserID;
 
-                DoctorSchedule existingSchedule = await _doctorScheduleRepository.GetDoctorScheduleByDay(currentUserID, doctorSchedule.Day);
+                DoctorSchedule? existingSchedule = await _doctorScheduleRepository.GetDoctorScheduleByDay(currentUserID, doctorSchedule.Day);
                 if (existingSchedule != null) throw new Exception("Girilen Gune Ait Takvim Kaydi Mevcut.");
-
-
 
                 foreach (var timeRange in createDoctorScheduleDTO.TimeRanges)
                 {
@@ -70,48 +78,66 @@ namespace PsychosocialSupportPlatformAPI.Business.DoctorSchedules
 
                 }
                 await _doctorScheduleRepository.CreateDoctorSchedule(doctorSchedule);
-
+                await _appointmentScheduleService.AddAppointmentSchedule(doctorSchedule);
             }
         }
 
+
         public async Task UpdateDoctorSchedule(UpdateDoctorScheduleDTO updateDoctorScheduleDTO, string currentUserID)
         {
+            if (updateDoctorScheduleDTO == null || currentUserID == null) throw new ArgumentNullException();
+
             DateTime day = DateTime.Parse(updateDoctorScheduleDTO.Day);
             if (day < DateTime.Now.Date || day > DateTime.Now.Date.AddDays(14)) throw new Exception();
+
+            DoctorSchedule? existingSchedule = await _doctorScheduleRepository.GetDoctorScheduleByDay(currentUserID, day);
+            if (existingSchedule == null) throw new Exception("Girilen Gune Ait Takvim Kaydi Mevcut Degil.");
 
             DoctorSchedule doctorSchedule = _mapper.Map<DoctorSchedule>(updateDoctorScheduleDTO);
             doctorSchedule.DoctorId = currentUserID;
 
-            DoctorSchedule existingSchedule = await _doctorScheduleRepository.GetDoctorScheduleByDay(currentUserID, doctorSchedule.Day);
-            if (existingSchedule == null) throw new Exception("Girilen Gune Ait Takvim Kaydi Mevcut Degil.");
-
             await _doctorScheduleRepository.UpdateDoctorSchedule(doctorSchedule);
+            await _appointmentScheduleService.UpdateAppointmentSchedule(doctorSchedule);
         }
+
 
         public async Task DeleteDoctorSchedule(string doctorId, int scheduleId)
         {
-            DoctorSchedule doctorSchedule = await _doctorScheduleRepository.GetDoctorScheduleById(doctorId, scheduleId) ?? throw new ArgumentNullException();
+            if (doctorId == null || scheduleId < 0) throw new ArgumentNullException();
+
+            DoctorSchedule? doctorSchedule = await _doctorScheduleRepository.GetDoctorScheduleById(doctorId, scheduleId) ?? throw new ArgumentNullException();
             await _doctorScheduleRepository.DeleteDoctorSchedule(doctorSchedule);
+            await _appointmentScheduleService.DeleteAppointmentSchedule(doctorId, doctorSchedule.Day);
         }
 
-        public async Task<GetDoctorScheduleDTO> GetDoctorScheduleByDay(string doctorId, DateTime day)
+
+        public async Task<GetDoctorScheduleDTO?> GetDoctorScheduleByDay(string doctorId, DateTime day)
         {
-            return _mapper.Map<GetDoctorScheduleDTO>(await _doctorScheduleRepository.GetDoctorScheduleByDay(doctorId, day));
+            if (doctorId == null) throw new ArgumentNullException();
+
+            return _mapper.Map<GetDoctorScheduleDTO?>(await _doctorScheduleRepository.GetDoctorScheduleByDay(doctorId, day));
         }
 
-        public async Task<GetDoctorScheduleDTO> GetDoctorScheduleById(string doctorId, int scheduleId)
+
+        public async Task<GetDoctorScheduleDTO?> GetDoctorScheduleById(string doctorId, int scheduleId)
         {
-            return _mapper.Map<GetDoctorScheduleDTO>(await _doctorScheduleRepository.GetDoctorScheduleById(doctorId, scheduleId));
+            if (doctorId == null || scheduleId < 0) throw new ArgumentNullException();
+
+            return _mapper.Map<GetDoctorScheduleDTO?>(await _doctorScheduleRepository.GetDoctorScheduleById(doctorId, scheduleId));
         }
 
-        public async Task<IEnumerable<GetDoctorScheduleDTO>> GetAllDoctorScheduleById(string doctorId)
+
+        public async Task<IEnumerable<GetDoctorScheduleDTO?>> GetAllDoctorScheduleById(string doctorId)
         {
-            return _mapper.Map<IEnumerable<GetDoctorScheduleDTO>>(await _doctorScheduleRepository.GetAllDoctorScheduleById(doctorId));
+            if (doctorId == null) throw new ArgumentNullException();
+
+            return _mapper.Map<IEnumerable<GetDoctorScheduleDTO?>>(await _doctorScheduleRepository.GetAllDoctorScheduleById(doctorId));
         }
 
-        public async Task<IEnumerable<GetDoctorScheduleDTO>> GetAllDoctorSchedule()
+
+        public async Task<IEnumerable<GetDoctorScheduleDTO?>> GetAllDoctorSchedule()
         {
-            return _mapper.Map<IEnumerable<GetDoctorScheduleDTO>>(await _doctorScheduleRepository.GetAllDoctorSchedule());
+            return _mapper.Map<IEnumerable<GetDoctorScheduleDTO?>>(await _doctorScheduleRepository.GetAllDoctorSchedule());
         }
     }
 }

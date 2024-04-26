@@ -10,189 +10,327 @@ namespace PsychosocialSupportPlatformAPI.Business.AppointmentSchedules
     public class AppointmentScheduleService : IAppointmentScheduleService
     {
         private readonly IAppointmentScheduleRepository _appointmentScheduleRepository;
-        private readonly IDoctorScheduleRepository _doctorScheduleRepository;
-        private readonly IMapper _mapper;
 
         public AppointmentScheduleService(IAppointmentScheduleRepository appointmentScheduleRepository, IDoctorScheduleRepository doctorScheduleRepository, IMapper mapper)
         {
             _appointmentScheduleRepository = appointmentScheduleRepository;
-            _doctorScheduleRepository = doctorScheduleRepository;
-            _mapper = mapper;
         }
 
 
-        public async Task AddAppointmentSchedule(AddAppointmentScheduleDTO addAppointmentScheduleDTO)
+        public async Task AddAppointmentSchedule(DoctorSchedule doctorSchedule)
         {
-            var doctorSchedule = await _doctorScheduleRepository.GetAllDoctorScheduleById(addAppointmentScheduleDTO.DoctorId);
-            var startDay = DateTime.Today.DayOfWeek;
+            if (doctorSchedule == null) throw new Exception();
 
-            for (int i = 0; i < 14; i++)
+            List<AppointmentSchedule> appointmentList = new List<AppointmentSchedule>();
+
+            if (doctorSchedule.EightToNine == true)
             {
-                //switch ((DayOfWeek)(((int)startDay + i) % 7))
-                //{
+                AppointmentSchedule appointmentEightToNine = new()
+                {
+                    TimeRange = TimeRange.EightToNine,
+                    Day = doctorSchedule.Day,
+                    DoctorId = doctorSchedule.DoctorId
+                };
 
-                //    case DayOfWeek.Sunday:
-                //        await GetAppointmentSchedules(doctorSchedule, DayOfWeek.Sunday, i);
-                //        break;
+                appointmentList.Add(appointmentEightToNine);
+            }
+            if (doctorSchedule.NineToTen == true)
+            {
+                AppointmentSchedule appointmentNineToTen = new()
+                {
+                    TimeRange = TimeRange.NineToTen,
+                    Day = doctorSchedule.Day,
+                    DoctorId = doctorSchedule.DoctorId
+                };
+
+                appointmentList.Add(appointmentNineToTen);
+            }
+            if (doctorSchedule.TenToEleven == true)
+            {
+                AppointmentSchedule appointmentTenToEleven = new()
+                {
+                    TimeRange = TimeRange.TenToEleven,
+                    Day = doctorSchedule.Day,
+                    DoctorId = doctorSchedule.DoctorId
+                };
+
+                appointmentList.Add(appointmentTenToEleven);
+            }
+            if (doctorSchedule.ElevenToTwelve == true)
+            {
+                AppointmentSchedule appointmentElevenToTwelve = new()
+                {
+                    TimeRange = TimeRange.ElevenToTwelve,
+                    Day = doctorSchedule.Day,
+                    DoctorId = doctorSchedule.DoctorId
+                };
+
+                appointmentList.Add(appointmentElevenToTwelve);
+
+            }
+            if (doctorSchedule.TwelveToThirteen == true)
+            {
+                AppointmentSchedule appointmentTwelveToThirteen = new()
+                {
+                    TimeRange = TimeRange.TwelveToThirteen,
+                    Day = doctorSchedule.Day,
+                    DoctorId = doctorSchedule.DoctorId
+                };
+
+                appointmentList.Add(appointmentTwelveToThirteen);
+            }
+            if (doctorSchedule.ThirteenToFourteen == true)
+            {
+                AppointmentSchedule appointmentThirteenToFourteen = new()
+                {
+                    TimeRange = TimeRange.ThirteenToFourteen,
+                    Day = doctorSchedule.Day,
+                    DoctorId = doctorSchedule.DoctorId
+                };
+
+                appointmentList.Add(appointmentThirteenToFourteen);
+            }
+            if (doctorSchedule.FourteenToFifteen == true)
+            {
+                AppointmentSchedule appointmentFourteenToFifteen = new()
+                {
+                    TimeRange = TimeRange.ThirteenToFourteen,
+                    Day = doctorSchedule.Day,
+                    DoctorId = doctorSchedule.DoctorId
+                };
+
+                appointmentList.Add(appointmentFourteenToFifteen);
+            }
+            if (doctorSchedule.FifteenToSixteen == true)
+            {
+                AppointmentSchedule appointmentFifteenToSixteen = new()
+                {
+                    TimeRange = TimeRange.FifteenToSixteen,
+                    Day = doctorSchedule.Day,
+                    DoctorId = doctorSchedule.DoctorId
+                };
+
+                appointmentList.Add(appointmentFifteenToSixteen);
+            }
+            if (doctorSchedule.SixteenToSeventeen == true)
+            {
+
+                AppointmentSchedule appointmentSixteenToSeventeen = new()
+                {
+                    TimeRange = TimeRange.SixteenToSeventeen,
+                    Day = doctorSchedule.Day,
+                    DoctorId = doctorSchedule.DoctorId
+                };
+
+                appointmentList.Add(appointmentSixteenToSeventeen);
+            }
+
+            await _appointmentScheduleRepository.AddAppointmentScheduleList(appointmentList);
+        }
 
 
-                //    case DayOfWeek.Monday:
-                //        await GetAppointmentSchedules(doctorSchedule, DayOfWeek.Monday, i);
-                //        break;
+        public async Task UpdateAppointmentSchedule(DoctorSchedule doctorSchedule)
+        {
+            if (doctorSchedule == null) throw new Exception();
 
+            List<AppointmentSchedule> createAppointmentList = new List<AppointmentSchedule>();
+            List<AppointmentSchedule> deleteAppointmentList = new List<AppointmentSchedule>();
 
-                //    case DayOfWeek.Tuesday:
-                //        await GetAppointmentSchedules(doctorSchedule, DayOfWeek.Tuesday, i);
-                //        break;
+            IEnumerable<AppointmentSchedule> appointmentSchedules = await _appointmentScheduleRepository.GetAppointmentScheduleByDay(doctorSchedule.DoctorId, doctorSchedule.Day);
+            if (!appointmentSchedules.Any())
+            {
+                await AddAppointmentSchedule(doctorSchedule);
+            }
+            foreach (var appointmentSchedule in appointmentSchedules)
+            {
+                for (TimeRange timeRange = TimeRange.EightToNine; timeRange < TimeRange.SixteenToSeventeen + 1; timeRange++)
+                {
+                    switch (timeRange)
+                    {
+                        case TimeRange.EightToNine:
+                            if (doctorSchedule.EightToNine && appointmentSchedule.TimeRange != timeRange)
+                            {
+                                AppointmentSchedule appointmentEightToNine = new()
+                                {
+                                    TimeRange = TimeRange.EightToNine,
+                                    Day = doctorSchedule.Day,
+                                    DoctorId = doctorSchedule.DoctorId
+                                };
+                                createAppointmentList.Add(appointmentEightToNine);
+                            }
+                            else if (!doctorSchedule.EightToNine && appointmentSchedule.TimeRange == timeRange)
+                            {
+                                deleteAppointmentList.Add(appointmentSchedule);
 
+                            }
+                            break;
 
-                //    case DayOfWeek.Wednesday:
-                //        await GetAppointmentSchedules(doctorSchedule, DayOfWeek.Wednesday, i);
-                //        break;
+                        case TimeRange.NineToTen:
+                            if (doctorSchedule.NineToTen && appointmentSchedule.TimeRange != timeRange)
+                            {
+                                AppointmentSchedule appointmentNineToTen = new()
+                                {
+                                    TimeRange = TimeRange.NineToTen,
+                                    Day = doctorSchedule.Day,
+                                    DoctorId = doctorSchedule.DoctorId
+                                };
+                                createAppointmentList.Add(appointmentNineToTen);
+                            }
+                            else if (!doctorSchedule.NineToTen && appointmentSchedule.TimeRange == timeRange)
+                            {
+                                deleteAppointmentList.Add(appointmentSchedule);
 
+                            }
+                            break;
 
-                //    case DayOfWeek.Thursday:
-                //        await GetAppointmentSchedules(doctorSchedule, DayOfWeek.Thursday, i);
-                //        break;
+                        case TimeRange.TenToEleven:
+                            if (doctorSchedule.TenToEleven && appointmentSchedule.TimeRange != timeRange)
+                            {
+                                AppointmentSchedule appointmentTenToEleven = new()
+                                {
+                                    TimeRange = TimeRange.TenToEleven,
+                                    Day = doctorSchedule.Day,
+                                    DoctorId = doctorSchedule.DoctorId
+                                };
+                                createAppointmentList.Add(appointmentTenToEleven);
+                            }
+                            else if (!doctorSchedule.TenToEleven && appointmentSchedule.TimeRange == timeRange)
+                            {
+                                deleteAppointmentList.Add(appointmentSchedule);
+                            }
+                            break;
 
+                        case TimeRange.ElevenToTwelve:
+                            if (doctorSchedule.ElevenToTwelve && appointmentSchedule.TimeRange != timeRange)
+                            {
+                                AppointmentSchedule appointmentElevenToTwelve = new()
+                                {
+                                    TimeRange = TimeRange.ElevenToTwelve,
+                                    Day = doctorSchedule.Day,
+                                    DoctorId = doctorSchedule.DoctorId
+                                };
+                                createAppointmentList.Add(appointmentElevenToTwelve);
+                            }
+                            else if (!doctorSchedule.ElevenToTwelve && appointmentSchedule.TimeRange == timeRange)
+                            {
+                                deleteAppointmentList.Add(appointmentSchedule);
+                            }
+                            break;
 
-                //    case DayOfWeek.Friday:
-                //        await GetAppointmentSchedules(doctorSchedule, DayOfWeek.Friday, i);
-                //        break;
+                        case TimeRange.TwelveToThirteen:
+                            if (doctorSchedule.TwelveToThirteen && appointmentSchedule.TimeRange != timeRange)
+                            {
+                                AppointmentSchedule appointmentTwelveToThirteen = new()
+                                {
+                                    TimeRange = TimeRange.TwelveToThirteen,
+                                    Day = doctorSchedule.Day,
+                                    DoctorId = doctorSchedule.DoctorId
+                                };
+                                createAppointmentList.Add(appointmentTwelveToThirteen);
+                            }
+                            else if (!doctorSchedule.TwelveToThirteen && appointmentSchedule.TimeRange == timeRange)
+                            {
+                                deleteAppointmentList.Add(appointmentSchedule);
+                            }
+                            break;
 
+                        case TimeRange.ThirteenToFourteen:
+                            if (doctorSchedule.ThirteenToFourteen && appointmentSchedule.TimeRange != timeRange)
+                            {
+                                AppointmentSchedule appointmentThirteenToFourteen = new()
+                                {
+                                    TimeRange = TimeRange.ThirteenToFourteen,
+                                    Day = doctorSchedule.Day,
+                                    DoctorId = doctorSchedule.DoctorId
+                                };
+                                createAppointmentList.Add(appointmentThirteenToFourteen);
+                            }
+                            else if (!doctorSchedule.ThirteenToFourteen && appointmentSchedule.TimeRange == timeRange)
+                            {
+                                deleteAppointmentList.Add(appointmentSchedule);
+                            }
+                            break;
 
-                //    case DayOfWeek.Saturday:
-                //        await GetAppointmentSchedules(doctorSchedule, DayOfWeek.Saturday, i);
-                //        break;
+                        case TimeRange.FourteenToFifteen:
+                            if (doctorSchedule.FourteenToFifteen && appointmentSchedule.TimeRange != timeRange)
+                            {
+                                AppointmentSchedule appointmentFourteenToFifteen = new()
+                                {
+                                    TimeRange = TimeRange.FourteenToFifteen,
+                                    Day = doctorSchedule.Day,
+                                    DoctorId = doctorSchedule.DoctorId
+                                };
+                                createAppointmentList.Add(appointmentFourteenToFifteen);
+                            }
+                            else if (!doctorSchedule.FourteenToFifteen && appointmentSchedule.TimeRange == timeRange)
+                            {
+                                deleteAppointmentList.Add(appointmentSchedule);
+                            }
+                            break;
 
-                //    default:
-                //        return;
+                        case TimeRange.FifteenToSixteen:
+                            if (doctorSchedule.FifteenToSixteen && appointmentSchedule.TimeRange != timeRange)
+                            {
+                                AppointmentSchedule appointmentFifteenToSixteen = new()
+                                {
+                                    TimeRange = TimeRange.FifteenToSixteen,
+                                    Day = doctorSchedule.Day,
+                                    DoctorId = doctorSchedule.DoctorId
+                                };
+                                createAppointmentList.Add(appointmentFifteenToSixteen);
+                            }
+                            else if (!doctorSchedule.FifteenToSixteen && appointmentSchedule.TimeRange == timeRange)
+                            {
+                                deleteAppointmentList.Add(appointmentSchedule);
+                            }
+                            break;
 
-                //}
+                        case TimeRange.SixteenToSeventeen:
+                            if (doctorSchedule.SixteenToSeventeen && appointmentSchedule.TimeRange != timeRange)
+                            {
+                                AppointmentSchedule appointmentSixteenToSeventeen = new()
+                                {
+                                    TimeRange = TimeRange.SixteenToSeventeen,
+                                    Day = doctorSchedule.Day,
+                                    DoctorId = doctorSchedule.DoctorId
+                                };
+                                createAppointmentList.Add(appointmentSixteenToSeventeen);
+                            }
+                            else if (!doctorSchedule.SixteenToSeventeen && appointmentSchedule.TimeRange == timeRange)
+                            {
+                                deleteAppointmentList.Add(appointmentSchedule);
+                            }
+                            break;
+
+                        default:
+                            break;
+                    }
+                }
+            }
+            if (deleteAppointmentList.Any())
+            {
+                await _appointmentScheduleRepository.DeleteAppointmentScheduleList(deleteAppointmentList);
+
+            }
+            if (createAppointmentList.Any())
+            {
+                await _appointmentScheduleRepository.AddAppointmentScheduleList(createAppointmentList);
             }
         }
 
-        public Task DeleteAppointmentSchedule(int appointmentScheduleId)
+
+        public async Task DeleteAppointmentSchedule(string doctorId, DateTime day)
         {
-            throw new NotImplementedException();
+            if (doctorId == null) throw new Exception(); 
+
+            IEnumerable<AppointmentSchedule> appointmentSchedules = await _appointmentScheduleRepository.GetAppointmentScheduleByDay(doctorId, day);
+            await _appointmentScheduleRepository.DeleteAppointmentScheduleList(appointmentSchedules);
         }
+
 
         public async Task<IEnumerable<object>> GetAllAppointmentSchedules(DateTime day)
         {
             return await _appointmentScheduleRepository.GetAllAppointmentSchedules(day);
-        }
-
-        private async Task GetAppointmentSchedules(IEnumerable<DoctorSchedule> doctorSchedules, DateTime day, int index)
-        {
-            List<AppointmentSchedule> appointmentList = new List<AppointmentSchedule>();
-
-            var thursdayDoctorSchedules = doctorSchedules.Where(s => s.Day == day).ToList();
-
-            foreach (var item in thursdayDoctorSchedules)
-            {
-                if (item.EightToNine == true)
-                {
-                    AppointmentSchedule appointmentEightToNine = new()
-                    {
-                        TimeRange = TimeRange.EightToNine,
-                        Day = DateTime.Now.AddDays(index).Date,
-                        DoctorId = item.DoctorId
-                    };
-
-                    appointmentList.Add(appointmentEightToNine);
-                }
-                if (item.NineToTen == true)
-                {
-                    AppointmentSchedule appointmentNineToTen = new()
-                    {
-                        TimeRange = TimeRange.NineToTen,
-                        Day = DateTime.Now.AddDays(index).Date,
-                        DoctorId = item.DoctorId
-                    };
-
-                    appointmentList.Add(appointmentNineToTen);
-                }
-                if (item.TenToEleven == true)
-                {
-                    AppointmentSchedule appointmentTenToEleven = new()
-                    {
-                        TimeRange = TimeRange.TenToEleven,
-                        Day = DateTime.Now.AddDays(index).Date,
-                        DoctorId = item.DoctorId
-                    };
-
-                    appointmentList.Add(appointmentTenToEleven);
-                }
-                if (item.ElevenToTwelve == true)
-                {
-                    AppointmentSchedule appointmentElevenToTwelve = new()
-                    {
-                        TimeRange = TimeRange.ElevenToTwelve,
-                        Day = DateTime.Now.AddDays(index).Date,
-                        DoctorId = item.DoctorId
-                    };
-
-                    appointmentList.Add(appointmentElevenToTwelve);
-
-                }
-                if (item.TwelveToThirteen == true)
-                {
-                    AppointmentSchedule appointmentTwelveToThirteen = new()
-                    {
-                        TimeRange = TimeRange.TwelveToThirteen,
-                        Day = DateTime.Now.AddDays(index).Date,
-                        DoctorId = item.DoctorId
-                    };
-
-                    appointmentList.Add(appointmentTwelveToThirteen);
-                }
-                if (item.ThirteenToFourteen == true)
-                {
-                    AppointmentSchedule appointmentThirteenToFourteen = new()
-                    {
-                        TimeRange = TimeRange.ThirteenToFourteen,
-                        Day = DateTime.Now.AddDays(index).Date,
-                        DoctorId = item.DoctorId
-                    };
-
-                    appointmentList.Add(appointmentThirteenToFourteen);
-                }
-                if (item.FourteenToFifteen == true)
-                {
-                    AppointmentSchedule appointmentFourteenToFifteen = new()
-                    {
-                        TimeRange = TimeRange.ThirteenToFourteen,
-                        Day = DateTime.Now.AddDays(index).Date,
-                        DoctorId = item.DoctorId
-                    };
-
-                    appointmentList.Add(appointmentFourteenToFifteen);
-                }
-                if (item.FifteenToSixteen == true)
-                {
-                    AppointmentSchedule appointmentFifteenToSixteen = new()
-                    {
-                        TimeRange = TimeRange.FifteenToSixteen,
-                        Day = DateTime.Now.AddDays(index).Date,
-                        DoctorId = item.DoctorId
-                    };
-
-                    appointmentList.Add(appointmentFifteenToSixteen);
-                }
-                if (item.SixteenToSeventeen == true)
-                {
-
-                    AppointmentSchedule appointmentSixteenToSeventeen = new()
-                    {
-                        TimeRange = TimeRange.SixteenToSeventeen,
-                        Day = DateTime.Now.AddDays(index).Date,
-                        DoctorId = item.DoctorId
-                    };
-
-                    appointmentList.Add(appointmentSixteenToSeventeen);
-                }
-            }
-            await _appointmentScheduleRepository.AddAppointmentScheduleList(appointmentList);
         }
     }
 }
