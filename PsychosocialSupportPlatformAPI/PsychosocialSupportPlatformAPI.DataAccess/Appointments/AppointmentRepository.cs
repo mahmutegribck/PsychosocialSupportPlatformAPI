@@ -46,11 +46,13 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Appointments
                     Day = group.Key.ToShortDateString(),
                     Appointments = group.Select(appointment => new
                     {
+                        AppointmentId = appointment.Id,
+                        Day = group.Key.ToShortDateString(),
+                        TimeRange = appointment.TimeRange,
                         DoctorName = appointment.Doctor.Name,
                         DoctorSurname = appointment.Doctor.Surname,
                         DoctorTitle = appointment.Doctor.Title,
-                        AppointmentURL = appointment.URL,
-                        TimeRange = appointment.TimeRange
+                        AppointmentURL = appointment.URL
                     }).ToList()
 
                 }).ToListAsync();
