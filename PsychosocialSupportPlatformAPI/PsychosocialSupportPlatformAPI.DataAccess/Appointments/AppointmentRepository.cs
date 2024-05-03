@@ -49,6 +49,7 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Appointments
                         AppointmentId = appointment.Id,
                         Day = group.Key.ToShortDateString(),
                         TimeRange = appointment.TimeRange,
+                        DoctorId = appointment.DoctorId,
                         DoctorName = appointment.Doctor.Name,
                         DoctorSurname = appointment.Doctor.Surname,
                         DoctorTitle = appointment.Doctor.Title,

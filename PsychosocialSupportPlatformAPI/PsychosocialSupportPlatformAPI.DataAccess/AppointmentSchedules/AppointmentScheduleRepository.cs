@@ -29,7 +29,7 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.AppointmentSchedules
 
         public async Task<IEnumerable<object>> GetAllAppointmentSchedules(DateTime day)
         {
-            var mergedSchedules = await _context.AppointmentSchedules.Where(s => s.Day == day.Date)
+            var mergedSchedules = await _context.AppointmentSchedules.AsNoTracking().Where(s => s.Day == day.Date)
                 .OrderBy(a => a.Day)
                 .ThenBy(a => a.TimeRange)
                 .Select(a => new
@@ -62,7 +62,7 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.AppointmentSchedules
                 .GroupBy(a => a.Day)
                 .Select(group => new
                 {
-                    Day = group.Key,
+                    Day = group.Key.ToShortDateString(),
                     Doctors = group.Select(d => new
                     {
                         DoctorID = d.DoctorID,

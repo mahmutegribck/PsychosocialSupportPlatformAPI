@@ -71,16 +71,20 @@ namespace PsychosocialSupportPlatformAPI.Business.Mapper
             CreateMap<DoctorSchedule, UpdateDoctorScheduleDTO>().ReverseMap();
 
             CreateMap<DoctorSchedule, GetDoctorScheduleByAdminDTO>()
+                .ForMember(dest => dest.Day, opt => opt.MapFrom(src => src.Day.ToShortDateString()))
                 .ForMember(dest => dest.DoctorName, opt => opt.MapFrom(src => src.Doctor.Name))
                 .ForMember(dest => dest.DoctorSurname, opt => opt.MapFrom(src => src.Doctor.Surname))
                 .ForMember(dest => dest.DoctorProfileImageUrl, opt => opt.MapFrom(src => src.Doctor.ProfileImageUrl))
                 .ForMember(dest => dest.DoctorTitle, opt => opt.MapFrom(src => src.Doctor.Title));
 
-            CreateMap<DoctorSchedule, GetDoctorScheduleDTO>().ReverseMap();
+            CreateMap<DoctorSchedule, GetDoctorScheduleDTO>()
+                .ForMember(dest => dest.Day, opt => opt.MapFrom(src => src.Day.ToShortDateString()))
+                .ReverseMap();
 
             CreateMap<AppointmentSchedule, GetAppointmentScheduleDTO>().ReverseMap();
 
             CreateMap<AppointmentSchedule, GetPatientAppointmentDTO>()
+                .ForMember(dest => dest.DoctorId, opt => opt.MapFrom(src => src.DoctorId))
                 .ForMember(dest => dest.Day, opt => opt.MapFrom(src => src.Day.ToShortDateString()))
                 .ForMember(dest => dest.DoctorName, opt => opt.MapFrom(src => src.Doctor.Name))
                 .ForMember(dest => dest.DoctorSurname, opt => opt.MapFrom(src => src.Doctor.Surname))

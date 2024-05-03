@@ -4,6 +4,7 @@ using PsychosocialSupportPlatformAPI.Business.DoctorSchedules.DTOs;
 using PsychosocialSupportPlatformAPI.DataAccess.DoctorSchedules;
 using PsychosocialSupportPlatformAPI.Entity.Entities.Appointments;
 using PsychosocialSupportPlatformAPI.Entity.Enums;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace PsychosocialSupportPlatformAPI.Business.DoctorSchedules
 {
@@ -141,15 +142,14 @@ namespace PsychosocialSupportPlatformAPI.Business.DoctorSchedules
         public async Task<IEnumerable<object>> GetAllDoctorSchedules()
         {
             IEnumerable<GetDoctorScheduleByAdminDTO?> allDoctorSchedules = _mapper.Map<IEnumerable<GetDoctorScheduleByAdminDTO?>>(await _doctorScheduleRepository.GetAllDoctorSchedules());
-
             if (!allDoctorSchedules.Any()) throw new Exception();
 
-            IEnumerable<object> groupedSchedules = allDoctorSchedules.GroupBy(dto => dto!.Day.Date).OrderBy(group => group.Key)
+            IEnumerable<object> groupedSchedules = allDoctorSchedules.GroupBy(dto => DateTime.Parse(dto!.Day)).OrderBy(group => group.Key)
                 .Select(group =>
                 {
                     return new
                     {
-                        Day = group.Key,
+                        Day = group.Key.ToShortDateString(),
                         DoctorSchedules = group.Select(dto =>
                             new GetDoctorScheduleByAdminDTO
                             {

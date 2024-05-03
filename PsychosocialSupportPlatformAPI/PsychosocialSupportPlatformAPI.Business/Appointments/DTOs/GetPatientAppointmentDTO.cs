@@ -8,6 +8,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Appointments.DTOs
         public string Day { get; set; }
         public TimeRange TimeRange { get; set; }
         public string URL { get; set; }
+        public string DoctorId { get; set; }
         public string DoctorName { get; set; }
         public string DoctorSurname { get; set; }
         public string DoctorTitle { get; set; }

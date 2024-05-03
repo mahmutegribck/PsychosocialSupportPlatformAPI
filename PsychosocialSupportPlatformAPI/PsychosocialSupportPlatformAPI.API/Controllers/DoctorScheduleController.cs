@@ -52,7 +52,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
 
         [HttpGet]
         [Authorize(Roles = "Doctor")]
-        public async Task<IActionResult> GetDoctorSchedule()
+        public async Task<IActionResult> GetDoctorSchedules()
         {
             string? currentUserID = User.Identity?.Name;
             if (currentUserID == null) return Unauthorized();
