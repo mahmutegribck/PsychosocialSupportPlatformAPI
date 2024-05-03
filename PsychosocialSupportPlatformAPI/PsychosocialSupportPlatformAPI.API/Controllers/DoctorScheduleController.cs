@@ -7,6 +7,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
+    [Authorize(Roles = "Doctor")]
     public class DoctorScheduleController : ControllerBase
     {
         private readonly IDoctorScheduleService _doctorScheduleService;
@@ -19,7 +20,6 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
 
 
         [HttpPost]
-        [Authorize(Roles = "Doctor")]
         public async Task<IActionResult> CreateDoctorSchedule([FromBody] List<CreateDoctorScheduleDTO> createDoctorScheduleDTOs)
         {
             string? currentUserID = User.Identity?.Name;
@@ -30,7 +30,6 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
 
 
         [HttpDelete]
-        [Authorize(Roles = "Doctor")]
         public async Task<IActionResult> DeleteDoctorSchedule([FromQuery] int doctorScheduleId)
         {
             string? currentUserID = User.Identity?.Name;
@@ -41,17 +40,6 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
 
 
         [HttpGet]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> GetAllDoctorSchedule()
-        {
-            IEnumerable<object> allDoctorSchedules = await _doctorScheduleService.GetAllDoctorSchedules();
-            if (!allDoctorSchedules.Any()) return NotFound();
-            return Ok(allDoctorSchedules);
-        }
-
-
-        [HttpGet]
-        [Authorize(Roles = "Doctor")]
         public async Task<IActionResult> GetDoctorSchedules()
         {
             string? currentUserID = User.Identity?.Name;
@@ -63,7 +51,6 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
 
 
         [HttpGet]
-        [Authorize(Roles = "Doctor")]
         public async Task<IActionResult> GetDoctorScheduleById([FromQuery] int scheduleId)
         {
             string? currentUserID = User.Identity?.Name;
@@ -75,7 +62,6 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
 
 
         [HttpPut]
-        [Authorize(Roles = "Doctor")]
         public async Task<IActionResult> UpdateDoctorSchedule([FromBody] UpdateDoctorScheduleDTO updateDoctorScheduleDTO)
         {
             string? currentUserID = User.Identity?.Name;

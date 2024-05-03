@@ -18,19 +18,23 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
     [Authorize]
     public class UserController : ControllerBase
     {
-        private readonly UserManager<ApplicationUser> _userManager;
         private readonly UserManager<Doctor> _userManagerDoctor;
         private readonly UserManager<Patient> _patientManager;
         private readonly IMapper _mapper;
         private readonly IUserService _userService;
         private readonly IMessageService _messageService;
 
-        public UserController(UserManager<Doctor> userManagerDoctor, IMapper mapper, UserManager<Patient> patientManager, UserManager<ApplicationUser> userManager, IUserService userService, IMessageService messageService)
+        public UserController(
+            UserManager<Doctor> userManagerDoctor,
+            IMapper mapper,
+            UserManager<Patient> patientManager,
+            IUserService userService,
+            IMessageService messageService
+            )
         {
             _userManagerDoctor = userManagerDoctor;
             _mapper = mapper;
             _patientManager = patientManager;
-            _userManager = userManager;
             _userService = userService;
             _messageService = messageService;
         }
@@ -47,7 +51,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin, Doctor")]
+        [Authorize(Roles = "Doctor")]
         public async Task<IActionResult> GetAllPatients()
         {
             var patients = _mapper.Map<List<GetPatientDto>>(await _patientManager.Users.ToListAsync());
@@ -91,6 +95,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
         }
 
         [HttpDelete]
+        [Authorize(Roles = "Doctor,Patient")]
         public async Task<IActionResult> DeleteCurrentUser()
         {
             var currentUserID = User.Identity?.Name;
@@ -106,25 +111,6 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
             }
             return Unauthorized();
         }
-
-
-        [HttpDelete]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> DeleteUser([FromBody] string id)
-        {
-            if (id != null)
-            {
-                IdentityResult result = await _userService.DeleteUser(id);
-                if (result.Succeeded)
-                {
-                    return Ok();
-                }
-                return BadRequest(result.Errors);
-            }
-            return NotFound();
-        }
-
-
 
 
         [HttpPut]
@@ -158,9 +144,6 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
             }
             return BadRequest();
         }
-
-
-
 
 
         [HttpPost]

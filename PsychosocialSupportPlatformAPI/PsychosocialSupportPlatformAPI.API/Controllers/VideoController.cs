@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PsychosocialSupportPlatformAPI.Business.Videos;
-using PsychosocialSupportPlatformAPI.Business.Videos.DTOs;
 
 namespace PsychosocialSupportPlatformAPI.API.Controllers
 {
@@ -36,42 +35,6 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
                 return NotFound("Video Bulunamdı");
             }
             return Ok(video);
-        }
-
-        [HttpPost, DisableRequestSizeLimit]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> UploadVideo([FromForm] UploadVideoDTO uploadVideoDTO)
-        {
-            try
-            {
-                if (uploadVideoDTO.File == null && uploadVideoDTO.File!.Length == 0)
-                {
-                    return BadRequest("Video Bulunamadı.");
-                }
-                await _videoService.UploadVideo(uploadVideoDTO);
-                return Ok();
-
-            }
-            catch (Exception)
-            {
-                return BadRequest("Video Uzantısı MP4 Olmalıdır.");
-            }
-        }
-
-        [HttpDelete]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> DeleteVideo([FromQuery] int videoID)
-        {
-            await _videoService.DeleteVideo(videoID);
-            return Ok("Video Başarıyla Silindi");
-        }
-
-        [HttpPut]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> UpdateVideo([FromBody] UpdateVideoDTO updateVideoDTO)
-        {
-            await _videoService.UpdateVideo(updateVideoDTO);
-            return Ok();
         }
     }
 }

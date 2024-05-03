@@ -35,7 +35,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
 
 
         [HttpGet]
-        [Authorize(Roles = "Admin, Doctor")]
+        [Authorize(Roles = "Doctor")]
         public async Task<IActionResult> GetAllVideoStatistics()
         {
             var allVideoStatistics = await _videoStatisticsService.GetAllVideoStatistics();
@@ -66,7 +66,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
 
 
         [HttpGet]
-        [Authorize(Roles = "Admin, Doctor")]
+        [Authorize(Roles = "Doctor")]
         public async Task<IActionResult> GetAllVideoStatisticsByPatientID([FromQuery] string patientID)
         {
             var allVideoStatisticsByPatientID = await _videoStatisticsService.GetAllVideoStatisticsByPatientID(patientID);

@@ -1,11 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using PsychosocialSupportPlatformAPI.Business.AppointmentSchedules;
-using PsychosocialSupportPlatformAPI.Business.AppointmentSchedules.DTOs;
 
 namespace PsychosocialSupportPlatformAPI.API.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
+    [Authorize(Roles = "Patient")]
+
     public class AppointmentScheduleController : ControllerBase
     {
         private readonly IAppointmentScheduleService _appointmentScheduleService;
@@ -24,7 +26,5 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
 
             return Ok(allAppointmentSchedules);
         }
-
-        
     }
 }
