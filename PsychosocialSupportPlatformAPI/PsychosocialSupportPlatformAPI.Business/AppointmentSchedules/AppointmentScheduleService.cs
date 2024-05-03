@@ -4,6 +4,7 @@ using PsychosocialSupportPlatformAPI.DataAccess.AppointmentSchedules;
 using PsychosocialSupportPlatformAPI.DataAccess.DoctorSchedules;
 using PsychosocialSupportPlatformAPI.Entity.Entities.Appointments;
 using PsychosocialSupportPlatformAPI.Entity.Enums;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace PsychosocialSupportPlatformAPI.Business.AppointmentSchedules
 {
@@ -94,7 +95,7 @@ namespace PsychosocialSupportPlatformAPI.Business.AppointmentSchedules
             {
                 AppointmentSchedule appointmentFourteenToFifteen = new()
                 {
-                    TimeRange = TimeRange.ThirteenToFourteen,
+                    TimeRange = TimeRange.FourteenToFifteen,
                     Day = doctorSchedule.Day,
                     DoctorId = doctorSchedule.DoctorId
                 };
@@ -321,7 +322,7 @@ namespace PsychosocialSupportPlatformAPI.Business.AppointmentSchedules
 
         public async Task DeleteAppointmentSchedule(string doctorId, DateTime day)
         {
-            if (doctorId == null) throw new Exception(); 
+            if (doctorId == null) throw new Exception();
 
             IEnumerable<AppointmentSchedule> appointmentSchedules = await _appointmentScheduleRepository.GetAppointmentScheduleByDay(doctorId, day);
             await _appointmentScheduleRepository.DeleteAppointmentScheduleList(appointmentSchedules);
@@ -331,6 +332,28 @@ namespace PsychosocialSupportPlatformAPI.Business.AppointmentSchedules
         public async Task<IEnumerable<object>> GetAllAppointmentSchedules(DateTime day)
         {
             return await _appointmentScheduleRepository.GetAllAppointmentSchedules(day);
+        }
+
+        public Task<object> GetAllAppointmentSchedulesByDoctor()
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<bool> MakeAppointment(string patientId, MakeAppointmentDTO makeAppointmentDTO)
+        {
+            AppointmentSchedule? appointmentSchedule = await _appointmentScheduleRepository.GetAppointmentScheduleByDayAndTimeRange(makeAppointmentDTO.DoctorId, DateTime.Parse(makeAppointmentDTO.Day), makeAppointmentDTO.TimeRange);
+
+            if (appointmentSchedule == null)
+                return false;
+
+            appointmentSchedule.PatientId = patientId;
+            appointmentSchedule.Status = true;
+
+            //Toplantı bağlantısı oluşturulacak.
+
+            await _appointmentScheduleRepository.UpdateAppointmentSchedule(appointmentSchedule);
+
+            return true;
         }
     }
 }

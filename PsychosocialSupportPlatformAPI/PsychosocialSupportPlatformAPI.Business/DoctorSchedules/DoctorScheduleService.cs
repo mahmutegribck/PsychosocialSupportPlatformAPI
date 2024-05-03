@@ -28,7 +28,7 @@ namespace PsychosocialSupportPlatformAPI.Business.DoctorSchedules
 
             foreach (var createDoctorScheduleDTO in createDoctorScheduleDTOs)
             {
-                if(!createDoctorScheduleDTO.TimeRanges.Any()) throw new Exception();
+                if (!createDoctorScheduleDTO.TimeRanges.Any()) throw new Exception();
 
                 DateTime day = DateTime.Parse(createDoctorScheduleDTO.Day);
                 if (day < DateTime.Now.Date || day > DateTime.Now.Date.AddDays(14))
@@ -105,7 +105,10 @@ namespace PsychosocialSupportPlatformAPI.Business.DoctorSchedules
         {
             if (doctorId == null || scheduleId < 0) throw new ArgumentNullException();
 
-            DoctorSchedule? doctorSchedule = await _doctorScheduleRepository.GetDoctorScheduleById(doctorId, scheduleId) ?? throw new ArgumentNullException();
+            DoctorSchedule? doctorSchedule = await _doctorScheduleRepository.GetDoctorScheduleById(doctorId, scheduleId);
+
+            if (doctorSchedule == null) throw new Exception();
+
             await _doctorScheduleRepository.DeleteDoctorSchedule(doctorSchedule);
             await _appointmentScheduleService.DeleteAppointmentSchedule(doctorId, doctorSchedule.Day);
         }
@@ -135,9 +138,41 @@ namespace PsychosocialSupportPlatformAPI.Business.DoctorSchedules
         }
 
 
-        public async Task<IEnumerable<GetDoctorScheduleDTO?>> GetAllDoctorSchedule()
+        public async Task<IEnumerable<object>> GetAllDoctorSchedules()
         {
-            return _mapper.Map<IEnumerable<GetDoctorScheduleDTO?>>(await _doctorScheduleRepository.GetAllDoctorSchedule());
+            IEnumerable<GetDoctorScheduleByAdminDTO?> allDoctorSchedules = _mapper.Map<IEnumerable<GetDoctorScheduleByAdminDTO?>>(await _doctorScheduleRepository.GetAllDoctorSchedules());
+
+            if (!allDoctorSchedules.Any()) throw new Exception();
+
+            IEnumerable<object> groupedSchedules = allDoctorSchedules.GroupBy(dto => dto!.Day.Date).OrderBy(group => group.Key)
+                .Select(group =>
+                {
+                    return new
+                    {
+                        Day = group.Key,
+                        DoctorSchedules = group.Select(dto =>
+                            new GetDoctorScheduleByAdminDTO
+                            {
+                                Id = dto.Id,
+                                Day = dto.Day,
+                                EightToNine = dto.EightToNine,
+                                NineToTen = dto.NineToTen,
+                                TenToEleven = dto.TenToEleven,
+                                ElevenToTwelve = dto.ElevenToTwelve,
+                                TwelveToThirteen = dto.TwelveToThirteen,
+                                ThirteenToFourteen = dto.ThirteenToFourteen,
+                                FourteenToFifteen = dto.FourteenToFifteen,
+                                FifteenToSixteen = dto.FifteenToSixteen,
+                                SixteenToSeventeen = dto.SixteenToSeventeen,
+                                DoctorName = dto.DoctorName,
+                                DoctorSurname = dto.DoctorSurname,
+                                DoctorTitle = dto.DoctorTitle,
+                                DoctorProfileImageUrl = dto.DoctorProfileImageUrl
+                            }).ToList()
+                    };
+                }).ToList();
+
+            return groupedSchedules;
         }
     }
 }

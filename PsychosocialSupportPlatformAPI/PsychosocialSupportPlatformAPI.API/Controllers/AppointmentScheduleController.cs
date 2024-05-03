@@ -24,5 +24,18 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
 
             return Ok(allAppointmentSchedules);
         }
+
+        [HttpPatch]
+        public async Task<IActionResult> MakeAppointment([FromBody] MakeAppointmentDTO makeAppointmentDTO)
+        {
+            string? currentUserID = User.Identity?.Name;
+            if (currentUserID == null) return Unauthorized();
+
+            if (await _appointmentScheduleService.MakeAppointment(currentUserID, makeAppointmentDTO))
+            {
+                return Ok();
+            }
+            return BadRequest();
+        }
     }
 }

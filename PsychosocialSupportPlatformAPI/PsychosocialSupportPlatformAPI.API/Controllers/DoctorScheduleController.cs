@@ -44,9 +44,9 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetAllDoctorSchedule()
         {
-            IEnumerable<GetDoctorScheduleDTO?> allDoctorSchedule = await _doctorScheduleService.GetAllDoctorSchedule();
-            if (allDoctorSchedule == null) return NotFound();
-            return Ok(allDoctorSchedule);
+            IEnumerable<object> allDoctorSchedules = await _doctorScheduleService.GetAllDoctorSchedules();
+            if (!allDoctorSchedules.Any()) return NotFound();
+            return Ok(allDoctorSchedules);
         }
 
 

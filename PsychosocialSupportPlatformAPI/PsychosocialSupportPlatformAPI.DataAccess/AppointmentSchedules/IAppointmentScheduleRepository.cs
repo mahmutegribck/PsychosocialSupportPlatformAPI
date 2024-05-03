@@ -1,4 +1,5 @@
 ﻿using PsychosocialSupportPlatformAPI.Entity.Entities.Appointments;
+using PsychosocialSupportPlatformAPI.Entity.Enums;
 
 namespace PsychosocialSupportPlatformAPI.DataAccess.AppointmentSchedules
 {
@@ -8,9 +9,14 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.AppointmentSchedules
         Task DeleteAppointmentScheduleList(IEnumerable<AppointmentSchedule> appointmentSchedules);
         Task<IEnumerable<object>> GetAllAppointmentSchedules(DateTime day);
         Task<IEnumerable<AppointmentSchedule>> GetAppointmentScheduleByDay(string doctorId, DateTime day);
+        Task<AppointmentSchedule?> GetAppointmentScheduleByDayAndTimeRange(string doctorId, DateTime day, TimeRange timeRange);
+
+        Task<AppointmentSchedule?> GetAppointmentScheduleById(int appointmentScheduleId);
+        Task UpdateAppointmentSchedule(AppointmentSchedule appointmentSchedule);
 
 
-       
+
+
         Task<object> GetAllAppointmentSchedulesByDoctor();
     }
 }

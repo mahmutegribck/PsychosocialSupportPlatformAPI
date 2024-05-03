@@ -1,11 +1,4 @@
-﻿using Microsoft.IdentityModel.Protocols;
-using PsychosocialSupportPlatformAPI.Business.Videos.DTOs;
-using PsychosocialSupportPlatformAPI.Entity.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using PsychosocialSupportPlatformAPI.Business.Videos.DTOs;
 
 namespace PsychosocialSupportPlatformAPI.Business.Videos
 {

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace PsychosocialSupportPlatformAPI.Business.Users.DTOs.Admin
+﻿namespace PsychosocialSupportPlatformAPI.Business.Users.DTOs.Admin
 {
     public class GetAdminDto
     {

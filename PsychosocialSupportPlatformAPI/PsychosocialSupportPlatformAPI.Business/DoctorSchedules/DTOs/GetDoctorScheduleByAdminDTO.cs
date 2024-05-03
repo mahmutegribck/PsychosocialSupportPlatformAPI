@@ -1,6 +1,6 @@
 ﻿namespace PsychosocialSupportPlatformAPI.Business.DoctorSchedules.DTOs
 {
-    public class GetDoctorScheduleDTO
+    internal class GetDoctorScheduleByAdminDTO
     {
         public int Id { get; set; }
         public DateTime Day { get; set; }
@@ -13,7 +13,9 @@
         public bool FourteenToFifteen { get; set; }
         public bool FifteenToSixteen { get; set; }
         public bool SixteenToSeventeen { get; set; }
-        
-
+        public required string DoctorName { get; set; }
+        public required string DoctorSurname { get; set; }
+        public required string DoctorTitle { get; set; }
+        public string? DoctorProfileImageUrl { get; set; }
     }
 }

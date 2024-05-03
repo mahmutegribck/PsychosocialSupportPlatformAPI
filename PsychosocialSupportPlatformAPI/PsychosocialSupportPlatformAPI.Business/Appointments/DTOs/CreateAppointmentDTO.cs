@@ -1,5 +1,4 @@
-﻿using PsychosocialSupportPlatformAPI.Entity.Entities.Users;
-using PsychosocialSupportPlatformAPI.Entity.Enums;
+﻿using PsychosocialSupportPlatformAPI.Entity.Enums;
 
 namespace PsychosocialSupportPlatformAPI.Business.Appointments.DTOs
 {

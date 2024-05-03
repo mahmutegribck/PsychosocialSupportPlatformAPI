@@ -1,10 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PsychosocialSupportPlatformAPI.Entity.Entities.Videos;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PsychosocialSupportPlatformAPI.DataAccess.Videos
 {

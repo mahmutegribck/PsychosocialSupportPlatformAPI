@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PsychosocialSupportPlatformAPI.Entity.Entities.Appointments;
+using PsychosocialSupportPlatformAPI.Entity.Enums;
 
 namespace PsychosocialSupportPlatformAPI.DataAccess.AppointmentSchedules
 {
@@ -113,6 +114,22 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.AppointmentSchedules
                 //    })
                 //}),
             }).ToListAsync();
+        }
+
+        public async Task<AppointmentSchedule?> GetAppointmentScheduleById(int appointmentScheduleId)
+        {
+            return await _context.AppointmentSchedules.AsNoTracking().Where(a => a.Id == appointmentScheduleId).FirstOrDefaultAsync();
+        }
+
+        public async Task UpdateAppointmentSchedule(AppointmentSchedule appointmentSchedule)
+        {
+            _context.AppointmentSchedules.Update(appointmentSchedule);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<AppointmentSchedule?> GetAppointmentScheduleByDayAndTimeRange(string doctorId, DateTime day, TimeRange timeRange)
+        {
+            return await _context.AppointmentSchedules.AsNoTracking().Where(a => a.DoctorId == doctorId && a.Day == day && a.TimeRange == timeRange && a.Status == false).FirstOrDefaultAsync();
         }
     }
 }

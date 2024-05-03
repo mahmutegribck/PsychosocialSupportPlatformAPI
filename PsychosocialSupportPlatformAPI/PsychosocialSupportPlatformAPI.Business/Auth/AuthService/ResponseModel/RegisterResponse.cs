@@ -1,11 +1,4 @@
-﻿using PsychosocialSupportPlatformAPI.Business.Auth.JwtToken.DTOs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService.ResponseModel
+﻿namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService.ResponseModel
 {
     public class RegisterResponse
     {

@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using PsychosocialSupportPlatformAPI.Business.Appointments.DTOs;
 using PsychosocialSupportPlatformAPI.Business.AppointmentSchedules.DTOs;
 using PsychosocialSupportPlatformAPI.Business.Auth.AuthService.DTOs;
 using PsychosocialSupportPlatformAPI.Business.Auth.AuthService.DTOs.DoctorDTOs;
@@ -68,12 +67,14 @@ namespace PsychosocialSupportPlatformAPI.Business.Mapper
 
             CreateMap<DoctorSchedule, CreateDoctorScheduleDTO>().ReverseMap();
             CreateMap<DoctorSchedule, UpdateDoctorScheduleDTO>().ReverseMap();
+
+            CreateMap<DoctorSchedule, GetDoctorScheduleByAdminDTO>()
+                .ForMember(dest => dest.DoctorName, opt => opt.MapFrom(src => src.Doctor.Name))
+                .ForMember(dest => dest.DoctorSurname, opt => opt.MapFrom(src => src.Doctor.Surname))
+                .ForMember(dest => dest.DoctorProfileImageUrl, opt => opt.MapFrom(src => src.Doctor.ProfileImageUrl))
+                .ForMember(dest => dest.DoctorTitle, opt => opt.MapFrom(src => src.Doctor.Title));
+
             CreateMap<DoctorSchedule, GetDoctorScheduleDTO>().ReverseMap();
-
-            CreateMap<Appointment, CreateAppointmentDTO>().ReverseMap();
-            CreateMap<Appointment, UpdateAppointmentDTO>().ReverseMap();
-            CreateMap<Appointment, GetAppointmentDTO>().ReverseMap();
-
             CreateMap<AppointmentSchedule, GetAppointmentScheduleDTO>().ReverseMap();
 
 

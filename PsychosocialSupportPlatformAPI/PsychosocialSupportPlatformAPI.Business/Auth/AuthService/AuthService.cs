@@ -1,25 +1,18 @@
 ﻿using AutoMapper;
+using Google.Apis.Auth;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
-using PsychosocialSupportPlatformAPI.Business.Auth.AuthService.DTOs.DoctorDTOs;
-using PsychosocialSupportPlatformAPI.Business.Auth.AuthService.DTOs.PatientDTOs;
-using PsychosocialSupportPlatformAPI.Business.Auth.AuthService.DTOs;
-using PsychosocialSupportPlatformAPI.Business.Auth.AuthService.ResponseModel;
-using PsychosocialSupportPlatformAPI.Business.Auth.JwtToken.DTOs;
-using PsychosocialSupportPlatformAPI.Business.Auth.JwtToken;
-using PsychosocialSupportPlatformAPI.Entity.Entities.Users;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Google.Apis.Auth;
-using static Google.Apis.Auth.GoogleJsonWebSignature;
-using Google.Apis.Http;
-using Azure.Core;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 using Newtonsoft.Json;
+using PsychosocialSupportPlatformAPI.Business.Auth.AuthService.DTOs;
+using PsychosocialSupportPlatformAPI.Business.Auth.AuthService.DTOs.DoctorDTOs;
 using PsychosocialSupportPlatformAPI.Business.Auth.AuthService.DTOs.FacebookAuthDTOs;
+using PsychosocialSupportPlatformAPI.Business.Auth.AuthService.DTOs.PatientDTOs;
+using PsychosocialSupportPlatformAPI.Business.Auth.AuthService.ResponseModel;
+using PsychosocialSupportPlatformAPI.Business.Auth.JwtToken;
+using PsychosocialSupportPlatformAPI.Business.Auth.JwtToken.DTOs;
+using PsychosocialSupportPlatformAPI.Entity.Entities.Users;
+using System.Text;
+using static Google.Apis.Auth.GoogleJsonWebSignature;
 
 namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
 {

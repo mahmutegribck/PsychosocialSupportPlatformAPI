@@ -1,11 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
-using Microsoft.Extensions.Logging;
 using PsychosocialSupportPlatformAPI.Business.Messages;
 using PsychosocialSupportPlatformAPI.Business.Messages.DTOs;
-using PsychosocialSupportPlatformAPI.Business.Users;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
 
 namespace PsychosocialSupportPlatformAPI.API.Chat
 {
