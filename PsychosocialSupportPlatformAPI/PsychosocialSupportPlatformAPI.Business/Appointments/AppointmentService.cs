@@ -1,82 +1,60 @@
 ﻿using AutoMapper;
 using PsychosocialSupportPlatformAPI.Business.Appointments.DTOs;
+using PsychosocialSupportPlatformAPI.Business.AppointmentSchedules.DTOs;
+using PsychosocialSupportPlatformAPI.DataAccess.Appointments;
 using PsychosocialSupportPlatformAPI.DataAccess.AppointmentSchedules;
-using PsychosocialSupportPlatformAPI.DataAccess.DoctorSchedules;
+using PsychosocialSupportPlatformAPI.Entity.Entities.Appointments;
 
 namespace PsychosocialSupportPlatformAPI.Business.Appointments
 {
     public class AppointmentService : IAppointmentService
     {
-        private readonly IDoctorScheduleRepository _doctorScheduleRepository;
+        private readonly IAppointmentRepository _appointmentRepository;
         private readonly IAppointmentScheduleRepository _appointmentScheduleRepository;
         private readonly IMapper _mapper;
-        public AppointmentService(IDoctorScheduleRepository doctorScheduleRepository, IMapper mapper, IAppointmentScheduleRepository appointmentScheduleRepository)
+        public AppointmentService(IAppointmentRepository appointmentRepository, IAppointmentScheduleRepository appointmentScheduleRepository, IMapper mapper)
         {
-            _doctorScheduleRepository = doctorScheduleRepository;
-            _mapper = mapper;
+            _appointmentRepository = appointmentRepository;
             _appointmentScheduleRepository = appointmentScheduleRepository;
+            _mapper = mapper;
         }
 
-        public async Task CreatePatientAppointment(CreateAppointmentDTO createAppointmentDTO)
+        public async Task CancelPatientAppointment(CancelPatientAppointmentDTO cancelPatientAppointmentDTO, string patientId)
         {
-            //var cexistingDoctorSchedule = await _doctorScheduleRepository.GetDoctorScheduleByTimeRange(createAppointmentDTO.DoctorId, createAppointmentDTO.TimeRange, createAppointmentDTO.Day.DayOfWeek);,
+            AppointmentSchedule appointmentSchedule = _mapper.Map<AppointmentSchedule>(cancelPatientAppointmentDTO);
+            appointmentSchedule.PatientId = patientId;
+            AppointmentSchedule? cancelAppointmentSchedule = await _appointmentRepository.GetPatientAppointment(appointmentSchedule);
 
-            //var existingAppointmentSchedule = await _appointmentScheduleRepository.GetAppointmentScheduleByTimeRange(createAppointmentDTO.DoctorId, createAppointmentDTO.TimeRange, createAppointmentDTO.Day.Date);
+            if (cancelAppointmentSchedule == null) throw new Exception();
 
-
-            ////if (existingAppointmentSchedule != null) throw new Exception("Randevu Alınmış.");
-
-            //existingAppointmentSchedule.Status = true;
-            //await _appointmentScheduleRepository.UpdateAppointmentSchedule(existingAppointmentSchedule);
-
-            //var patientAppointment = _mapper.Map<Appointment>(createAppointmentDTO);
-            ////patientAppointment.AppointmentScheduleId = existingAppointmentSchedule.Id;
-
-            ////patientAppointment.Day = existingAppointmentSchedule.Day.Date;
-            ////patientAppointment.TimeRange = existingAppointmentSchedule.TimeRange;
-            //await _appointmentRepository.CreatePatientAppointment(patientAppointment);
+            await _appointmentRepository.CancelPatientAppointment(cancelAppointmentSchedule);
         }
 
-        public async Task DeletePatientAppointment(int appointmentID, string patientID)
+        public async Task<GetPatientAppointmentDTO?> GetPatientAppointmentById(int patientAppointmentId, string patientId)
         {
-            //var existingPatientAppointment = await _appointmentRepository.GetPatientAppointmentById(appointmentID, patientID);
-            //if (existingPatientAppointment == null) throw new Exception();
-
-            //await _appointmentRepository.DeletePatientAppointment(existingPatientAppointment);
+            return _mapper.Map<GetPatientAppointmentDTO>(await _appointmentRepository.GetPatientAppointmentById(patientAppointmentId, patientId));
         }
 
-        public async Task<GetAppointmentDTO> GetDoctorAppointmentById(int appointmentID, string doctorID)
+        public async Task<object> GetPatientAppointmentsByPatientId(string patientID)
         {
-            //return _mapper.Map<GetAppointmentDTO>(await _appointmentRepository.GetDoctorAppointmentById(appointmentID, doctorID));
-            return null;
-
+            return await _appointmentRepository.GetPatientAppointmentsByPatientId(patientID);
         }
 
-        public async Task<GetAppointmentDTO> GetPatientAppointmentById(int appointmentID, string patientID)
+        public async Task<bool> MakeAppointment(string patientId, MakeAppointmentDTO makeAppointmentDTO)
         {
-            //return _mapper.Map<GetAppointmentDTO>(await _appointmentRepository.GetPatientAppointmentById(appointmentID, patientID));
-            return null;
+            AppointmentSchedule? appointmentSchedule = await _appointmentScheduleRepository.GetAppointmentScheduleByDayAndTimeRange(makeAppointmentDTO.DoctorId, DateTime.Parse(makeAppointmentDTO.Day), makeAppointmentDTO.TimeRange);
 
-        }
+            if (appointmentSchedule == null)
+                return false;
 
-        public async Task<IEnumerable<GetAppointmentDTO>> GetAllDoctorAppointments(string doctorID)
-        {
-            //return _mapper.Map<IEnumerable<GetAppointmentDTO>>(await _appointmentRepository.GetAllDoctorAppointments(doctorID));
-            return null;
+            appointmentSchedule.PatientId = patientId;
+            appointmentSchedule.Status = true;
 
-        }
+            //Toplantı bağlantısı oluşturulacak.
 
-        public async Task<IEnumerable<GetAppointmentDTO>> GetAllPatientAppointments(string patientID)
-        {
-            //return _mapper.Map<IEnumerable<GetAppointmentDTO>>(await _appointmentRepository.GetAllPatientAppointments(patientID));
-            return null;
-        }
+            await _appointmentScheduleRepository.UpdateAppointmentSchedule(appointmentSchedule);
 
-        public async Task<IEnumerable<GetAppointmentDTO>> GetAllPatientAppointmentsByDoctor(string patientID, string doctorID)
-        {
-            //return _mapper.Map<IEnumerable<GetAppointmentDTO>>(await _appointmentRepository.GetAllPatientAppointmentsByDoctor(patientID, doctorID));
-            return null;
-
+            return true;
         }
     }
 }

@@ -1,8 +1,8 @@
 ﻿using PsychosocialSupportPlatformAPI.Entity.Enums;
 
-namespace PsychosocialSupportPlatformAPI.Business.AppointmentSchedules.DTOs
+namespace PsychosocialSupportPlatformAPI.Business.Appointments.DTOs
 {
-    public class GetAppointmentScheduleDTO
+    public class GetPatientAppointmentDTO
     {
         public int Id { get; set; }
         public DateTime Day { get; set; }

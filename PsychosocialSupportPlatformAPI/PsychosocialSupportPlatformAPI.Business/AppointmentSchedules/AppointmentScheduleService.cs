@@ -1,10 +1,8 @@
 ﻿using AutoMapper;
-using PsychosocialSupportPlatformAPI.Business.AppointmentSchedules.DTOs;
 using PsychosocialSupportPlatformAPI.DataAccess.AppointmentSchedules;
 using PsychosocialSupportPlatformAPI.DataAccess.DoctorSchedules;
 using PsychosocialSupportPlatformAPI.Entity.Entities.Appointments;
 using PsychosocialSupportPlatformAPI.Entity.Enums;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace PsychosocialSupportPlatformAPI.Business.AppointmentSchedules
 {
@@ -337,23 +335,6 @@ namespace PsychosocialSupportPlatformAPI.Business.AppointmentSchedules
         public Task<object> GetAllAppointmentSchedulesByDoctor()
         {
             throw new NotImplementedException();
-        }
-
-        public async Task<bool> MakeAppointment(string patientId, MakeAppointmentDTO makeAppointmentDTO)
-        {
-            AppointmentSchedule? appointmentSchedule = await _appointmentScheduleRepository.GetAppointmentScheduleByDayAndTimeRange(makeAppointmentDTO.DoctorId, DateTime.Parse(makeAppointmentDTO.Day), makeAppointmentDTO.TimeRange);
-
-            if (appointmentSchedule == null)
-                return false;
-
-            appointmentSchedule.PatientId = patientId;
-            appointmentSchedule.Status = true;
-
-            //Toplantı bağlantısı oluşturulacak.
-
-            await _appointmentScheduleRepository.UpdateAppointmentSchedule(appointmentSchedule);
-
-            return true;
         }
     }
 }

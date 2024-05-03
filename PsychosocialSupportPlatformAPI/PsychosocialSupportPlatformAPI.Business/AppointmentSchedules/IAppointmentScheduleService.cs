@@ -10,7 +10,6 @@ namespace PsychosocialSupportPlatformAPI.Business.AppointmentSchedules
         Task DeleteAppointmentSchedule(string doctorId, DateTime day);
         Task<IEnumerable<object>> GetAllAppointmentSchedules(DateTime day);
         Task<object> GetAllAppointmentSchedulesByDoctor();
-        Task<bool> MakeAppointment(string patientId,MakeAppointmentDTO makeAppointmentDTO);
 
     }
 }

@@ -2,11 +2,10 @@
 
 namespace PsychosocialSupportPlatformAPI.Business.Appointments.DTOs
 {
-    public class CreateAppointmentDTO
+    public class CancelPatientAppointmentDTO
     {
-        public DateTime Day { get; set; }
+        public required string Day { get; set; } 
         public TimeRange TimeRange { get; set; }
         public required string DoctorId { get; set; }
-        public required string PatientId { get; set; }
     }
 }

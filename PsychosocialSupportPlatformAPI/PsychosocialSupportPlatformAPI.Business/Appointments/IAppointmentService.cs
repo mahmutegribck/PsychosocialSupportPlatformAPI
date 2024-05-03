@@ -1,16 +1,16 @@
 ﻿using PsychosocialSupportPlatformAPI.Business.Appointments.DTOs;
+using PsychosocialSupportPlatformAPI.Business.AppointmentSchedules.DTOs;
+using PsychosocialSupportPlatformAPI.Entity.Entities.Appointments;
 
 namespace PsychosocialSupportPlatformAPI.Business.Appointments
 {
     public interface IAppointmentService
     {
-        Task CreatePatientAppointment(CreateAppointmentDTO createAppointmentDTO);
-        Task DeletePatientAppointment(int appointmentID, string patientID);
-        Task<GetAppointmentDTO> GetPatientAppointmentById(int appointmentID, string patientID);
-        Task<GetAppointmentDTO> GetDoctorAppointmentById(int appointmentID, string doctorID);
-        Task<IEnumerable<GetAppointmentDTO>> GetAllPatientAppointments(string patientID);
-        Task<IEnumerable<GetAppointmentDTO>> GetAllPatientAppointmentsByDoctor(string patientID, string doctorID);
+        Task<object> GetPatientAppointmentsByPatientId(string patientId);
+        Task<GetPatientAppointmentDTO?> GetPatientAppointmentById(int patientAppointmentId, string patientId);
 
-        Task<IEnumerable<GetAppointmentDTO>> GetAllDoctorAppointments(string doctorID);
+        Task CancelPatientAppointment(CancelPatientAppointmentDTO cancelPatientAppointmentDTO, string patientId);
+        Task<bool> MakeAppointment(string patientId, MakeAppointmentDTO makeAppointmentDTO);
+
     }
 }

@@ -14,6 +14,7 @@ using PsychosocialSupportPlatformAPI.Business.Statistics;
 using PsychosocialSupportPlatformAPI.Business.Users;
 using PsychosocialSupportPlatformAPI.Business.Videos;
 using PsychosocialSupportPlatformAPI.DataAccess;
+using PsychosocialSupportPlatformAPI.DataAccess.Appointments;
 using PsychosocialSupportPlatformAPI.DataAccess.AppointmentSchedules;
 using PsychosocialSupportPlatformAPI.DataAccess.DoctorSchedules;
 using PsychosocialSupportPlatformAPI.DataAccess.Messages;
@@ -111,6 +112,7 @@ builder.Services.AddScoped<IDoctorScheduleRepository, DoctorScheduleRepository>(
 builder.Services.AddScoped<IDoctorScheduleService, DoctorScheduleService>();
 
 builder.Services.AddScoped<IAppointmentService, AppointmentService>();
+builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
 
 builder.Services.AddScoped<IAppointmentScheduleRepository, AppointmentScheduleRepository>();
 builder.Services.AddScoped<IAppointmentScheduleService, AppointmentScheduleService>();
