@@ -21,6 +21,7 @@ namespace PsychosocialSupportPlatformAPI.DataAccess
         public DbSet<VideoStatistics> VideoStatistics { get; set; }
         public DbSet<DoctorSchedule> DoctorSchedules { get; set; }
         public DbSet<AppointmentSchedule> AppointmentSchedules { get; set; }
+        public DbSet<AppointmentStatistics> AppointmentStatistics { get; set; }
 
 
 
@@ -57,9 +58,58 @@ namespace PsychosocialSupportPlatformAPI.DataAccess
                .OnDelete(DeleteBehavior.ClientSetNull);
 
             builder.Entity<Doctor>()
-               .HasMany(d => d.DoctorSchedules) 
-               .WithOne(a => a.Doctor) 
+               .HasMany(d => d.DoctorSchedules)
+               .WithOne(a => a.Doctor)
                .OnDelete(DeleteBehavior.Cascade);
+
+
+
+            //builder.Entity<AppointmentStatistics>()
+            //.HasOne(a => a.AppointmentSchedule)
+            //.WithMany(s => s.AppointmentStatistics)
+            //.HasForeignKey(a => a.AppointmentScheduleId)
+            //.OnDelete(DeleteBehavior.Cascade); // On delete cascade for AppointmentStatistics
+
+            //builder.Entity<AppointmentStatistics>()
+            //    .HasOne(a => a.Patient)
+            //    .WithMany(p => p.AppointmentStatistics)
+            //    .HasForeignKey(a => a.PatientId)
+            //    .OnDelete(DeleteBehavior.Cascade); // On delete cascade for AppointmentStatistics
+
+            //builder.Entity<AppointmentStatistics>()
+            //    .HasOne(a => a.Doctor)
+            //    .WithMany(d => d.AppointmentStatistics)
+            //    .HasForeignKey(a => a.DoctorId)
+            //    .OnDelete(DeleteBehavior.Cascade);
+
+
+            //builder.Entity<Doctor>()
+            //  .HasMany(d => d.AppointmentStatistics)
+            //  .WithOne(a => a.Doctor)
+            //  .HasForeignKey(a => a.DoctorId)
+            //  .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<Patient>()
+              .HasMany(p => p.AppointmentStatistics)
+              .WithOne(p => p.Patient)
+              .HasForeignKey(p => p.PatientId)
+              .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<AppointmentSchedule>()
+               .HasMany(a => a.AppointmentStatistics)
+               .WithOne(a => a.AppointmentSchedule)
+               .HasForeignKey(a => a.AppointmentScheduleId)
+               .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<AppointmentStatistics>(entity =>
+            {
+                entity.HasOne(s => s.Doctor)
+                .WithMany(s => s.AppointmentStatistics)
+                .HasForeignKey(s => s.DoctorId)
+                .OnDelete(DeleteBehavior.Restrict);
+            });
+
+
         }
     }
 }

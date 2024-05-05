@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
-using PsychosocialSupportPlatformAPI.Business.Statistics.DTOs;
+using PsychosocialSupportPlatformAPI.Business.Statistics.Videos.DTOs;
 using PsychosocialSupportPlatformAPI.DataAccess.Statistics;
 using PsychosocialSupportPlatformAPI.Entity.Entities.Videos;
 
-namespace PsychosocialSupportPlatformAPI.Business.Statistics
+namespace PsychosocialSupportPlatformAPI.Business.Statistics.Videos
 {
     public class VideoStatisticsService : IVideoStatisticsService
     {
@@ -46,7 +46,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Statistics
 
         public async Task<IEnumerable<object>> GetAllVideoStatisticsByPatientID(string patientID)
         {
-            return (await _videoStatisticsRepository.GetAllVideoStatisticsByPatientID(patientID));
+            return await _videoStatisticsRepository.GetAllVideoStatisticsByPatientID(patientID);
         }
 
         public async Task<GetVideoStatisticsDTO> GetVideoStatisticsByID(int statisticsID)

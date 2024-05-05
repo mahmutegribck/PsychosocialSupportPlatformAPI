@@ -10,7 +10,8 @@ using PsychosocialSupportPlatformAPI.Business.Auth.AuthService;
 using PsychosocialSupportPlatformAPI.Business.Auth.JwtToken;
 using PsychosocialSupportPlatformAPI.Business.DoctorSchedules;
 using PsychosocialSupportPlatformAPI.Business.Messages;
-using PsychosocialSupportPlatformAPI.Business.Statistics;
+using PsychosocialSupportPlatformAPI.Business.Statistics.Appointments;
+using PsychosocialSupportPlatformAPI.Business.Statistics.Videos;
 using PsychosocialSupportPlatformAPI.Business.Users;
 using PsychosocialSupportPlatformAPI.Business.Videos;
 using PsychosocialSupportPlatformAPI.DataAccess;
@@ -19,6 +20,7 @@ using PsychosocialSupportPlatformAPI.DataAccess.AppointmentSchedules;
 using PsychosocialSupportPlatformAPI.DataAccess.DoctorSchedules;
 using PsychosocialSupportPlatformAPI.DataAccess.Messages;
 using PsychosocialSupportPlatformAPI.DataAccess.Statistics;
+using PsychosocialSupportPlatformAPI.DataAccess.Statistics.Appointments;
 using PsychosocialSupportPlatformAPI.DataAccess.Users;
 using PsychosocialSupportPlatformAPI.DataAccess.Videos;
 using System.Security.Claims;
@@ -116,6 +118,9 @@ builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
 
 builder.Services.AddScoped<IAppointmentScheduleRepository, AppointmentScheduleRepository>();
 builder.Services.AddScoped<IAppointmentScheduleService, AppointmentScheduleService>();
+
+builder.Services.AddScoped<IAppointmentStatisticsRepository, AppointmentStatisticsRepository>();
+builder.Services.AddScoped<IAppointmentStatisticsService, AppointmentStatisticsService>();
 
 
 

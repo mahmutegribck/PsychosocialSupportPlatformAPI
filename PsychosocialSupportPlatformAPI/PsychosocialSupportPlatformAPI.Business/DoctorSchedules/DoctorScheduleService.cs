@@ -4,7 +4,6 @@ using PsychosocialSupportPlatformAPI.Business.DoctorSchedules.DTOs;
 using PsychosocialSupportPlatformAPI.DataAccess.DoctorSchedules;
 using PsychosocialSupportPlatformAPI.Entity.Entities.Appointments;
 using PsychosocialSupportPlatformAPI.Entity.Enums;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace PsychosocialSupportPlatformAPI.Business.DoctorSchedules
 {
@@ -39,7 +38,6 @@ namespace PsychosocialSupportPlatformAPI.Business.DoctorSchedules
                 doctorSchedule.DoctorId = currentUserID;
 
                 DoctorSchedule? existingSchedule = await _doctorScheduleRepository.GetDoctorScheduleByDay(currentUserID, doctorSchedule.Day);
-                if (existingSchedule != null) throw new Exception("Girilen Gune Ait Takvim Kaydi Mevcut.");
 
                 foreach (var timeRange in createDoctorScheduleDTO.TimeRanges)
                 {
@@ -78,8 +76,17 @@ namespace PsychosocialSupportPlatformAPI.Business.DoctorSchedules
                     }
 
                 }
-                await _doctorScheduleRepository.CreateDoctorSchedule(doctorSchedule);
-                await _appointmentScheduleService.AddAppointmentSchedule(doctorSchedule);
+                if (existingSchedule != null)
+                {
+                    doctorSchedule.Id = existingSchedule.Id;
+                    await _doctorScheduleRepository.UpdateDoctorSchedule(doctorSchedule);
+                    await _appointmentScheduleService.UpdateAppointmentSchedule(doctorSchedule);
+                }
+                else
+                {
+                    await _doctorScheduleRepository.CreateDoctorSchedule(doctorSchedule);
+                    await _appointmentScheduleService.AddAppointmentSchedule(doctorSchedule);
+                }
             }
         }
 

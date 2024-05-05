@@ -9,9 +9,11 @@ namespace PsychosocialSupportPlatformAPI.Entity.Entities.Users
         {
             AppointmentSchedules = new HashSet<AppointmentSchedule>();
             Statistics = new HashSet<VideoStatistics>();
+            AppointmentStatistics = new HashSet<AppointmentStatistics>();
         }
         public ICollection<AppointmentSchedule> AppointmentSchedules { get; set; }
         public ICollection<VideoStatistics> Statistics { get; set; }
+        public ICollection<AppointmentStatistics> AppointmentStatistics { get; set; }
 
     }
 }

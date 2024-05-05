@@ -1,4 +1,4 @@
-﻿namespace PsychosocialSupportPlatformAPI.Business.Statistics.DTOs
+﻿namespace PsychosocialSupportPlatformAPI.Business.Statistics.Videos.DTOs
 {
     public class CreateVideoStatisticsDTO
     {

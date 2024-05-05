@@ -4,7 +4,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PsychosocialSupportPlatformAPI.Business.DoctorSchedules;
-using PsychosocialSupportPlatformAPI.Business.Statistics;
+using PsychosocialSupportPlatformAPI.Business.Statistics.Appointments;
+using PsychosocialSupportPlatformAPI.Business.Statistics.Videos;
 using PsychosocialSupportPlatformAPI.Business.Users;
 using PsychosocialSupportPlatformAPI.Business.Users.DTOs;
 using PsychosocialSupportPlatformAPI.Business.Videos;
@@ -24,6 +25,8 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
         private readonly IMapper _mapper;
         private readonly IVideoService _videoService;
         private readonly IVideoStatisticsService _videoStatisticsService;
+        private readonly IAppointmentStatisticsService _appointmentStatisticsService;
+
 
 
         public AdminController(
@@ -32,7 +35,8 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
             UserManager<Patient> patientManager,
             IMapper mapper,
             IVideoService videoService,
-            IVideoStatisticsService videoStatisticsService
+            IVideoStatisticsService videoStatisticsService,
+            IAppointmentStatisticsService appointmentStatisticsService
             )
         {
             _doctorScheduleService = doctorScheduleService;
@@ -41,6 +45,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
             _mapper = mapper;
             _videoService = videoService;
             _videoStatisticsService = videoStatisticsService;
+            _appointmentStatisticsService = appointmentStatisticsService;
         }
 
 
@@ -125,6 +130,14 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
             var allVideoStatisticsByPatientID = await _videoStatisticsService.GetAllVideoStatisticsByPatientID(patientID);
             if (!allVideoStatisticsByPatientID.Any()) return NotFound();
             return Ok(allVideoStatisticsByPatientID);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllPatientAppointmentStatistics()
+        {
+            var allPatientAppointmentStatistics = await _appointmentStatisticsService.GetAllPatientAppointmentStatistics();
+            if (!allPatientAppointmentStatistics.Any()) return NotFound();
+            return Ok(allPatientAppointmentStatistics);
         }
     }
 }

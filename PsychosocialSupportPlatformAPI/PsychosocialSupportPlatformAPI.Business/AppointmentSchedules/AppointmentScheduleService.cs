@@ -147,7 +147,7 @@ namespace PsychosocialSupportPlatformAPI.Business.AppointmentSchedules
                     switch (timeRange)
                     {
                         case TimeRange.EightToNine:
-                            if (doctorSchedule.EightToNine && appointmentSchedule.TimeRange != timeRange)
+                            if (doctorSchedule.EightToNine && !appointmentSchedules.Any(a => a.TimeRange == timeRange) && !createAppointmentList.Any(a => a.TimeRange == timeRange))
                             {
                                 AppointmentSchedule appointmentEightToNine = new()
                                 {
@@ -165,7 +165,7 @@ namespace PsychosocialSupportPlatformAPI.Business.AppointmentSchedules
                             break;
 
                         case TimeRange.NineToTen:
-                            if (doctorSchedule.NineToTen && appointmentSchedule.TimeRange != timeRange)
+                            if (doctorSchedule.NineToTen && !appointmentSchedules.Any(a => a.TimeRange == timeRange) && !createAppointmentList.Any(a => a.TimeRange == timeRange))
                             {
                                 AppointmentSchedule appointmentNineToTen = new()
                                 {
@@ -183,7 +183,7 @@ namespace PsychosocialSupportPlatformAPI.Business.AppointmentSchedules
                             break;
 
                         case TimeRange.TenToEleven:
-                            if (doctorSchedule.TenToEleven && appointmentSchedule.TimeRange != timeRange)
+                            if (doctorSchedule.TenToEleven && !appointmentSchedules.Any(a => a.TimeRange == timeRange) && !createAppointmentList.Any(a => a.TimeRange == timeRange))
                             {
                                 AppointmentSchedule appointmentTenToEleven = new()
                                 {
@@ -200,7 +200,7 @@ namespace PsychosocialSupportPlatformAPI.Business.AppointmentSchedules
                             break;
 
                         case TimeRange.ElevenToTwelve:
-                            if (doctorSchedule.ElevenToTwelve && appointmentSchedule.TimeRange != timeRange)
+                            if (doctorSchedule.ElevenToTwelve && !appointmentSchedules.Any(a => a.TimeRange == timeRange)&& !createAppointmentList.Any(a=> a.TimeRange == timeRange))
                             {
                                 AppointmentSchedule appointmentElevenToTwelve = new()
                                 {
@@ -217,7 +217,7 @@ namespace PsychosocialSupportPlatformAPI.Business.AppointmentSchedules
                             break;
 
                         case TimeRange.TwelveToThirteen:
-                            if (doctorSchedule.TwelveToThirteen && appointmentSchedule.TimeRange != timeRange)
+                            if (doctorSchedule.TwelveToThirteen && !appointmentSchedules.Any(a => a.TimeRange == timeRange) && !createAppointmentList.Any(a => a.TimeRange == timeRange))
                             {
                                 AppointmentSchedule appointmentTwelveToThirteen = new()
                                 {
@@ -234,7 +234,7 @@ namespace PsychosocialSupportPlatformAPI.Business.AppointmentSchedules
                             break;
 
                         case TimeRange.ThirteenToFourteen:
-                            if (doctorSchedule.ThirteenToFourteen && appointmentSchedule.TimeRange != timeRange)
+                            if (doctorSchedule.ThirteenToFourteen && !appointmentSchedules.Any(a => a.TimeRange == timeRange) && !createAppointmentList.Any(a => a.TimeRange == timeRange))
                             {
                                 AppointmentSchedule appointmentThirteenToFourteen = new()
                                 {
@@ -251,7 +251,7 @@ namespace PsychosocialSupportPlatformAPI.Business.AppointmentSchedules
                             break;
 
                         case TimeRange.FourteenToFifteen:
-                            if (doctorSchedule.FourteenToFifteen && appointmentSchedule.TimeRange != timeRange)
+                            if (doctorSchedule.FourteenToFifteen && !appointmentSchedules.Any(a => a.TimeRange == timeRange) && !createAppointmentList.Any(a => a.TimeRange == timeRange))
                             {
                                 AppointmentSchedule appointmentFourteenToFifteen = new()
                                 {
@@ -268,7 +268,7 @@ namespace PsychosocialSupportPlatformAPI.Business.AppointmentSchedules
                             break;
 
                         case TimeRange.FifteenToSixteen:
-                            if (doctorSchedule.FifteenToSixteen && appointmentSchedule.TimeRange != timeRange)
+                            if (doctorSchedule.FifteenToSixteen && !appointmentSchedules.Any(a => a.TimeRange == timeRange) && !createAppointmentList.Any(a => a.TimeRange == timeRange))
                             {
                                 AppointmentSchedule appointmentFifteenToSixteen = new()
                                 {
@@ -285,7 +285,7 @@ namespace PsychosocialSupportPlatformAPI.Business.AppointmentSchedules
                             break;
 
                         case TimeRange.SixteenToSeventeen:
-                            if (doctorSchedule.SixteenToSeventeen && appointmentSchedule.TimeRange != timeRange)
+                            if (doctorSchedule.SixteenToSeventeen && !appointmentSchedules.Any(a => a.TimeRange == timeRange) && !createAppointmentList.Any(a => a.TimeRange == timeRange))
                             {
                                 AppointmentSchedule appointmentSixteenToSeventeen = new()
                                 {

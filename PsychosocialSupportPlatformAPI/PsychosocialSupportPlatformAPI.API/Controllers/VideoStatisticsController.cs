@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PsychosocialSupportPlatformAPI.Business.Statistics;
-using PsychosocialSupportPlatformAPI.Business.Statistics.DTOs;
+using PsychosocialSupportPlatformAPI.Business.Statistics.Videos;
+using PsychosocialSupportPlatformAPI.Business.Statistics.Videos.DTOs;
 
 namespace PsychosocialSupportPlatformAPI.API.Controllers
 {

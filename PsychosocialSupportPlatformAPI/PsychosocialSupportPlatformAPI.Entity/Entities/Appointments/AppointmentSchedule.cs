@@ -6,6 +6,11 @@ namespace PsychosocialSupportPlatformAPI.Entity.Entities.Appointments
 {
     public class AppointmentSchedule
     {
+        public AppointmentSchedule()
+        {
+            AppointmentStatistics = new HashSet<AppointmentStatistics>();
+        }
+
         [Key]
         public int Id { get; set; }
         public DateTime Day { get; set; }
@@ -17,6 +22,8 @@ namespace PsychosocialSupportPlatformAPI.Entity.Entities.Appointments
         public Patient? Patient { get; set; }
         public required string DoctorId { get; set; }
         public Doctor Doctor { get; set; } = null!;
+
+        public ICollection<AppointmentStatistics> AppointmentStatistics { get; set; }
 
     }
 }

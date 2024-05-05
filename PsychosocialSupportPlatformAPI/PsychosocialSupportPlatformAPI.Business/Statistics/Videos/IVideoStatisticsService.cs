@@ -1,6 +1,6 @@
-﻿using PsychosocialSupportPlatformAPI.Business.Statistics.DTOs;
+﻿using PsychosocialSupportPlatformAPI.Business.Statistics.Videos.DTOs;
 
-namespace PsychosocialSupportPlatformAPI.Business.Statistics
+namespace PsychosocialSupportPlatformAPI.Business.Statistics.Videos
 {
     public interface IVideoStatisticsService
     {

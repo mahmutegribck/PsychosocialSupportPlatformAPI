@@ -7,7 +7,8 @@ using PsychosocialSupportPlatformAPI.Business.Auth.AuthService.DTOs.DoctorDTOs;
 using PsychosocialSupportPlatformAPI.Business.Auth.AuthService.DTOs.PatientDTOs;
 using PsychosocialSupportPlatformAPI.Business.DoctorSchedules.DTOs;
 using PsychosocialSupportPlatformAPI.Business.Messages.DTOs;
-using PsychosocialSupportPlatformAPI.Business.Statistics.DTOs;
+using PsychosocialSupportPlatformAPI.Business.Statistics.Appointments.DTOs;
+using PsychosocialSupportPlatformAPI.Business.Statistics.Videos.DTOs;
 using PsychosocialSupportPlatformAPI.Business.Users.DTOs;
 using PsychosocialSupportPlatformAPI.Business.Users.DTOs.Admin;
 using PsychosocialSupportPlatformAPI.Business.Users.DTOs.DoctorDTOs;
@@ -69,7 +70,6 @@ namespace PsychosocialSupportPlatformAPI.Business.Mapper
 
             CreateMap<DoctorSchedule, CreateDoctorScheduleDTO>().ReverseMap();
             CreateMap<DoctorSchedule, UpdateDoctorScheduleDTO>().ReverseMap();
-
             CreateMap<DoctorSchedule, GetDoctorScheduleByAdminDTO>()
                 .ForMember(dest => dest.Day, opt => opt.MapFrom(src => src.Day.ToShortDateString()))
                 .ForMember(dest => dest.DoctorName, opt => opt.MapFrom(src => src.Doctor.Name))
@@ -82,7 +82,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Mapper
                 .ReverseMap();
 
             CreateMap<AppointmentSchedule, GetAppointmentScheduleDTO>().ReverseMap();
-
+            CreateMap<AppointmentSchedule, CancelPatientAppointmentDTO>().ReverseMap();
             CreateMap<AppointmentSchedule, GetPatientAppointmentDTO>()
                 .ForMember(dest => dest.DoctorId, opt => opt.MapFrom(src => src.DoctorId))
                 .ForMember(dest => dest.Day, opt => opt.MapFrom(src => src.Day.ToShortDateString()))
@@ -91,7 +91,16 @@ namespace PsychosocialSupportPlatformAPI.Business.Mapper
                 .ForMember(dest => dest.DoctorTitle, opt => opt.MapFrom(src => src.Doctor.Title));
 
 
-            CreateMap<AppointmentSchedule, CancelPatientAppointmentDTO>().ReverseMap();
+
+            CreateMap<AppointmentStatistics, AddAppointmentStatisticsDTO>().ReverseMap();
+            CreateMap<AppointmentStatistics, UpdateAppointmentStatisticsDTO>().ReverseMap();
+            CreateMap<AppointmentStatistics, DeleteAppointmentStatisticsDTO>().ReverseMap();
+            CreateMap<AppointmentStatistics, GetAppointmentStatisticsDTO>()
+                .ForMember(dest => dest.PatientName, opt => opt.MapFrom(src => src.Patient.Name))
+                .ForMember(dest => dest.PatientSurname, opt => opt.MapFrom(src => src.PatientId))
+                .ForMember(dest => dest.AppointmentDay, opt => opt.MapFrom(src => src.AppointmentSchedule.Day.ToShortDateString()));
+
+
 
             CreateMap<DateTime, DateOnly>().ConvertUsing(dt => DateOnly.FromDateTime(dt));
         }
