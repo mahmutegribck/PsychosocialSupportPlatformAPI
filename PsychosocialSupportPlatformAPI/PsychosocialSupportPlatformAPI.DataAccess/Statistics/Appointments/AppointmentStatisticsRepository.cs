@@ -37,12 +37,12 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Statistics.Appointments
 
         public async Task<IEnumerable<AppointmentStatistics>> GetAllPatientAppointmentStatisticsByDoctorId(string doctorId)
         {
-            return await _context.AppointmentStatistics.Include(s => s.Patient).Where(s => s.DoctorId == doctorId).AsNoTracking().ToListAsync();
+            return await _context.AppointmentStatistics.Include(s => s.Patient).Include(s => s.AppointmentSchedule).Where(s => s.DoctorId == doctorId).AsNoTracking().ToListAsync();
         }
 
         public async Task<IEnumerable<AppointmentStatistics>> GetAllPatientAppointmentStatisticsByPatientId(string doctorId, string patientId)
         {
-            return await _context.AppointmentStatistics.Include(s => s.Patient).Where(s => s.DoctorId == doctorId && s.PatientId == patientId).AsNoTracking().ToListAsync();
+            return await _context.AppointmentStatistics.Include(s => s.Patient).Include(s => s.AppointmentSchedule).Where(s => s.DoctorId == doctorId && s.PatientId == patientId).AsNoTracking().ToListAsync();
         }
 
         public async Task<IEnumerable<object>> GetAllPatientAppointmentStatistics()
@@ -66,6 +66,14 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Statistics.Appointments
                     {
                         PatientId = patient.Id,
                         PatientName = patient.Name,
+                        PatientSurname = patient.Surname,
+                        AppointmentStatistics = patient.AppointmentStatistics.Select(appointmentStatistics => new
+                        {
+                            AppointmentStatisticsId = appointmentStatistics.Id,
+                            AppointmentStartTime = appointmentStatistics.AppointmentStartTime,
+                            AppointmentEndTime = appointmentStatistics.AppointmentEndTime,
+                            AppointmentComment = appointmentStatistics.AppointmentComment
+                        })
                         // Add other patient properties you want to include
                     }).ToArray()
                 };

@@ -27,6 +27,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Statistics.Appointments
             if (!await _appointmentRepository.CheckPatientAppointment(addAppointmentStatisticsDTO.AppointmentScheduleId, addAppointmentStatisticsDTO.PatientId, doctorId)) throw new Exception();
 
             AppointmentStatistics appointmentStatistics = _mapper.Map<AppointmentStatistics>(addAppointmentStatisticsDTO);
+            appointmentStatistics.DoctorId = doctorId;
 
             await _appointmentStatisticsRepository.AddAppointmentStatistics(appointmentStatistics);
         }
