@@ -9,11 +9,11 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
     [Route("api/[controller]/[action]")]
     [ApiController]
     [Authorize(Roles = "Patient")]
-    public class AppointmentController : ControllerBase
+    public class PatientAppointmentController : ControllerBase
     {
         private readonly IAppointmentService _appointmentService;
 
-        public AppointmentController(IAppointmentService appointmentService)
+        public PatientAppointmentController(IAppointmentService appointmentService)
         {
             _appointmentService = appointmentService;
         }

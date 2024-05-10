@@ -1,4 +1,4 @@
-﻿using PsychosocialSupportPlatformAPI.Business.AppointmentSchedules.DTOs;
+﻿using PsychosocialSupportPlatformAPI.Business.Appointments.DTOs.Doctor;
 using PsychosocialSupportPlatformAPI.Entity.Entities.Appointments;
 
 namespace PsychosocialSupportPlatformAPI.Business.AppointmentSchedules
@@ -10,6 +10,12 @@ namespace PsychosocialSupportPlatformAPI.Business.AppointmentSchedules
         Task DeleteAppointmentSchedule(string doctorId, DateTime day);
         Task<IEnumerable<object>> GetAllAppointmentSchedules(DateTime day);
         Task<object> GetAllAppointmentSchedulesByDoctor();
+
+        Task<IEnumerable<GetDoctorAppointmentDTO>> AllDoctorAppointments(string doctorId);
+        Task<IEnumerable<object>> GetAllDoctorAppointmentsByPatientId(string doctorId, string patientId);
+        Task<IEnumerable<object>> GetAllDoctorAppointmentsByDate(DateTime date, string doctorId);
+
+
 
     }
 }

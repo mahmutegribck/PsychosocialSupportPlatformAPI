@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using PsychosocialSupportPlatformAPI.Business.Appointments.DTOs.Doctor;
 using PsychosocialSupportPlatformAPI.DataAccess.AppointmentSchedules;
 using PsychosocialSupportPlatformAPI.DataAccess.DoctorSchedules;
 using PsychosocialSupportPlatformAPI.Entity.Entities.Appointments;
@@ -333,6 +334,21 @@ namespace PsychosocialSupportPlatformAPI.Business.AppointmentSchedules
         }
 
         public Task<object> GetAllAppointmentSchedulesByDoctor()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<GetDoctorAppointmentDTO>> AllDoctorAppointments(string doctorId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<object>> GetAllDoctorAppointmentsByPatientId(string doctorId, string patientId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<object>> GetAllDoctorAppointmentsByDate(DateTime date, string doctorId)
         {
             throw new NotImplementedException();
         }

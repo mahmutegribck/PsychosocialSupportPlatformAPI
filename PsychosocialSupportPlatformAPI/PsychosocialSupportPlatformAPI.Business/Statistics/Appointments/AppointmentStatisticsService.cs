@@ -24,7 +24,9 @@ namespace PsychosocialSupportPlatformAPI.Business.Statistics.Appointments
 
         public async Task AddAppointmentStatistics(AddAppointmentStatisticsDTO addAppointmentStatisticsDTO, string doctorId)
         {
-            if (!await _appointmentRepository.CheckPatientAppointment(addAppointmentStatisticsDTO.AppointmentScheduleId, addAppointmentStatisticsDTO.PatientId, doctorId)) throw new Exception();
+            if (!await _appointmentRepository.CheckPatientAppointment(addAppointmentStatisticsDTO.AppointmentScheduleId, addAppointmentStatisticsDTO.PatientId, doctorId)) throw new Exception("Hasta Randevu Kaydı Bulunamadı.");
+
+            if (await _appointmentStatisticsRepository.CheckPatientAppointmentStatistics(addAppointmentStatisticsDTO.AppointmentScheduleId)) throw new Exception("Randevuya Ait Rapor Kaydı Bulunmaktadır.");
 
             AppointmentStatistics appointmentStatistics = _mapper.Map<AppointmentStatistics>(addAppointmentStatisticsDTO);
             appointmentStatistics.DoctorId = doctorId;
@@ -34,7 +36,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Statistics.Appointments
 
         public async Task UpdateAppointmentStatistics(UpdateAppointmentStatisticsDTO updateAppointmentStatisticsDTO, string doctorId)
         {
-            if (await _appointmentStatisticsRepository.GetAppointmentStatisticsById(updateAppointmentStatisticsDTO.Id, updateAppointmentStatisticsDTO.PatientId, doctorId) == null) throw new Exception();
+            if (await _appointmentStatisticsRepository.GetAppointmentStatisticsById(updateAppointmentStatisticsDTO.Id, updateAppointmentStatisticsDTO.PatientId, updateAppointmentStatisticsDTO.AppointmentScheduleId, doctorId) == null) throw new Exception("Kayıtlı Randevu Raporu Bulunamadı.");
 
             AppointmentStatistics appointmentStatistics = _mapper.Map<AppointmentStatistics>(updateAppointmentStatisticsDTO);
             appointmentStatistics.DoctorId = doctorId;
@@ -44,23 +46,27 @@ namespace PsychosocialSupportPlatformAPI.Business.Statistics.Appointments
 
         public async Task DeleteAppointmentStatistics(DeleteAppointmentStatisticsDTO deleteAppointmentStatisticsDTO, string doctorId)
         {
-            if (await _appointmentStatisticsRepository.GetAppointmentStatisticsById(deleteAppointmentStatisticsDTO.Id, deleteAppointmentStatisticsDTO.PatientId, doctorId) == null) throw new Exception();
+            if (await _appointmentStatisticsRepository.GetAppointmentStatisticsById(deleteAppointmentStatisticsDTO.Id, deleteAppointmentStatisticsDTO.PatientId, deleteAppointmentStatisticsDTO.AppointmentScheduleId, doctorId) == null) throw new Exception("Kayıtlı Randevu Raporu Bulunamadı.");
 
             AppointmentStatistics appointmentStatistics = _mapper.Map<AppointmentStatistics>(deleteAppointmentStatisticsDTO);
-
             appointmentStatistics.DoctorId = doctorId;
 
             await _appointmentStatisticsRepository.DeleteAppointmentStatistics(appointmentStatistics);
         }
 
-        public async Task<IEnumerable<GetAppointmentStatisticsDTO>> GetAllPatientAppointmentStatisticsByDoctorId(string doctorId)
+        public async Task<IEnumerable<object>> GetAllPatientAppointmentStatisticsByDoctorId(string doctorId)
         {
-            return _mapper.Map<IEnumerable<GetAppointmentStatisticsDTO>>(await _appointmentStatisticsRepository.GetAllPatientAppointmentStatisticsByDoctorId(doctorId));
+            return await _appointmentStatisticsRepository.GetAllPatientAppointmentStatisticsByDoctorId(doctorId);
         }
 
         public async Task<IEnumerable<GetAppointmentStatisticsDTO>> GetAllPatientAppointmentStatisticsByPatientId(string doctorId, string patientId)
         {
             return _mapper.Map<IEnumerable<GetAppointmentStatisticsDTO>>(await _appointmentStatisticsRepository.GetAllPatientAppointmentStatisticsByPatientId(doctorId, patientId));
+        }
+
+        public async Task<IEnumerable<GetAppointmentStatisticsDTO>> GetAllPatientAppointmentStatisticsByPatientId(string patientId)
+        {
+            return _mapper.Map<IEnumerable<GetAppointmentStatisticsDTO>>(await _appointmentStatisticsRepository.GetAllPatientAppointmentStatisticsByPatientId(patientId));
         }
 
         public async Task<IEnumerable<object>> GetAllPatientAppointmentStatistics()

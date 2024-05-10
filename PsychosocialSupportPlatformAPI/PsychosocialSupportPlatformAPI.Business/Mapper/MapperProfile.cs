@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.Data.SqlClient;
 using PsychosocialSupportPlatformAPI.Business.Appointments.DTOs;
+using PsychosocialSupportPlatformAPI.Business.Appointments.DTOs.Doctor;
 using PsychosocialSupportPlatformAPI.Business.AppointmentSchedules.DTOs;
 using PsychosocialSupportPlatformAPI.Business.Auth.AuthService.DTOs;
 using PsychosocialSupportPlatformAPI.Business.Auth.AuthService.DTOs.DoctorDTOs;
@@ -99,6 +100,15 @@ namespace PsychosocialSupportPlatformAPI.Business.Mapper
                 .ForMember(dest => dest.PatientName, opt => opt.MapFrom(src => src.Patient.Name))
                 .ForMember(dest => dest.PatientSurname, opt => opt.MapFrom(src => src.Patient.Surname))
                 .ForMember(dest => dest.AppointmentDay, opt => opt.MapFrom(src => src.AppointmentSchedule.Day.ToShortDateString()));
+
+            CreateMap<AppointmentSchedule, GetDoctorAppointmentDTO>()
+                .ForMember(dest => dest.PatientId, opt => opt.MapFrom(src => src.PatientId))
+                .ForMember(dest => dest.PatientName, opt => opt.MapFrom(src => src.Patient!.Name))
+                .ForMember(dest => dest.PatientSurname, opt => opt.MapFrom(src => src.Patient!.Surname))
+                .ForMember(dest => dest.Day, opt => opt.MapFrom(src => src.Day.ToLongDateString())); ;
+
+
+
 
 
 

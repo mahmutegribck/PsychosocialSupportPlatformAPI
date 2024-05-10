@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PsychosocialSupportPlatformAPI.Business.DoctorSchedules;
 using PsychosocialSupportPlatformAPI.Business.Statistics.Appointments;
+using PsychosocialSupportPlatformAPI.Business.Statistics.Appointments.DTOs;
 using PsychosocialSupportPlatformAPI.Business.Statistics.Videos;
 using PsychosocialSupportPlatformAPI.Business.Users;
 using PsychosocialSupportPlatformAPI.Business.Users.DTOs;
@@ -136,6 +137,25 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
         public async Task<IActionResult> GetAllPatientAppointmentStatistics()
         {
             var allPatientAppointmentStatistics = await _appointmentStatisticsService.GetAllPatientAppointmentStatistics();
+            if (!allPatientAppointmentStatistics.Any()) return NotFound();
+            return Ok(allPatientAppointmentStatistics);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllPatientAppointmentStatisticsByDoctorId([FromQuery] string doctorId)
+        {
+            var allPatientAppointmentStatisticsByDoctorId = await _appointmentStatisticsService.GetAllPatientAppointmentStatisticsByDoctorId(doctorId);
+            if (!allPatientAppointmentStatisticsByDoctorId.Any()) return NotFound();
+            return Ok(allPatientAppointmentStatisticsByDoctorId);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllPatientAppointmentStatisticsByPatientId([FromQuery] string patientId)
+        {
+            string? currentUserID = User.Identity?.Name;
+            if (currentUserID == null) return Unauthorized();
+
+            IEnumerable<GetAppointmentStatisticsDTO> allPatientAppointmentStatistics = await _appointmentStatisticsService.GetAllPatientAppointmentStatisticsByPatientId(patientId);
             if (!allPatientAppointmentStatistics.Any()) return NotFound();
             return Ok(allPatientAppointmentStatistics);
         }
