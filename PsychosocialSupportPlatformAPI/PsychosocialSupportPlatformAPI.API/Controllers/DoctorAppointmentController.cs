@@ -25,7 +25,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
             var allDoctorAppointments = await _appointmentScheduleService.AllDoctorAppointments(currentUserID);
 
             if (!allDoctorAppointments.Any()) return NotFound();
-            return Ok();
+            return Ok(allDoctorAppointments);
         }
 
         [HttpGet]

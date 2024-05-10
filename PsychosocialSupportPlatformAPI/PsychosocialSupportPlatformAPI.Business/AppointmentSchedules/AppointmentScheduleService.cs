@@ -201,7 +201,7 @@ namespace PsychosocialSupportPlatformAPI.Business.AppointmentSchedules
                             break;
 
                         case TimeRange.ElevenToTwelve:
-                            if (doctorSchedule.ElevenToTwelve && !appointmentSchedules.Any(a => a.TimeRange == timeRange)&& !createAppointmentList.Any(a=> a.TimeRange == timeRange))
+                            if (doctorSchedule.ElevenToTwelve && !appointmentSchedules.Any(a => a.TimeRange == timeRange) && !createAppointmentList.Any(a => a.TimeRange == timeRange))
                             {
                                 AppointmentSchedule appointmentElevenToTwelve = new()
                                 {
@@ -333,14 +333,29 @@ namespace PsychosocialSupportPlatformAPI.Business.AppointmentSchedules
             return await _appointmentScheduleRepository.GetAllAppointmentSchedules(day);
         }
 
-        public Task<object> GetAllAppointmentSchedulesByDoctor()
+        public async Task<IEnumerable<object>> AllDoctorAppointments(string doctorId)
         {
-            throw new NotImplementedException();
-        }
+            IEnumerable<AppointmentSchedule> doctorAppointments = await _appointmentScheduleRepository.AllDoctorAppointments(doctorId);
 
-        public Task<IEnumerable<GetDoctorAppointmentDTO>> AllDoctorAppointments(string doctorId)
-        {
-            throw new NotImplementedException();
+            if (!doctorAppointments.Any()) throw new Exception("Doktorun Hasta Randevusu Bulunamadı.");
+
+            var groupedDoctorAppointments = doctorAppointments.GroupBy(d => d.Day)
+                .Select(group => new
+                {
+                    AppointmentDay = group.Key.ToShortDateString(),
+
+                    Patients = group.Select(p => new
+                    {
+                        PatientId = p.PatientId,
+                        PatientName = p.Patient!.Name,
+                        PatientSurname = p.Patient.Surname,
+                        AppointmentTimeRange = p.TimeRange
+                    })
+
+
+                });
+
+            return groupedDoctorAppointments;
         }
 
         public Task<IEnumerable<object>> GetAllDoctorAppointmentsByPatientId(string doctorId, string patientId)

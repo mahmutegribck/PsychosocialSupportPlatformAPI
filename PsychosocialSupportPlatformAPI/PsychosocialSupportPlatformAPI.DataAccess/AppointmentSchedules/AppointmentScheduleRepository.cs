@@ -87,34 +87,7 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.AppointmentSchedules
         }
 
 
-        public async Task<object> GetAllAppointmentSchedulesByDoctor()
-        {
-            return await _context.AppointmentSchedules.Select(a => new
-            {
 
-                //Doctor = a.Appointments.Select(d => new
-                //{
-                //    DoctorId = d.DoctorId,
-                //    DoctorName = d.Doctor.Name,
-                //    DoctorSurname = d.Doctor.Surname,
-                //    DoctorTitle = d.Doctor.Title,
-                //    DoctorProfileImage = d.Doctor.ProfileImageUrl,
-                //    DoctorSchedule = a.Doctor.DoctorSchedules.Select(ds => new
-                //    {
-                //        DoctorScheduleId = ds.Id,
-                //        ds.EightToNine,
-                //        ds.NineToTen,
-                //        ds.TenToEleven,
-                //        ds.ElevenToTwelve,
-                //        ds.TwelveToThirteen,
-                //        ds.ThirteenToFourteen,
-                //        ds.FourteenToFifteen,
-                //        ds.FifteenToSixteen,
-                //        ds.SixteenToSeventeen
-                //    })
-                //}),
-            }).ToListAsync();
-        }
 
         public async Task<AppointmentSchedule?> GetAppointmentScheduleById(int appointmentScheduleId)
         {
@@ -130,6 +103,21 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.AppointmentSchedules
         public async Task<AppointmentSchedule?> GetAppointmentScheduleByDayAndTimeRange(string doctorId, DateTime day, TimeRange timeRange)
         {
             return await _context.AppointmentSchedules.AsNoTracking().Where(a => a.DoctorId == doctorId && a.Day == day && a.TimeRange == timeRange && a.Status == false).FirstOrDefaultAsync();
+        }
+
+        public async Task<IEnumerable<AppointmentSchedule>> AllDoctorAppointments(string doctorId)
+        {
+            return await _context.AppointmentSchedules.Include(a => a.Patient).Where(a => a.DoctorId == doctorId&& a.PatientId != null).AsNoTracking().ToListAsync();
+        }
+
+        public async Task<IEnumerable<AppointmentSchedule>> GetAllDoctorAppointmentsByPatientId(string doctorId, string patientId)
+        {
+            return await _context.AppointmentSchedules.Include(a => a.Patient).Where(a => a.DoctorId == doctorId && a.PatientId == patientId).AsNoTracking().ToListAsync();
+        }
+
+        public async Task<IEnumerable<AppointmentSchedule>> GetAllDoctorAppointmentsByDate(DateTime day, string doctorId)
+        {
+            return await _context.AppointmentSchedules.Include(a => a.Patient).Where(a => a.Day == day && a.DoctorId == doctorId && a.PatientId != null).AsNoTracking().ToListAsync();
         }
     }
 }
