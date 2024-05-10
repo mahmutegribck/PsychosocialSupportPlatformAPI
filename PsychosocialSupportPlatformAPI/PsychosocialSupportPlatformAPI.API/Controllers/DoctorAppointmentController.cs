@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PsychosocialSupportPlatformAPI.Business.Appointments.DTOs.Doctor;
 using PsychosocialSupportPlatformAPI.Business.AppointmentSchedules;
 
 namespace PsychosocialSupportPlatformAPI.API.Controllers
@@ -34,10 +35,10 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
             string? currentUserID = User.Identity?.Name;
             if (currentUserID == null) return Unauthorized();
 
-            var allDoctorAppointments = await _appointmentScheduleService.GetAllDoctorAppointmentsByPatientId(patientId,currentUserID);
+            var allDoctorAppointments = await _appointmentScheduleService.GetAllDoctorAppointmentsByPatientId(patientId, currentUserID);
 
             if (!allDoctorAppointments.Any()) return NotFound();
-            return Ok();
+            return Ok(allDoctorAppointments);
         }
 
         [HttpGet]
@@ -46,10 +47,10 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
             string? currentUserID = User.Identity?.Name;
             if (currentUserID == null) return Unauthorized();
 
-            var allDoctorAppointments = await _appointmentScheduleService.GetAllDoctorAppointmentsByDate(DateTime.Parse(date), currentUserID);
+            IEnumerable<GetDoctorAppointmentDTO> allDoctorAppointments = await _appointmentScheduleService.GetAllDoctorAppointmentsByDate(DateTime.Parse(date), currentUserID);
 
             if (!allDoctorAppointments.Any()) return NotFound();
-            return Ok();
+            return Ok(allDoctorAppointments);
         }
 
 

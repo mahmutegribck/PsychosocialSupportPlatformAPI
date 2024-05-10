@@ -16,7 +16,7 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.AppointmentSchedules
 
 
         Task<IEnumerable<AppointmentSchedule>> AllDoctorAppointments(string doctorId);
-        Task<IEnumerable<AppointmentSchedule>> GetAllDoctorAppointmentsByPatientId(string doctorId, string patientId);
+        Task<IEnumerable<AppointmentSchedule>> GetAllDoctorAppointmentsByPatientId(string patientId, string doctorId);
         Task<IEnumerable<AppointmentSchedule>> GetAllDoctorAppointmentsByDate(DateTime day, string doctorId);
 
     }

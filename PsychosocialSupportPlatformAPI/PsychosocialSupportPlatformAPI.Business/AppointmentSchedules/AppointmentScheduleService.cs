@@ -3,6 +3,7 @@ using PsychosocialSupportPlatformAPI.Business.Appointments.DTOs.Doctor;
 using PsychosocialSupportPlatformAPI.DataAccess.AppointmentSchedules;
 using PsychosocialSupportPlatformAPI.DataAccess.DoctorSchedules;
 using PsychosocialSupportPlatformAPI.Entity.Entities.Appointments;
+using PsychosocialSupportPlatformAPI.Entity.Entities.Users;
 using PsychosocialSupportPlatformAPI.Entity.Enums;
 
 namespace PsychosocialSupportPlatformAPI.Business.AppointmentSchedules
@@ -10,10 +11,12 @@ namespace PsychosocialSupportPlatformAPI.Business.AppointmentSchedules
     public class AppointmentScheduleService : IAppointmentScheduleService
     {
         private readonly IAppointmentScheduleRepository _appointmentScheduleRepository;
+        private readonly IMapper _mapper;
 
-        public AppointmentScheduleService(IAppointmentScheduleRepository appointmentScheduleRepository, IDoctorScheduleRepository doctorScheduleRepository, IMapper mapper)
+        public AppointmentScheduleService(IAppointmentScheduleRepository appointmentScheduleRepository, IMapper mapper)
         {
             _appointmentScheduleRepository = appointmentScheduleRepository;
+            _mapper = mapper;
         }
 
 
@@ -343,29 +346,54 @@ namespace PsychosocialSupportPlatformAPI.Business.AppointmentSchedules
                 .Select(group => new
                 {
                     AppointmentDay = group.Key.ToShortDateString(),
-
                     Patients = group.Select(p => new
                     {
+                        AppointmentId = p.Id,
                         PatientId = p.PatientId,
                         PatientName = p.Patient!.Name,
                         PatientSurname = p.Patient.Surname,
-                        AppointmentTimeRange = p.TimeRange
+                        AppointmentTimeRange = p.TimeRange,
+                        AppointmentUrl = p.URL
                     })
-
-
                 });
 
             return groupedDoctorAppointments;
         }
 
-        public Task<IEnumerable<object>> GetAllDoctorAppointmentsByPatientId(string doctorId, string patientId)
+        public async Task<IEnumerable<object>> GetAllDoctorAppointmentsByPatientId(string patientId, string doctorId)
         {
-            throw new NotImplementedException();
+            IEnumerable<AppointmentSchedule> doctorAppointments = await _appointmentScheduleRepository.GetAllDoctorAppointmentsByPatientId(patientId, doctorId);
+
+            if (!doctorAppointments.Any()) throw new Exception("Doktorun Hasta ile Randevusu Bulunamadı.");
+
+
+
+            var groupedDoctorAppointments = doctorAppointments.GroupBy(d => d.Day)
+                .Select(group => new
+                {
+                    AppointmentDay = group.Key.ToShortDateString(),
+                    Patients = group.Select(p => new
+                    {
+                        AppointmentId = p.Id,
+                        PatientId = p.PatientId,
+                        PatientName = p.Patient!.Name,
+                        PatientSurname = p.Patient.Surname,
+                        AppointmentTimeRange = p.TimeRange,
+                        AppointmentUrl = p.URL
+                    })
+                });
+
+            return groupedDoctorAppointments;
         }
 
-        public Task<IEnumerable<object>> GetAllDoctorAppointmentsByDate(DateTime date, string doctorId)
+        public async Task<IEnumerable<GetDoctorAppointmentDTO>> GetAllDoctorAppointmentsByDate(DateTime date, string doctorId)
         {
-            throw new NotImplementedException();
+            IEnumerable<AppointmentSchedule> doctorAppointments = await _appointmentScheduleRepository.GetAllDoctorAppointmentsByDate(date, doctorId);
+
+            if (!doctorAppointments.Any()) throw new Exception("Doktorun Bu Tarihte Randevusu Bulunamadı.");
+
+            return _mapper.Map<IEnumerable<GetDoctorAppointmentDTO>>(doctorAppointments);
+
         }
     }
 }

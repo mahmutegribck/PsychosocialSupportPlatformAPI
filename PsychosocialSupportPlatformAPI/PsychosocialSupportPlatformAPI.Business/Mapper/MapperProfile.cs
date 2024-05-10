@@ -102,10 +102,11 @@ namespace PsychosocialSupportPlatformAPI.Business.Mapper
                 .ForMember(dest => dest.AppointmentDay, opt => opt.MapFrom(src => src.AppointmentSchedule.Day.ToShortDateString()));
 
             CreateMap<AppointmentSchedule, GetDoctorAppointmentDTO>()
+                .ForMember(dest => dest.AppointmentId, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.PatientId, opt => opt.MapFrom(src => src.PatientId))
                 .ForMember(dest => dest.PatientName, opt => opt.MapFrom(src => src.Patient!.Name))
                 .ForMember(dest => dest.PatientSurname, opt => opt.MapFrom(src => src.Patient!.Surname))
-                .ForMember(dest => dest.Day, opt => opt.MapFrom(src => src.Day.ToLongDateString())); ;
+                .ForMember(dest => dest.Day, opt => opt.MapFrom(src => src.Day.ToShortDateString()));
 
 
 
