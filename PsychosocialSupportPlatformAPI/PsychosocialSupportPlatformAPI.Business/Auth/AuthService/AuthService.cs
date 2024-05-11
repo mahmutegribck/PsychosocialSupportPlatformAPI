@@ -61,6 +61,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
                 Doctor newUser = _mapper.Map<Doctor>(model);
                 newUser.Id = Guid.NewGuid().ToString();
 
+                newUser.UserName = newUser.Name.ToLower() + "-" + newUser.Surname.ToLower();
 
                 char[] turkishChars = { 'ı', 'ğ', 'İ', 'Ğ', 'ç', 'Ç', 'ş', 'Ş', 'ö', 'Ö', 'ü', 'Ü' };
                 char[] englishChars = { 'i', 'g', 'I', 'G', 'c', 'C', 's', 'S', 'o', 'O', 'u', 'U' };
@@ -147,6 +148,8 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
 
                 Patient newUser = _mapper.Map<Patient>(model);
                 newUser.Id = Guid.NewGuid().ToString();
+
+                newUser.UserName = newUser.Name.ToLower() + "-" + newUser.Surname.ToLower();
 
                 char[] turkishChars = { 'ı', 'ğ', 'İ', 'Ğ', 'ç', 'Ç', 'ş', 'Ş', 'ö', 'Ö', 'ü', 'Ü' };
                 char[] englishChars = { 'i', 'g', 'I', 'G', 'c', 'C', 's', 'S', 'o', 'O', 'u', 'U' };
