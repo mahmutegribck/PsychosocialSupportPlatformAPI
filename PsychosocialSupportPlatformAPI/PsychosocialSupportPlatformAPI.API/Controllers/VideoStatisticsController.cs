@@ -16,11 +16,13 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
             _videoStatisticsService = videoStatisticsService;
         }
 
+
         [HttpPost]
         public async Task<IActionResult> AddVideoStatistics([FromBody] AddVideoStatisticsDTO addVideoStatisticsDTO)
         {
-            var currentUserID = User.Identity?.Name;
-            if (currentUserID == null) return NotFound();
+            string? currentUserID = User.Identity?.Name;
+            if (currentUserID == null) return Unauthorized();
+
             await _videoStatisticsService.AddVideoStatistics(currentUserID, addVideoStatisticsDTO);
             return Ok();
         }
@@ -29,18 +31,11 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
         [HttpDelete]
         public async Task<IActionResult> DeleteVideoStatistics([FromBody] int statisticsID)
         {
+            string? currentUserID = User.Identity?.Name;
+            if (currentUserID == null) return Unauthorized();
+
             await _videoStatisticsService.DeleteVideoStatistics(statisticsID);
             return Ok();
-        }
-
-
-        [HttpGet]
-        [Authorize(Roles = "Doctor")]
-        public async Task<IActionResult> GetAllVideoStatistics()
-        {
-            var allVideoStatistics = await _videoStatisticsService.GetAllVideoStatistics();
-            if (!allVideoStatistics.Any()) return NotFound();
-            return Ok(allVideoStatistics);
         }
 
 
@@ -48,8 +43,9 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
         [Authorize(Roles = "Patient")]
         public async Task<IActionResult> GetCurrentUserAllVideoStatistics()
         {
-            var currentUserID = User.Identity?.Name;
-            if (currentUserID == null) return NotFound();
+            string? currentUserID = User.Identity?.Name;
+            if (currentUserID == null) return Unauthorized();
+
             var allVideoStatistics = await _videoStatisticsService.GetAllVideoStatisticsByPatientID(currentUserID);
             if (!allVideoStatistics.Any()) return NotFound();
             return Ok(allVideoStatistics);
@@ -59,6 +55,9 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetVideoStatisticsByID([FromQuery] int statisticsID)
         {
+            string? currentUserID = User.Identity?.Name;
+            if (currentUserID == null) return Unauthorized();
+
             var videoStatisticsByID = await _videoStatisticsService.GetVideoStatisticsByID(statisticsID);
             if (videoStatisticsByID == null) return NotFound();
             return Ok(videoStatisticsByID);
@@ -67,19 +66,15 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
 
         [HttpGet]
         [Authorize(Roles = "Doctor")]
-        public async Task<IActionResult> GetAllVideoStatisticsByPatientID([FromQuery] string patientID)
+        public async Task<IActionResult> GetAllVideoStatisticsByPatientUserName([FromQuery] string patientUserName)
         {
-            var allVideoStatisticsByPatientID = await _videoStatisticsService.GetAllVideoStatisticsByPatientID(patientID);
-            if (!allVideoStatisticsByPatientID.Any()) return NotFound();
-            return Ok(allVideoStatisticsByPatientID);
-        }
+            string? currentUserID = User.Identity?.Name;
+            if (currentUserID == null) return Unauthorized();
 
-        //[HttpGet]
-        //public async Task<IActionResult> GetVideoStatisticsByPatientID([FromQuery] string patientID)
-        //{
-        //    var videoStatisticsByPatientID = await _videoStatisticsService.GetVideoStatisticsByPatientID(patientID);
-        //    if (videoStatisticsByPatientID == null) return NotFound();
-        //    return Ok(videoStatisticsByPatientID);
-        //}
+            IEnumerable<GetVideoStatisticsDTO> allVideoStatistics = await _videoStatisticsService.GetAllVideoStatisticsByPatientUserName(patientUserName, currentUserID);
+            if (!allVideoStatistics.Any()) return NotFound();
+
+            return Ok(allVideoStatistics);
+        }
     }
 }

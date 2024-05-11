@@ -57,9 +57,22 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Statistics.Appointments
             return groupedStatistics;
         }
 
-        public async Task<IEnumerable<AppointmentStatistics>> GetAllPatientAppointmentStatisticsByPatientId(string doctorId, string patientId)
+        public async Task<IEnumerable<object>> GetAllPatientAppointmentStatisticsByPatientUserName(string patientUserName, string doctorId)
         {
-            return await _context.AppointmentStatistics.Include(s => s.Patient).Include(s => s.AppointmentSchedule).Where(s => s.DoctorId == doctorId && s.PatientId == patientId).AsNoTracking().ToListAsync();
+            return await _context.AppointmentStatistics.Include(s => s.Patient).Include(s => s.AppointmentSchedule).Where(s => s.DoctorId == doctorId && s.Patient.UserName == patientUserName).GroupBy(s => s.Patient).Select(group => new
+            {
+                PatientName = group.Key.Name,
+                PatientSurname = group.Key.Surname,
+                PatientProfileImageUrl = group.Key.ProfileImageUrl,
+
+                AppointmentStatistics = group.Select(s => new
+                {
+                    AppointmentStartTime = s.AppointmentStartTime,
+                    AppointmentEndTime = s.AppointmentEndTime,
+                    AppointmentComment = s.AppointmentComment,
+                    AppointmentDay = s.AppointmentSchedule.Day.ToShortDateString()
+                })
+            }).AsNoTracking().ToListAsync();
         }
 
         public async Task<IEnumerable<AppointmentStatistics>> GetAllPatientAppointmentStatisticsByPatientId(string patientId)

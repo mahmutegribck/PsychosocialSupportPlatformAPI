@@ -59,9 +59,9 @@ namespace PsychosocialSupportPlatformAPI.Business.Statistics.Appointments
             return await _appointmentStatisticsRepository.GetAllPatientAppointmentStatisticsByDoctorId(doctorId);
         }
 
-        public async Task<IEnumerable<GetAppointmentStatisticsDTO>> GetAllPatientAppointmentStatisticsByPatientId(string doctorId, string patientId)
+        public async Task<IEnumerable<object>> GetAllPatientAppointmentStatisticsByPatientUserName(string patientUserName, string doctorId)
         {
-            return _mapper.Map<IEnumerable<GetAppointmentStatisticsDTO>>(await _appointmentStatisticsRepository.GetAllPatientAppointmentStatisticsByPatientId(doctorId, patientId));
+            return await _appointmentStatisticsRepository.GetAllPatientAppointmentStatisticsByPatientUserName(patientUserName, doctorId);
         }
 
         public async Task<IEnumerable<GetAppointmentStatisticsDTO>> GetAllPatientAppointmentStatisticsByPatientId(string patientId)

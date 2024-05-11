@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using PsychosocialSupportPlatformAPI.Business.Videos.DTOs;
 using PsychosocialSupportPlatformAPI.DataAccess.Videos;
 using PsychosocialSupportPlatformAPI.Entity.Entities.Videos;
+using System.Text.RegularExpressions;
 
 namespace PsychosocialSupportPlatformAPI.Business.Videos
 {
@@ -28,9 +29,9 @@ namespace PsychosocialSupportPlatformAPI.Business.Videos
             return _mapper.Map<List<GetVideoDTO>>(await _videoRepository.GetAllVideos());
         }
 
-        public async Task<GetVideoDTO> GetVideoById(int videoID)
+        public async Task<GetVideoDTO?> GetVideoByVideoSlug(string videoSlug)
         {
-            return _mapper.Map<GetVideoDTO>(await _videoRepository.GetVideoById(videoID));
+            return _mapper.Map<GetVideoDTO?>(await _videoRepository.GetVideoByVideoSlug(videoSlug));
         }
 
         public async Task UpdateVideo(UpdateVideoDTO updateVideoDTO)
@@ -57,12 +58,24 @@ namespace PsychosocialSupportPlatformAPI.Business.Videos
             using (var stream = new FileStream(filePath, FileMode.Create))
                 await uploadVideoDTO.File.CopyToAsync(stream);
 
+
+            char[] turkishChars = { 'ı', 'ğ', 'İ', 'Ğ', 'ç', 'Ç', 'ş', 'Ş', 'ö', 'Ö', 'ü', 'Ü' };
+            char[] englishChars = { 'i', 'g', 'I', 'G', 'c', 'C', 's', 'S', 'o', 'O', 'u', 'U' };
+
+            string videoSlug = "";
+            for (int i = 0; i < turkishChars.Length; i++)
+                videoSlug = uploadVideoDTO.Title.Replace(turkishChars[i], englishChars[i]);
+
+            uploadVideoDTO.Title = Regex.Replace(uploadVideoDTO.Title, @"[^a-zA-Z0-9]", "-");
+
+
             await _videoRepository.AddVideo(new Video
             {
                 Url = url,
                 Path = filePath,
                 Description = uploadVideoDTO.Description,
                 Title = uploadVideoDTO.Title,
+                VideoSlug = videoSlug
 
             });
         }

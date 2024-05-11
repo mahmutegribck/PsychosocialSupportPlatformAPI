@@ -14,12 +14,12 @@ namespace PsychosocialSupportPlatformAPI.Business.Statistics.Videos
             _videoStatisticsRepository = videoStatisticsRepository;
             _mapper = mapper;
         }
-        public async Task AddVideoStatistics(string userID, AddVideoStatisticsDTO addVideoStatisticsDTO)
+        public async Task AddVideoStatistics(string patientId, AddVideoStatisticsDTO addVideoStatisticsDTO)
         {
             var videoStatistics = _mapper.Map<VideoStatistics>(addVideoStatisticsDTO);
-            videoStatistics.PatientId = userID;
+            videoStatistics.PatientId = patientId;
 
-            var existingVideoStatistics = await _videoStatisticsRepository.GetPatientVideoStatisticsByVideoID(userID, videoStatistics.VideoId);
+            var existingVideoStatistics = await _videoStatisticsRepository.GetPatientVideoStatisticsByVideoID(patientId, videoStatistics.VideoId);
 
             if (existingVideoStatistics == null)
             {
@@ -47,6 +47,11 @@ namespace PsychosocialSupportPlatformAPI.Business.Statistics.Videos
         public async Task<IEnumerable<object>> GetAllVideoStatisticsByPatientID(string patientID)
         {
             return await _videoStatisticsRepository.GetAllVideoStatisticsByPatientID(patientID);
+        }
+
+        public async Task<IEnumerable<GetVideoStatisticsDTO>> GetAllVideoStatisticsByPatientUserName(string patientUserName, string doctorId)
+        {
+            return _mapper.Map<IEnumerable<GetVideoStatisticsDTO>>(await _videoStatisticsRepository.GetAllVideoStatisticsByPatientUserName(patientUserName, doctorId));
         }
 
         public async Task<GetVideoStatisticsDTO> GetVideoStatisticsByID(int statisticsID)

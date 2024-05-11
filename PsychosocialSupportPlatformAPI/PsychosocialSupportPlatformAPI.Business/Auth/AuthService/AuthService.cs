@@ -11,8 +11,11 @@ using PsychosocialSupportPlatformAPI.Business.Auth.AuthService.ResponseModel;
 using PsychosocialSupportPlatformAPI.Business.Auth.JwtToken;
 using PsychosocialSupportPlatformAPI.Business.Auth.JwtToken.DTOs;
 using PsychosocialSupportPlatformAPI.Entity.Entities.Users;
+using System;
 using System.Text;
+using System.Text.RegularExpressions;
 using static Google.Apis.Auth.GoogleJsonWebSignature;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
 {
@@ -57,7 +60,17 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
 
                 Doctor newUser = _mapper.Map<Doctor>(model);
                 newUser.Id = Guid.NewGuid().ToString();
-                newUser.UserName = newUser.Email;
+
+
+                char[] turkishChars = { 'ı', 'ğ', 'İ', 'Ğ', 'ç', 'Ç', 'ş', 'Ş', 'ö', 'Ö', 'ü', 'Ü' };
+                char[] englishChars = { 'i', 'g', 'I', 'G', 'c', 'C', 's', 'S', 'o', 'O', 'u', 'U' };
+
+                for (int i = 0; i < turkishChars.Length; i++)
+                    newUser.UserName = newUser.UserName.Replace(turkishChars[i], englishChars[i]);
+
+                newUser.UserName = Regex.Replace(newUser.UserName, @"[^a-zA-Z0-9]", "-");
+                newUser.UserName += "-" + new Random().Next(1000, 1000000);
+
 
                 var result = await _doctorManager.CreateAsync(newUser, model.Password);
 
@@ -134,7 +147,15 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
 
                 Patient newUser = _mapper.Map<Patient>(model);
                 newUser.Id = Guid.NewGuid().ToString();
-                newUser.UserName = newUser.Email;
+
+                char[] turkishChars = { 'ı', 'ğ', 'İ', 'Ğ', 'ç', 'Ç', 'ş', 'Ş', 'ö', 'Ö', 'ü', 'Ü' };
+                char[] englishChars = { 'i', 'g', 'I', 'G', 'c', 'C', 's', 'S', 'o', 'O', 'u', 'U' };
+
+                for (int i = 0; i < turkishChars.Length; i++)
+                    newUser.UserName = newUser.UserName.Replace(turkishChars[i], englishChars[i]);
+
+                newUser.UserName = Regex.Replace(newUser.UserName, @"[^a-zA-Z0-9]", "-");
+                newUser.UserName += "-" + new Random().Next(1000, 1000000);
 
                 var result = await _patientManager.CreateAsync(newUser, model.Password);
 

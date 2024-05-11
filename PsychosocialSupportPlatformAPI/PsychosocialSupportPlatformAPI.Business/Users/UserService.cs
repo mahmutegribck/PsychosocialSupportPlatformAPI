@@ -31,6 +31,11 @@ namespace PsychosocialSupportPlatformAPI.Business.Users
             return await _userRepository.DeleteUser(id);
         }
 
+        public async Task<IEnumerable<GetPatientDto>> GetAllPatientsByDoctorId(string doctorId)
+        {
+            return _mapper.Map<IEnumerable<GetPatientDto>>(await _userRepository.GetAllPatientsByDoctorId(doctorId));
+        }
+
         public async Task<object> GetUserByID(string userId)
         {
             var user = await _userRepository.GetUser(userId);

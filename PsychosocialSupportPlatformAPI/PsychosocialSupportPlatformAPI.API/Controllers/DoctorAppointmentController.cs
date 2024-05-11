@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using PsychosocialSupportPlatformAPI.Business.Appointments.DTOs.Doctor;
 using PsychosocialSupportPlatformAPI.Business.AppointmentSchedules;
+using PsychosocialSupportPlatformAPI.Business.Users;
+using PsychosocialSupportPlatformAPI.Business.Users.DTOs;
 
 namespace PsychosocialSupportPlatformAPI.API.Controllers
 {
@@ -11,10 +13,12 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
     public class DoctorAppointmentController : ControllerBase
     {
         private readonly IAppointmentScheduleService _appointmentScheduleService;
+        private readonly IUserService _userService;
 
-        public DoctorAppointmentController(IAppointmentScheduleService appointmentScheduleService)
+        public DoctorAppointmentController(IAppointmentScheduleService appointmentScheduleService, IUserService userService)
         {
             _appointmentScheduleService = appointmentScheduleService;
+            _userService = userService;
         }
 
         [HttpGet]
@@ -53,6 +57,16 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
             return Ok(allDoctorAppointments);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetAllPatients()
+        {
+            string? currentUserID = User.Identity?.Name;
+            if (currentUserID == null) return Unauthorized();
 
+            IEnumerable<GetPatientDto> allPatients = await _userService.GetAllPatientsByDoctorId(currentUserID);
+            if (!allPatients.Any()) return NotFound();
+
+            return Ok(allPatients);
+        }
     }
 }

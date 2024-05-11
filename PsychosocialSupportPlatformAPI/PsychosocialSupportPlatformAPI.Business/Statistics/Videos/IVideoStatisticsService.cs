@@ -4,12 +4,12 @@ namespace PsychosocialSupportPlatformAPI.Business.Statistics.Videos
 {
     public interface IVideoStatisticsService
     {
-        Task AddVideoStatistics(string userID, AddVideoStatisticsDTO addVideoStatisticsDTO);
-        Task DeleteVideoStatistics(int statisticsID);
+        Task AddVideoStatistics(string patientId, AddVideoStatisticsDTO addVideoStatisticsDTO);
+        Task DeleteVideoStatistics(int statisticsId);
         Task<IEnumerable<object>> GetAllVideoStatistics();
-        Task<GetVideoStatisticsDTO> GetVideoStatisticsByID(int statisticsID);
-        Task<IEnumerable<object>> GetAllVideoStatisticsByPatientID(string patientID);
-        Task<GetVideoStatisticsDTO> GetVideoStatisticsByPatientID(string patientID);
+        Task<GetVideoStatisticsDTO> GetVideoStatisticsByID(int statisticsId);
+        Task<IEnumerable<object>> GetAllVideoStatisticsByPatientID(string patientId);
+        Task<IEnumerable<GetVideoStatisticsDTO>> GetAllVideoStatisticsByPatientUserName(string patientUserName, string doctorId);
 
     }
 }

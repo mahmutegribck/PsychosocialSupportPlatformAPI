@@ -36,6 +36,11 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Users
             return result;
         }
 
+        public async Task<IEnumerable<Patient>> GetAllPatientsByDoctorId(string doctorId)
+        {
+            return await _context.Patients.Where(p => p.AppointmentSchedules.Any(a => a.DoctorId == doctorId)).Distinct().AsNoTracking().ToListAsync();
+        }
+
         public async Task<ApplicationUser> GetUser(string id)
         {
             return await _userManager.FindByIdAsync(id);

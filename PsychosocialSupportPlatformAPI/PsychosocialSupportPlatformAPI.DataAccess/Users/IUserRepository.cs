@@ -9,5 +9,7 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Users
         Task<IdentityResult> DeleteUser(string id);
         Task<IdentityResult> UpdateDoctor(string currentUserID, Doctor doctor);
         Task<IdentityResult> UpdatePatient(string currentUserID, Patient patient);
+
+        Task<IEnumerable<Patient>> GetAllPatientsByDoctorId(string doctorId);
     }
 }

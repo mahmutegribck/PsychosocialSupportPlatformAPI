@@ -1,5 +1,4 @@
 ﻿using PsychosocialSupportPlatformAPI.Business.DoctorSchedules.DTOs;
-using PsychosocialSupportPlatformAPI.Entity.Entities.Appointments;
 
 namespace PsychosocialSupportPlatformAPI.Business.DoctorSchedules
 {

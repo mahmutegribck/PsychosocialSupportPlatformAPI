@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Microsoft.Data.SqlClient;
 using PsychosocialSupportPlatformAPI.Business.Appointments.DTOs;
 using PsychosocialSupportPlatformAPI.Business.Appointments.DTOs.Doctor;
 using PsychosocialSupportPlatformAPI.Business.AppointmentSchedules.DTOs;
@@ -60,7 +59,9 @@ namespace PsychosocialSupportPlatformAPI.Business.Mapper
             CreateMap<VideoStatistics, AddVideoStatisticsDTO>().ReverseMap();
             CreateMap<VideoStatistics, CreateVideoStatisticsDTO>().ReverseMap();
             CreateMap<VideoStatistics, UpdateVideoStatisticsDTO>().ReverseMap();
-            CreateMap<VideoStatistics, GetVideoStatisticsDTO>().ReverseMap();
+            CreateMap<VideoStatistics, GetVideoStatisticsDTO>()
+                .ForMember(dest => dest.VideoTitle, opt => opt.MapFrom(s => s.Video.Title))
+                .ReverseMap();
 
             CreateMap<Doctor, UpdateDoctorDTO>().ReverseMap();
             CreateMap<Patient, UpdatePatientDTO>().ReverseMap();
@@ -100,6 +101,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Mapper
                 .ForMember(dest => dest.PatientName, opt => opt.MapFrom(src => src.Patient.Name))
                 .ForMember(dest => dest.PatientSurname, opt => opt.MapFrom(src => src.Patient.Surname))
                 .ForMember(dest => dest.AppointmentDay, opt => opt.MapFrom(src => src.AppointmentSchedule.Day.ToShortDateString()));
+
 
             CreateMap<AppointmentSchedule, GetDoctorAppointmentDTO>()
                 .ForMember(dest => dest.AppointmentId, opt => opt.MapFrom(src => src.Id))

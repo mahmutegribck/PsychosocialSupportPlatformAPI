@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PsychosocialSupportPlatformAPI.Business.Videos;
+using PsychosocialSupportPlatformAPI.Business.Videos.DTOs;
 
 namespace PsychosocialSupportPlatformAPI.API.Controllers
 {
@@ -27,9 +28,9 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetVideoById([FromQuery] int videoID)
+        public async Task<IActionResult> GetVideoById([FromQuery] string videoSlug)
         {
-            var video = await _videoService.GetVideoById(videoID);
+            GetVideoDTO? video = await _videoService.GetVideoByVideoSlug(videoSlug);
             if (video == null)
             {
                 return NotFound("Video Bulunamdı");

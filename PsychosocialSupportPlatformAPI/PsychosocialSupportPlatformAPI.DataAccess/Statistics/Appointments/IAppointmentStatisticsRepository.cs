@@ -10,7 +10,7 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Statistics.Appointments
         Task<AppointmentStatistics?> GetAppointmentStatisticsById(int appointmentStatisticsId, string patientId, int appointmentScheduleId, string doctorId);
 
         Task<IEnumerable<object>> GetAllPatientAppointmentStatisticsByDoctorId(string doctorId);
-        Task<IEnumerable<AppointmentStatistics>> GetAllPatientAppointmentStatisticsByPatientId(string doctorId, string patientId);
+        Task<IEnumerable<object>> GetAllPatientAppointmentStatisticsByPatientUserName(string patientUserName, string doctorId);
         Task<IEnumerable<AppointmentStatistics>> GetAllPatientAppointmentStatisticsByPatientId(string patientId);
 
         Task<IEnumerable<object>> GetAllPatientAppointmentStatistics();
