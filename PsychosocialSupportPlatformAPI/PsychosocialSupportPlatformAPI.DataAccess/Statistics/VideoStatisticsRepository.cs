@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using PsychosocialSupportPlatformAPI.Entity.Entities.Users;
 using PsychosocialSupportPlatformAPI.Entity.Entities.Videos;
 
 namespace PsychosocialSupportPlatformAPI.DataAccess.Statistics
@@ -88,9 +89,28 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Statistics
             }).ToListAsync();
         }
 
-        public async Task<IEnumerable<VideoStatistics>> GetAllVideoStatisticsByPatientUserName(string patientUserName, string doctorId)
+        public async Task<IEnumerable<object>> GetAllVideoStatisticsByPatientUserName(string patientUserName, string doctorId)
         {
-            return await _context.VideoStatistics.Include(s=>s.Video).Where(v => v.Patient.AppointmentSchedules.Any(a => a.DoctorId == doctorId) && v.Patient.UserName == patientUserName).ToListAsync();
+            return await _context.Videos.Select(v => new
+            {
+                VideoId = v.Id,
+                VideoTitle = v.Title,
+                Patient = v.Statistics.Select(p => new
+                {
+                    PatientName = p.Patient.Name,
+                    PatientSurname = p.Patient.Surname,
+                    PatientProfileImageUrl = p.Patient.ProfileImageUrl
+
+                }),
+                VideoStatistics = v.Statistics.Where(s => s.Patient.UserName == patientUserName && s.Patient.AppointmentSchedules.Any(d => d.DoctorId == doctorId)).Select(s => new
+                {
+
+                    VideoClicksNumber = s.ClicksNumber,
+                    VideoViewingRate = s.ViewingRate
+                }),
+            }).ToListAsync();
+
+            //return await _context.VideoStatistics.Include(s=>s.Video).Where(v => v.Patient.AppointmentSchedules.Any(a => a.DoctorId == doctorId) && v.Patient.UserName == patientUserName).ToListAsync();
         }
 
         public async Task<VideoStatistics> GetPatientVideoStatisticsByVideoID(string patientID, int videoID)

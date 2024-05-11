@@ -12,7 +12,7 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Statistics
         Task<IEnumerable<object>> GetAllVideoStatisticsByPatientID(string patientID);
         Task<VideoStatistics> GetVideoStatisticsByPatientID(string patientID);
         Task<VideoStatistics> GetPatientVideoStatisticsByVideoID(string patientID, int videoID);
-        Task<IEnumerable<VideoStatistics>> GetAllVideoStatisticsByPatientUserName(string patientUserName, string doctorId);
+        Task<IEnumerable<object>> GetAllVideoStatisticsByPatientUserName(string patientUserName, string doctorId);
 
 
     }

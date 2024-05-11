@@ -28,7 +28,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetVideoById([FromQuery] string videoSlug)
+        public async Task<IActionResult> GetVideoByVideoSlug([FromQuery] string videoSlug)
         {
             GetVideoDTO? video = await _videoService.GetVideoByVideoSlug(videoSlug);
             if (video == null)

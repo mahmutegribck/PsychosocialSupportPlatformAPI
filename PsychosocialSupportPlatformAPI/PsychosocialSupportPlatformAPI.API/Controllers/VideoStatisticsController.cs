@@ -71,7 +71,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
             string? currentUserID = User.Identity?.Name;
             if (currentUserID == null) return Unauthorized();
 
-            IEnumerable<GetVideoStatisticsDTO> allVideoStatistics = await _videoStatisticsService.GetAllVideoStatisticsByPatientUserName(patientUserName, currentUserID);
+            var allVideoStatistics = await _videoStatisticsService.GetAllVideoStatisticsByPatientUserName(patientUserName, currentUserID);
             if (!allVideoStatistics.Any()) return NotFound();
 
             return Ok(allVideoStatistics);

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.EntityFrameworkCore;
 using PsychosocialSupportPlatformAPI.Business.Messages;
 using PsychosocialSupportPlatformAPI.Business.Messages.DTOs;
@@ -143,6 +144,17 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
                 return Ok();
             }
             return BadRequest();
+        }
+
+
+        [HttpPatch]
+        public async Task<IActionResult> UploadProfileImage([FromBody] IFormFile formFile)
+        {
+            var currentUserID = User.Identity?.Name;
+            if (currentUserID == null) return Unauthorized();
+
+            await _userService.UploadProfileImage(formFile, currentUserID);
+            return Ok();
         }
 
 

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using PsychosocialSupportPlatformAPI.Business.Users.DTOs;
 using PsychosocialSupportPlatformAPI.Business.Users.DTOs.DoctorDTOs;
 using PsychosocialSupportPlatformAPI.Business.Users.DTOs.PatientDTOs;
@@ -13,6 +14,8 @@ namespace PsychosocialSupportPlatformAPI.Business.Users
         Task<IdentityResult> UpdatePatient(string currentUserID, UpdatePatientDTO updatePatientDTO);
 
         Task<IEnumerable<GetPatientDto>> GetAllPatientsByDoctorId(string doctorId);
+
+        Task UploadProfileImage(IFormFile formFile, string userId);
 
 
     }
