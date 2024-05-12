@@ -7,9 +7,11 @@
         public required string AppointmentStartTime { get; set; }
         public required string AppointmentEndTime { get; set; }
         public required string AppointmentComment { get; set; }
-        public string PatientId { get; set; }
-        public string PatientName { get; set; }
-        public string PatientSurname { get; set; }
+        public required string DoctorName { get; set; }
+        public required string DoctorSurname { get; set; }
+        public required string DoctorTitle { get; set; }
+        public required string DoctorProfileImageUrl { get; set; }
+
 
     }
 }

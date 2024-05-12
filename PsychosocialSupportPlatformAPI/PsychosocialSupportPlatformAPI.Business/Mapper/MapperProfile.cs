@@ -99,8 +99,10 @@ namespace PsychosocialSupportPlatformAPI.Business.Mapper
             CreateMap<AppointmentStatistics, UpdateAppointmentStatisticsDTO>().ReverseMap();
             CreateMap<AppointmentStatistics, DeleteAppointmentStatisticsDTO>().ReverseMap();
             CreateMap<AppointmentStatistics, GetAppointmentStatisticsDTO>()
-                .ForMember(dest => dest.PatientName, opt => opt.MapFrom(src => src.Patient.Name))
-                .ForMember(dest => dest.PatientSurname, opt => opt.MapFrom(src => src.Patient.Surname))
+                .ForMember(dest => dest.DoctorName, opt => opt.MapFrom(src => src.Doctor.Name))
+                .ForMember(dest => dest.DoctorSurname, opt => opt.MapFrom(src => src.Doctor.Surname))
+                .ForMember(dest => dest.DoctorTitle, opt => opt.MapFrom(src => src.Doctor.Title))
+                .ForMember(dest => dest.DoctorProfileImageUrl, opt => opt.MapFrom(src => src.Doctor.ProfileImageUrl))
                 .ForMember(dest => dest.AppointmentDay, opt => opt.MapFrom(src => src.AppointmentSchedule.Day.ToShortDateString()));
 
 

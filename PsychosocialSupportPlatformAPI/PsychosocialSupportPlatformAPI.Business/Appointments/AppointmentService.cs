@@ -63,9 +63,9 @@ namespace PsychosocialSupportPlatformAPI.Business.Appointments
             return true;
         }
 
-        private async Task<string> GenerateZoomMeetingUrl()
-        {
+        //private async Task<string> GenerateZoomMeetingUrl()
+        //{
 
-        }
+        //}
     }
 }

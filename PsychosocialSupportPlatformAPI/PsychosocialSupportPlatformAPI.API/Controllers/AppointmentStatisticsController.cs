@@ -56,17 +56,6 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllPatientAppointmentStatisticsByDoctorId()
-        {
-            string? currentUserID = User.Identity?.Name;
-            if (currentUserID == null) return Unauthorized();
-
-            IEnumerable<object> allPatientAppointmentStatistics = await _appointmentStatisticsService.GetAllPatientAppointmentStatisticsByDoctorId(currentUserID);
-            if (!allPatientAppointmentStatistics.Any()) return NotFound();
-            return Ok(allPatientAppointmentStatistics);
-        }
-
-        [HttpGet]
         public async Task<IActionResult> GetAllAppoinmentStatisticsByPatientUserName([FromQuery] string patientUserName)
         {
             string? currentUserID = User.Identity?.Name;
