@@ -54,9 +54,9 @@ namespace PsychosocialSupportPlatformAPI.Business.Statistics.Appointments
             await _appointmentStatisticsRepository.DeleteAppointmentStatistics(appointmentStatistics);
         }
 
-        public async Task<IEnumerable<object>> GetAllPatientAppointmentStatisticsByDoctorId(string doctorId)
+        public async Task<IEnumerable<object>> GetAllPatientAppointmentStatisticsByDoctorUserName(string doctorUserName)
         {
-            return await _appointmentStatisticsRepository.GetAllPatientAppointmentStatisticsByDoctorId(doctorId);
+            return await _appointmentStatisticsRepository.GetAllPatientAppointmentStatisticsByDoctorUserName(doctorUserName);
         }
 
         public async Task<IEnumerable<object>> GetAllPatientAppointmentStatisticsByPatientUserName(string patientUserName, string doctorId)
@@ -64,9 +64,9 @@ namespace PsychosocialSupportPlatformAPI.Business.Statistics.Appointments
             return await _appointmentStatisticsRepository.GetAllPatientAppointmentStatisticsByPatientUserName(patientUserName, doctorId);
         }
 
-        public async Task<IEnumerable<GetAppointmentStatisticsDTO>> GetAllPatientAppointmentStatisticsByPatientId(string patientId)
+        public async Task<IEnumerable<GetAppointmentStatisticsDTO>> GetAllPatientAppointmentStatisticsByPatientUserName(string patientUserName)
         {
-            return _mapper.Map<IEnumerable<GetAppointmentStatisticsDTO>>(await _appointmentStatisticsRepository.GetAllPatientAppointmentStatisticsByPatientId(patientId));
+            return _mapper.Map<IEnumerable<GetAppointmentStatisticsDTO>>(await _appointmentStatisticsRepository.GetAllPatientAppointmentStatisticsByPatientUserName(patientUserName));
         }
 
         public async Task<IEnumerable<object>> GetAllPatientAppointmentStatistics()

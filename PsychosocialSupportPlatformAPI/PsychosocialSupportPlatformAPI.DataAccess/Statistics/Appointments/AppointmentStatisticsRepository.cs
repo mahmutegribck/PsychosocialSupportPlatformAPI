@@ -35,9 +35,9 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Statistics.Appointments
             return await _context.AppointmentStatistics.AsNoTracking().Where(s => s.Id == appointmentStatisticsId && s.PatientId == patientId && s.DoctorId == doctorId && s.AppointmentScheduleId == appointmentScheduleId).FirstOrDefaultAsync();
         }
 
-        public async Task<IEnumerable<object>> GetAllPatientAppointmentStatisticsByDoctorId(string doctorId)
+        public async Task<IEnumerable<object>> GetAllPatientAppointmentStatisticsByDoctorUserName(string doctorUserName)
         {
-            var statistics = await _context.AppointmentStatistics.Include(s => s.Patient).Include(s => s.AppointmentSchedule).Where(s => s.DoctorId == doctorId).AsNoTracking().ToListAsync();
+            var statistics = await _context.AppointmentStatistics.Include(s=> s.Doctor).Include(s => s.Patient).Include(s => s.AppointmentSchedule).Where(s => s.Doctor.UserName == doctorUserName).AsNoTracking().ToListAsync();
 
             var groupedStatistics = statistics.GroupBy(s => new { s.Patient.Id, s.Patient.Name, s.Patient.Surname }).Select(group => new
             {
@@ -75,9 +75,9 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Statistics.Appointments
             }).AsNoTracking().ToListAsync();
         }
 
-        public async Task<IEnumerable<AppointmentStatistics>> GetAllPatientAppointmentStatisticsByPatientId(string patientId)
+        public async Task<IEnumerable<AppointmentStatistics>> GetAllPatientAppointmentStatisticsByPatientUserName(string patienUserName)
         {
-            return await _context.AppointmentStatistics.Include(s => s.Patient).Include(s => s.AppointmentSchedule).Where(s => s.PatientId == patientId).AsNoTracking().ToListAsync();
+            return await _context.AppointmentStatistics.Include(s => s.Patient).Include(s => s.AppointmentSchedule).Where(s => s.Patient.UserName == patienUserName).AsNoTracking().ToListAsync();
         }
 
         public async Task<IEnumerable<object>> GetAllPatientAppointmentStatistics()

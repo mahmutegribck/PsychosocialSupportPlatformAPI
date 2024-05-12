@@ -144,20 +144,20 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllPatientAppointmentStatisticsByDoctorId([FromQuery] string doctorId)
+        public async Task<IActionResult> GetAllPatientAppointmentStatisticsByDoctorUserName([FromQuery] string doctorUserName)
         {
-            var allPatientAppointmentStatisticsByDoctorId = await _appointmentStatisticsService.GetAllPatientAppointmentStatisticsByDoctorId(doctorId);
-            if (!allPatientAppointmentStatisticsByDoctorId.Any()) return NotFound();
-            return Ok(allPatientAppointmentStatisticsByDoctorId);
+            var allPatientAppointmentStatistics = await _appointmentStatisticsService.GetAllPatientAppointmentStatisticsByDoctorUserName(doctorUserName);
+            if (!allPatientAppointmentStatistics.Any()) return NotFound();
+            return Ok(allPatientAppointmentStatistics);
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllPatientAppointmentStatisticsByPatientId([FromQuery] string patientId)
+        public async Task<IActionResult> GetAllPatientAppointmentStatisticsByPatientUserName([FromQuery] string patientUserName)
         {
             string? currentUserID = User.Identity?.Name;
             if (currentUserID == null) return Unauthorized();
 
-            IEnumerable<GetAppointmentStatisticsDTO> allPatientAppointmentStatistics = await _appointmentStatisticsService.GetAllPatientAppointmentStatisticsByPatientId(patientId);
+            IEnumerable<GetAppointmentStatisticsDTO> allPatientAppointmentStatistics = await _appointmentStatisticsService.GetAllPatientAppointmentStatisticsByPatientUserName(patientUserName);
             if (!allPatientAppointmentStatistics.Any()) return NotFound();
             return Ok(allPatientAppointmentStatistics);
         }
