@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using PsychosocialSupportPlatformAPI.Business.Appointments.DTOs;
 using PsychosocialSupportPlatformAPI.Business.AppointmentSchedules.DTOs;
+using PsychosocialSupportPlatformAPI.Business.Users.DTOs;
 using PsychosocialSupportPlatformAPI.DataAccess.Appointments;
 using PsychosocialSupportPlatformAPI.DataAccess.AppointmentSchedules;
 using PsychosocialSupportPlatformAPI.Entity.Entities.Appointments;
@@ -35,9 +36,14 @@ namespace PsychosocialSupportPlatformAPI.Business.Appointments
             return _mapper.Map<GetPatientAppointmentDTO>(await _appointmentRepository.GetPatientAppointmentById(patientAppointmentId, patientId));
         }
 
-        public async Task<object> GetPatientAppointmentsByPatientId(string patientID)
+        public async Task<IEnumerable<object>> GetPatientAppointmentsByPatientId(string patientID)
         {
             return await _appointmentRepository.GetPatientAppointmentsByPatientId(patientID);
+        }
+
+        public async Task<IEnumerable<GetPatientDoctorDto>> GetPatientDoctorsByPatientId(string patientId)
+        {
+            return _mapper.Map<IEnumerable<GetPatientDoctorDto>>(await _appointmentRepository.GetPatientDoctorsByPatientId(patientId));
         }
 
         public async Task<bool> MakeAppointment(string patientId, MakeAppointmentDTO makeAppointmentDTO)

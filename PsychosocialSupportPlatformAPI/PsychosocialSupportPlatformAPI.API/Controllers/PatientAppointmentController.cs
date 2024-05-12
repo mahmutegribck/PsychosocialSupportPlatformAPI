@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using PsychosocialSupportPlatformAPI.Business.Appointments;
 using PsychosocialSupportPlatformAPI.Business.Appointments.DTOs;
 using PsychosocialSupportPlatformAPI.Business.AppointmentSchedules.DTOs;
+using PsychosocialSupportPlatformAPI.Business.Users.DTOs;
 
 namespace PsychosocialSupportPlatformAPI.API.Controllers
 {
@@ -18,6 +19,19 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
             _appointmentService = appointmentService;
         }
 
+
+        [HttpGet]
+        public async Task<IActionResult> GetPatientDoctors()
+        {
+            string? currentUserID = User.Identity?.Name;
+            if (currentUserID == null) return Unauthorized();
+
+            IEnumerable<GetPatientDoctorDto> patientDoctors = await _appointmentService.GetPatientDoctorsByPatientId(currentUserID);
+
+            if (!patientDoctors.Any()) return NotFound();
+
+            return Ok(patientDoctors);
+        }
 
         [HttpGet]
         public async Task<IActionResult> GetPatientAppointments()

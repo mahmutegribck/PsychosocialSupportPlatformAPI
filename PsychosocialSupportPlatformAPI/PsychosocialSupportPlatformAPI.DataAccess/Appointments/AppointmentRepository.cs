@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PsychosocialSupportPlatformAPI.Entity.Entities.Appointments;
+using PsychosocialSupportPlatformAPI.Entity.Entities.Users;
 
 namespace PsychosocialSupportPlatformAPI.DataAccess.Appointments
 {
@@ -31,6 +32,11 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Appointments
             appointmentSchedule.URL = null;
             _context.AppointmentSchedules.Update(appointmentSchedule);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<IEnumerable<Doctor>> GetPatientDoctorsByPatientId(string patientId)
+        {
+            return await _context.AppointmentSchedules.Where(a => a.PatientId == patientId).Select(a => a.Doctor).Distinct().ToListAsync();
         }
 
         public async Task<IEnumerable<object>> GetPatientAppointmentsByPatientId(string patientId)

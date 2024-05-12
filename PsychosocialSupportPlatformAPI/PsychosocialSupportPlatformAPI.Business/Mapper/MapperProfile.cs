@@ -40,6 +40,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Mapper
             CreateMap<ApplicationUser, GetApplicationUserDto>().ReverseMap();
             CreateMap<ApplicationUser, GetAdminDto>().ReverseMap();
             CreateMap<Doctor, GetDoctorDto>().ReverseMap();
+            CreateMap<Doctor, GetPatientDoctorDto>().ReverseMap();
             CreateMap<Patient, GetPatientDto>().ReverseMap();
 
 
