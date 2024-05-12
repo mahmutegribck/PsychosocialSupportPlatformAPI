@@ -9,10 +9,8 @@ namespace PsychosocialSupportPlatformAPI.Business.Statistics.Appointments
         Task DeleteAppointmentStatistics(DeleteAppointmentStatisticsDTO deleteAppointmentStatisticsDTO, string doctorId);
         Task<IEnumerable<object>> GetAllPatientAppointmentStatisticsByDoctorUserName(string doctorUserName);
         Task<IEnumerable<object>> GetAllPatientAppointmentStatisticsByPatientUserName(string patientUserName, string doctorId);
-        Task<IEnumerable<GetAppointmentStatisticsDTO>> GetAllPatientAppointmentStatisticsByPatientUserName(string patientUserName);
-
+        Task<IEnumerable<object>> GetAllPatientAppointmentStatisticsByPatientUserName(string patientUserName);
         Task<IEnumerable<object>> GetAllPatientAppointmentStatistics();
-
 
     }
 }

@@ -11,7 +11,7 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Statistics.Appointments
 
         Task<IEnumerable<object>> GetAllPatientAppointmentStatisticsByDoctorUserName(string doctorUserName);
         Task<IEnumerable<object>> GetAllPatientAppointmentStatisticsByPatientUserName(string patientUserName, string doctorId);
-        Task<IEnumerable<AppointmentStatistics>> GetAllPatientAppointmentStatisticsByPatientUserName(string patientUserName);
+        Task<IEnumerable<object>> GetAllPatientAppointmentStatisticsByPatientUserName(string patientUserName);
 
         Task<IEnumerable<object>> GetAllPatientAppointmentStatistics();
 

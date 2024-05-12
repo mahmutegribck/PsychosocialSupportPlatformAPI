@@ -37,7 +37,7 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Statistics.Appointments
 
         public async Task<IEnumerable<object>> GetAllPatientAppointmentStatisticsByDoctorUserName(string doctorUserName)
         {
-            var statistics = await _context.AppointmentStatistics.Include(s=> s.Doctor).Include(s => s.Patient).Include(s => s.AppointmentSchedule).Where(s => s.Doctor.UserName == doctorUserName).AsNoTracking().ToListAsync();
+            var statistics = await _context.AppointmentStatistics.Include(s => s.Doctor).Include(s => s.Patient).Include(s => s.AppointmentSchedule).Where(s => s.Doctor.UserName == doctorUserName).AsNoTracking().ToListAsync();
 
             var groupedStatistics = statistics.GroupBy(s => new { s.Patient.Id, s.Patient.Name, s.Patient.Surname }).Select(group => new
             {
@@ -75,9 +75,25 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Statistics.Appointments
             }).AsNoTracking().ToListAsync();
         }
 
-        public async Task<IEnumerable<AppointmentStatistics>> GetAllPatientAppointmentStatisticsByPatientUserName(string patienUserName)
+        public async Task<IEnumerable<object>> GetAllPatientAppointmentStatisticsByPatientUserName(string patienUserName)
         {
-            return await _context.AppointmentStatistics.Include(s => s.Patient).Include(s => s.AppointmentSchedule).Where(s => s.Patient.UserName == patienUserName).AsNoTracking().ToListAsync();
+            return await _context.Patients.Include(p => p.AppointmentStatistics).Where(p => p.UserName == patienUserName).Select(p => new
+            {
+                PatientName = p.Name,
+                PatientSurname = p.Surname,
+                PatientProfileImageUrl = p.ProfileImageUrl,
+                AppointmentStatistics = p.AppointmentStatistics.Select(s => new
+                {
+                    DoctorName = s.Doctor.Name,
+                    DoctorSurname = s.Doctor.Surname,
+                    DoctorProfileImageUrl = s.Doctor.ProfileImageUrl,
+                    DoctorTitle = s.Doctor.Title,
+                    AppointmentDay = s.AppointmentSchedule.Day.ToShortDateString(),
+                    AppointmentStartTime = s.AppointmentStartTime,
+                    AppointmentEndTime = s.AppointmentEndTime,
+                    AppointmentComment = s.AppointmentComment
+                })
+            }).ToListAsync();
         }
 
         public async Task<IEnumerable<object>> GetAllPatientAppointmentStatistics()

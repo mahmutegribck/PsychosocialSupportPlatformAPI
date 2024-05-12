@@ -157,7 +157,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
             string? currentUserID = User.Identity?.Name;
             if (currentUserID == null) return Unauthorized();
 
-            IEnumerable<GetAppointmentStatisticsDTO> allPatientAppointmentStatistics = await _appointmentStatisticsService.GetAllPatientAppointmentStatisticsByPatientUserName(patientUserName);
+            var allPatientAppointmentStatistics = await _appointmentStatisticsService.GetAllPatientAppointmentStatisticsByPatientUserName(patientUserName);
             if (!allPatientAppointmentStatistics.Any()) return NotFound();
             return Ok(allPatientAppointmentStatistics);
         }
