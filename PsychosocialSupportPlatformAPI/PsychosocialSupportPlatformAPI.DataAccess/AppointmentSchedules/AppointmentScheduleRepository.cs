@@ -107,12 +107,17 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.AppointmentSchedules
 
         public async Task<IEnumerable<AppointmentSchedule>> AllDoctorAppointments(string doctorId)
         {
-            return await _context.AppointmentSchedules.Include(a => a.Patient).Where(a => a.DoctorId == doctorId&& a.PatientId != null).AsNoTracking().ToListAsync();
+            return await _context.AppointmentSchedules.Include(a => a.Patient).Where(a => a.DoctorId == doctorId && a.PatientId != null).AsNoTracking().ToListAsync();
         }
 
         public async Task<IEnumerable<AppointmentSchedule>> GetAllDoctorAppointmentsByPatientId(string patientId, string doctorId)
         {
             return await _context.AppointmentSchedules.Include(a => a.Patient).Where(a => a.DoctorId == doctorId && a.PatientId == patientId).AsNoTracking().ToListAsync();
+        }
+
+        public async Task<IEnumerable<AppointmentSchedule>> GetAllPastDoctorAppointmentsByPatientSlug(string patientSlug, string doctorId)
+        {
+            return await _context.AppointmentSchedules.Include(a => a.Patient).Where(a => a.DoctorId == doctorId && a.Patient != null && a.Patient.UserName == patientSlug && a.Day < DateTime.Now.Date && (int)a.TimeRange < DateTime.Now.Hour).AsNoTracking().ToListAsync();
         }
 
         public async Task<IEnumerable<AppointmentSchedule>> GetAllDoctorAppointmentsByDate(DateTime day, string doctorId)

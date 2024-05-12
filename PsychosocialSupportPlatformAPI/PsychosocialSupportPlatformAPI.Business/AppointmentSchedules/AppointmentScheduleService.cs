@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using PsychosocialSupportPlatformAPI.Business.Appointments.DTOs.Doctor;
 using PsychosocialSupportPlatformAPI.DataAccess.AppointmentSchedules;
-using PsychosocialSupportPlatformAPI.DataAccess.DoctorSchedules;
 using PsychosocialSupportPlatformAPI.Entity.Entities.Appointments;
 using PsychosocialSupportPlatformAPI.Entity.Entities.Users;
 using PsychosocialSupportPlatformAPI.Entity.Enums;
@@ -386,6 +385,31 @@ namespace PsychosocialSupportPlatformAPI.Business.AppointmentSchedules
             return groupedDoctorAppointments;
         }
 
+        public async Task<IEnumerable<object>> GetAllPastDoctorAppointmentsByPatientSlug(string patientSlug, string doctorId)
+        {
+            IEnumerable<AppointmentSchedule> doctorAppointments = await _appointmentScheduleRepository.GetAllPastDoctorAppointmentsByPatientSlug(patientSlug, doctorId);
+
+            if (!doctorAppointments.Any()) throw new Exception("Doktorun Hasta ile Randevusu Bulunamadı.");
+
+            var groupedDoctorAppointments = doctorAppointments.GroupBy(d => d.Day)
+                .Select(group => new
+                {
+                    AppointmentDay = group.Key.ToShortDateString(),
+                    Patients = group.Select(p => new
+                    {
+                        AppointmentId = p.Id,
+                        PatientId = p.PatientId,
+                        PatientName = p.Patient!.Name,
+                        PatientSurname = p.Patient.Surname,
+                        AppointmentTimeRange = p.TimeRange,
+                        AppointmentUrl = p.URL
+                    })
+                });
+
+            return groupedDoctorAppointments;
+        }
+
+
         public async Task<IEnumerable<GetDoctorAppointmentDTO>> GetAllDoctorAppointmentsByDate(DateTime date, string doctorId)
         {
             IEnumerable<AppointmentSchedule> doctorAppointments = await _appointmentScheduleRepository.GetAllDoctorAppointmentsByDate(date, doctorId);
@@ -395,5 +419,7 @@ namespace PsychosocialSupportPlatformAPI.Business.AppointmentSchedules
             return _mapper.Map<IEnumerable<GetDoctorAppointmentDTO>>(doctorAppointments);
 
         }
+
+        
     }
 }

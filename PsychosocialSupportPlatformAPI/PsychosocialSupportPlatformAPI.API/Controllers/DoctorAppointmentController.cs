@@ -46,6 +46,18 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
         }
 
         [HttpGet]
+        public async Task<IActionResult> GetAllPastDoctorAppointmentsByPatientSlug([FromQuery] string patientSlug)
+        {
+            string? currentUserID = User.Identity?.Name;
+            if (currentUserID == null) return Unauthorized();
+
+            var allDoctorAppointments = await _appointmentScheduleService.GetAllPastDoctorAppointmentsByPatientSlug(patientSlug, currentUserID);
+
+            if (!allDoctorAppointments.Any()) return NotFound();
+            return Ok(allDoctorAppointments);
+        }
+
+        [HttpGet]
         public async Task<IActionResult> GetAllDoctorAppointmentsByDate([FromQuery] string date)
         {
             string? currentUserID = User.Identity?.Name;
