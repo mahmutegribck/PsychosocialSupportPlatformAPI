@@ -27,7 +27,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
         private readonly IVideoService _videoService;
         private readonly IVideoStatisticsService _videoStatisticsService;
         private readonly IAppointmentStatisticsService _appointmentStatisticsService;
-
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
 
         public AdminController(
@@ -37,7 +37,8 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
             IMapper mapper,
             IVideoService videoService,
             IVideoStatisticsService videoStatisticsService,
-            IAppointmentStatisticsService appointmentStatisticsService
+            IAppointmentStatisticsService appointmentStatisticsService,
+            IWebHostEnvironment webHostEnvironment
             )
         {
             _doctorScheduleService = doctorScheduleService;
@@ -47,6 +48,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
             _videoService = videoService;
             _videoStatisticsService = videoStatisticsService;
             _appointmentStatisticsService = appointmentStatisticsService;
+            _webHostEnvironment = webHostEnvironment;
         }
 
 
@@ -93,7 +95,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
                 {
                     return BadRequest("Video Bulunamadı.");
                 }
-                await _videoService.UploadVideo(uploadVideoDTO);
+                await _videoService.UploadVideo(uploadVideoDTO, _webHostEnvironment.WebRootPath);
                 return Ok();
 
             }

@@ -39,23 +39,27 @@ namespace PsychosocialSupportPlatformAPI.Business.Videos
             await _videoRepository.UpdateVideo(_mapper.Map<Video>(updateVideoDTO));
         }
 
-        public async Task UploadVideo(UploadVideoDTO uploadVideoDTO)
+        public async Task UploadVideo(UploadVideoDTO uploadVideoDTO, string rootPath)
         {
-            var basePath = Path.Combine(Directory.GetCurrentDirectory() + "/UploadedVideos/");
+            string basePath = rootPath + "\\Videos\\";
+            if (!System.IO.Directory.Exists(basePath))
+            {
+                System.IO.Directory.CreateDirectory(basePath);
+            }
 
-            var extension = Path.GetExtension(uploadVideoDTO.File.FileName);
+            string extension = Path.GetExtension(uploadVideoDTO.File.FileName);
+
             if (extension == null || extension != ".mp4" && extension != ".MP4")
             {
-                throw new ArgumentOutOfRangeException();
+                throw new ArgumentOutOfRangeException("Video Uzantısı Geçersiz.");
             }
-            string newFileName = Path.ChangeExtension(Path.GetRandomFileName(), extension);
 
+            string newVideoName = Path.ChangeExtension(Path.GetRandomFileName(), extension);
 
-            string filePath = string.Concat($"{basePath}", newFileName);
+            string videoPath = string.Concat($"{basePath}", newVideoName);
+            string videoUrl = $"{_configuration["Urls:DevBaseUrl"]}/Videos/{newVideoName}";
 
-            string url = $"{_configuration["Urls:DevBaseUrl"]}/UploadedVideos/{newFileName}";
-
-            using (var stream = new FileStream(filePath, FileMode.Create))
+            using (var stream = new FileStream(videoPath, FileMode.Create))
                 await uploadVideoDTO.File.CopyToAsync(stream);
 
 
@@ -71,8 +75,8 @@ namespace PsychosocialSupportPlatformAPI.Business.Videos
 
             await _videoRepository.AddVideo(new Video
             {
-                Url = url,
-                Path = filePath,
+                Url = videoUrl,
+                Path = videoPath,
                 Description = uploadVideoDTO.Description,
                 Title = uploadVideoDTO.Title.Trim(),
                 VideoSlug = videoSlug.ToLower() + "-" + new Random().Next(1000, 1000000)

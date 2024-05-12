@@ -28,8 +28,6 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
 builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
@@ -134,7 +132,7 @@ var app = builder.Build();
 
 app.UseSwagger();
 app.UseSwaggerUI();
-
+app.UseStaticFiles();
 
 app.UseHttpsRedirection();
 //app.UseRouting();
@@ -144,22 +142,8 @@ app.UseWebSockets();
 app.UseAuthentication();
 app.UseAuthorization();
 
-
 app.MapControllers();
 
-var basePath = Path.Combine(Directory.GetCurrentDirectory(), "UploadedVideos");
-if (!Directory.Exists(basePath))
-{
-    Directory.CreateDirectory(basePath);
-}
-app.UseStaticFiles(new StaticFileOptions()
-{
-    FileProvider = new PhysicalFileProvider(basePath),
-    //FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "UploadedVideos")),
-    RequestPath = "/UploadedVideos"
-});
-
 app.MapHub<ChatHub>("message");
-
 
 app.Run();

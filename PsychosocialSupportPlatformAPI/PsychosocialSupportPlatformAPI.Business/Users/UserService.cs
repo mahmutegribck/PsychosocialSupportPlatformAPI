@@ -1,12 +1,12 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Configuration;
 using PsychosocialSupportPlatformAPI.Business.Users.DTOs;
 using PsychosocialSupportPlatformAPI.Business.Users.DTOs.Admin;
 using PsychosocialSupportPlatformAPI.Business.Users.DTOs.DoctorDTOs;
 using PsychosocialSupportPlatformAPI.Business.Users.DTOs.PatientDTOs;
-using PsychosocialSupportPlatformAPI.Business.Videos.DTOs;
 using PsychosocialSupportPlatformAPI.DataAccess.Users;
 using PsychosocialSupportPlatformAPI.Entity.Entities.Users;
 
@@ -53,7 +53,6 @@ namespace PsychosocialSupportPlatformAPI.Business.Users
 
             }
             return _mapper.Map<GetAdminDto>(user);
-
         }
 
         public async Task<IdentityResult> UpdateDoctor(string currentUserID, UpdateDoctorDTO updateDoctorDTO)
@@ -66,32 +65,31 @@ namespace PsychosocialSupportPlatformAPI.Business.Users
             return await _userRepository.UpdatePatient(currentUserID, _mapper.Map<Patient>(updatePatientDTO));
         }
 
-        public async Task UploadProfileImage(IFormFile formFile, string userId)
+        public async Task UploadProfileImage(IFormFile formFile, string userId, string rootPath)
         {
             ApplicationUser user = await _userManager.FindByIdAsync(userId) ?? throw new Exception("Kullanıcı Bulunamadı");
+            if (user.ProfileImagePath != null)
+            {
+                File.Delete(user.ProfileImagePath);
+            }
 
-            var basePath = Path.Combine(Directory.GetCurrentDirectory() + "/UploadedVideos/");
+            string basePath = rootPath + "\\Images\\UserProfileImages\\";
+            if (!System.IO.Directory.Exists(basePath))
+            {
+                System.IO.Directory.CreateDirectory(basePath);
+            }
 
-            var extension = Path.GetExtension(formFile.FileName);
-
-            //if (extension == null || extension != ".mp4" && extension != ".MP4")
-            //{
-            //    throw new ArgumentOutOfRangeException();
-            //}
-
+            string extension = Path.GetExtension(formFile.FileName);
             string newFileName = Path.ChangeExtension(Path.GetRandomFileName(), extension);
 
+            string imagePath = string.Concat($"{basePath}", newFileName);
+            string imageUrl = $"{_config["Urls:DevBaseUrl"]}/Images/UserProfileImages/{newFileName}";
 
-            string filePath = string.Concat($"{basePath}", newFileName);
-
-
-
-            string url = $"{_config["Urls:DevBaseUrl"]}/UploadedVideos/{newFileName}";
-
-            using (var stream = new FileStream(filePath, FileMode.Create))
+            using (var stream = new FileStream(imagePath, FileMode.Create))
                 await formFile.CopyToAsync(stream);
 
-            user.ProfileImageUrl = url;
+            user.ProfileImageUrl = imageUrl;
+            user.ProfileImagePath = imagePath;
 
             await _userManager.UpdateAsync(user);
         }

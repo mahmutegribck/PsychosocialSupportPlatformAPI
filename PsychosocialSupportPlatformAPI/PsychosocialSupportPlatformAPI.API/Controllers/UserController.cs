@@ -24,13 +24,15 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
         private readonly IMapper _mapper;
         private readonly IUserService _userService;
         private readonly IMessageService _messageService;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
         public UserController(
             UserManager<Doctor> userManagerDoctor,
             IMapper mapper,
             UserManager<Patient> patientManager,
             IUserService userService,
-            IMessageService messageService
+            IMessageService messageService,
+            IWebHostEnvironment webHostEnvironment
             )
         {
             _userManagerDoctor = userManagerDoctor;
@@ -38,6 +40,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
             _patientManager = patientManager;
             _userService = userService;
             _messageService = messageService;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         [HttpGet]
@@ -148,12 +151,12 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
 
 
         [HttpPatch]
-        public async Task<IActionResult> UploadProfileImage([FromBody] IFormFile formFile)
+        public async Task<IActionResult> UploadProfileImage([FromForm] UserProfileImageUploadDTO userProfileImageUploadDTO)
         {
             var currentUserID = User.Identity?.Name;
             if (currentUserID == null) return Unauthorized();
 
-            await _userService.UploadProfileImage(formFile, currentUserID);
+            await _userService.UploadProfileImage(userProfileImageUploadDTO.File, currentUserID, _webHostEnvironment.WebRootPath);
             return Ok();
         }
 

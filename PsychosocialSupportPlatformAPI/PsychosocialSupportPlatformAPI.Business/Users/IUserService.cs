@@ -15,7 +15,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Users
 
         Task<IEnumerable<GetPatientDto>> GetAllPatientsByDoctorId(string doctorId);
 
-        Task UploadProfileImage(IFormFile formFile, string userId);
+        Task UploadProfileImage(IFormFile formFile, string userId, string path);
 
 
     }
