@@ -6,6 +6,7 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Users
     public interface IUserRepository
     {
         Task<ApplicationUser> GetUser(string id);
+        Task<ApplicationUser> GetUserBySlug(string userSlug);
         Task<IdentityResult> DeleteUser(string id);
         Task<IdentityResult> UpdateDoctor(string currentUserID, Doctor doctor);
         Task<IdentityResult> UpdatePatient(string currentUserID, Patient patient);

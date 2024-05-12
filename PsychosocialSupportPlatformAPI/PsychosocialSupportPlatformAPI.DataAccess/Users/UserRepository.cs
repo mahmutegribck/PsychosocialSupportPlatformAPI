@@ -46,6 +46,11 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Users
             return await _userManager.FindByIdAsync(id);
         }
 
+        public async Task<ApplicationUser> GetUserBySlug(string userSlug)
+        {
+            return await _context.Users.Where(a => a.UserName == userSlug).FirstOrDefaultAsync();
+        }
+
         public async Task<IdentityResult> UpdateDoctor(string currentUserID, Doctor doctor)
         {
             Doctor updatedDoctor = await _doctorManager.FindByIdAsync(currentUserID);

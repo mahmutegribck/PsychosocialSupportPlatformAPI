@@ -9,6 +9,8 @@ namespace PsychosocialSupportPlatformAPI.Business.Users
     public interface IUserService
     {
         Task<object> GetUserByID(string userId);
+        Task<object> GetUserBySlug(string userSlug);
+
         Task<IdentityResult> DeleteUser(string id);
         Task<IdentityResult> UpdateDoctor(string currentUserID, UpdateDoctorDTO updateDoctorDTO);
         Task<IdentityResult> UpdatePatient(string currentUserID, UpdatePatientDTO updatePatientDTO);

@@ -2,7 +2,6 @@
 using PsychosocialSupportPlatformAPI.Business.Appointments.DTOs.Doctor;
 using PsychosocialSupportPlatformAPI.DataAccess.AppointmentSchedules;
 using PsychosocialSupportPlatformAPI.Entity.Entities.Appointments;
-using PsychosocialSupportPlatformAPI.Entity.Entities.Users;
 using PsychosocialSupportPlatformAPI.Entity.Enums;
 
 namespace PsychosocialSupportPlatformAPI.Business.AppointmentSchedules
@@ -391,20 +390,23 @@ namespace PsychosocialSupportPlatformAPI.Business.AppointmentSchedules
 
             if (!doctorAppointments.Any()) throw new Exception("Doktorun Hasta ile Randevusu Bulunamadı.");
 
-            var groupedDoctorAppointments = doctorAppointments.GroupBy(d => d.Day)
-                .Select(group => new
+            var groupedDoctorAppointments = doctorAppointments.GroupBy(d => d.PatientId).Select(group => new
+            {
+                PatientId = group.Key,
+                PatientName = group.First().Patient.Name,
+                PatientSurname = group.First().Patient.Surname,
+                PatientProfileImageUrl = group.First().Patient.ProfileImageUrl,
+                Appointments = group.SelectMany(d => d.Patient.AppointmentSchedules.GroupBy(a => a.Day)).Select(innerGroup => new
                 {
-                    AppointmentDay = group.Key.ToShortDateString(),
-                    Patients = group.Select(p => new
+                    AppointmentDay = innerGroup.Key.ToShortDateString(),
+                    AppointmentDayTimeRange = innerGroup.Select(t => new
                     {
-                        AppointmentId = p.Id,
-                        PatientId = p.PatientId,
-                        PatientName = p.Patient!.Name,
-                        PatientSurname = p.Patient.Surname,
-                        AppointmentTimeRange = p.TimeRange,
-                        AppointmentUrl = p.URL
-                    })
-                });
+                        AppointmentId = t.Id,
+                        AppointmentTimeRange = t.TimeRange
+
+                    }).ToList(),
+                }).ToList()
+            });
 
             return groupedDoctorAppointments;
         }
@@ -420,6 +422,6 @@ namespace PsychosocialSupportPlatformAPI.Business.AppointmentSchedules
 
         }
 
-        
+
     }
 }

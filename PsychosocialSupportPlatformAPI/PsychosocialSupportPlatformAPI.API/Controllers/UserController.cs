@@ -98,6 +98,21 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
             return NotFound();
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetUserBySlug([FromQuery] string userSlug)
+        {
+            if (userSlug != null)
+            {
+                var user = await _userService.GetUserBySlug(userSlug);
+
+                if (user != null)
+                {
+                    return Ok(user);
+                }
+            }
+            return NotFound();
+        }
+
         [HttpDelete]
         [Authorize(Roles = "Doctor,Patient")]
         public async Task<IActionResult> DeleteCurrentUser()

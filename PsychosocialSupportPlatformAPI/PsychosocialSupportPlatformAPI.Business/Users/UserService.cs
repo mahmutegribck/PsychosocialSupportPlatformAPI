@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Configuration;
 using PsychosocialSupportPlatformAPI.Business.Users.DTOs;
 using PsychosocialSupportPlatformAPI.Business.Users.DTOs.Admin;
@@ -41,6 +40,23 @@ namespace PsychosocialSupportPlatformAPI.Business.Users
         public async Task<object> GetUserByID(string userId)
         {
             var user = await _userRepository.GetUser(userId);
+
+            if (await _userManager.IsInRoleAsync(user, _config["Roles:Patient"]))
+            {
+                return _mapper.Map<GetPatientDto>(user);
+
+            }
+            else if (await _userManager.IsInRoleAsync(user, _config["Roles:Doctor"]))
+            {
+                return _mapper.Map<GetDoctorDto>(user);
+
+            }
+            return _mapper.Map<GetAdminDto>(user);
+        }
+
+        public async Task<object> GetUserBySlug(string userSlug)
+        {
+            var user = await _userRepository.GetUserBySlug(userSlug);
 
             if (await _userManager.IsInRoleAsync(user, _config["Roles:Patient"]))
             {
