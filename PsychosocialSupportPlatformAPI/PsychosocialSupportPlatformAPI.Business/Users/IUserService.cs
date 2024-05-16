@@ -19,6 +19,8 @@ namespace PsychosocialSupportPlatformAPI.Business.Users
 
         Task UploadProfileImage(IFormFile formFile, string userId, string path);
 
+        Task ChangePassword(ChangePasswordDTO changePasswordDTO, string currentUserId);
+
 
     }
 }

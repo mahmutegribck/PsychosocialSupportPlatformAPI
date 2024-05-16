@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
+using PsychosocialSupportPlatformAPI.Business.Auth.AuthService.ResponseModel;
 using PsychosocialSupportPlatformAPI.Business.Users.DTOs;
 using PsychosocialSupportPlatformAPI.Business.Users.DTOs.Admin;
 using PsychosocialSupportPlatformAPI.Business.Users.DTOs.DoctorDTOs;
@@ -25,6 +26,25 @@ namespace PsychosocialSupportPlatformAPI.Business.Users
             _mapper = mapper;
             _userManager = userManager;
             _config = config;
+        }
+
+        public async Task ChangePassword(ChangePasswordDTO changePasswordDTO, string currentUserId)
+        {
+            var user = await _userManager.FindByIdAsync(currentUserId) ?? throw new Exception("Kullanıcı Bulunamadı.");
+
+            if (!await _userManager.CheckPasswordAsync(user, changePasswordDTO.OldPassword))
+            {
+                throw new Exception("Eski Şifre Yanlış.");
+            }
+
+            if (changePasswordDTO.NewPassword != changePasswordDTO.ConfirmPassword) throw new Exception("Yeni Şifre Doğrulanamdı.");
+
+            var result = await _userManager.ChangePasswordAsync(user, changePasswordDTO.OldPassword, changePasswordDTO.NewPassword);
+
+            if (!result.Succeeded)
+            {
+                throw new Exception("Şifre değiştirme başarısız oldu.");
+            }
         }
 
         public async Task<IdentityResult> DeleteUser(string id)

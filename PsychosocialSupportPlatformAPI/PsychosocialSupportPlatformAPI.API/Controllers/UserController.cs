@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.EntityFrameworkCore;
 using PsychosocialSupportPlatformAPI.Business.Messages;
 using PsychosocialSupportPlatformAPI.Business.Messages.DTOs;
@@ -174,6 +173,23 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
             await _userService.UploadProfileImage(userProfileImageUploadDTO.File, currentUserID, _webHostEnvironment.WebRootPath);
             return Ok();
         }
+
+
+        [HttpPatch]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDTO changePasswordDTO)
+        {
+            var currentUserID = User.Identity?.Name;
+            if (currentUserID == null) return Unauthorized();
+
+            await _userService.ChangePassword(changePasswordDTO, currentUserID);
+            return Ok();
+        }
+
+
+
+
+
+
 
 
         [HttpPost]

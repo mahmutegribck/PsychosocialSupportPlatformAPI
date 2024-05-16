@@ -1,10 +1,18 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json.Linq;
 using PsychosocialSupportPlatformAPI.Business.Appointments.DTOs;
 using PsychosocialSupportPlatformAPI.Business.AppointmentSchedules.DTOs;
+using PsychosocialSupportPlatformAPI.Business.Auth.JwtToken.DTOs;
 using PsychosocialSupportPlatformAPI.Business.Users.DTOs;
 using PsychosocialSupportPlatformAPI.DataAccess.Appointments;
 using PsychosocialSupportPlatformAPI.DataAccess.AppointmentSchedules;
 using PsychosocialSupportPlatformAPI.Entity.Entities.Appointments;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace PsychosocialSupportPlatformAPI.Business.Appointments
 {
@@ -13,11 +21,19 @@ namespace PsychosocialSupportPlatformAPI.Business.Appointments
         private readonly IAppointmentRepository _appointmentRepository;
         private readonly IAppointmentScheduleRepository _appointmentScheduleRepository;
         private readonly IMapper _mapper;
-        public AppointmentService(IAppointmentRepository appointmentRepository, IAppointmentScheduleRepository appointmentScheduleRepository, IMapper mapper)
+        private readonly IConfiguration _configuration;
+
+
+        public AppointmentService(
+            IAppointmentRepository appointmentRepository,
+            IAppointmentScheduleRepository appointmentScheduleRepository,
+            IMapper mapper,
+            IConfiguration configuration)
         {
             _appointmentRepository = appointmentRepository;
             _appointmentScheduleRepository = appointmentScheduleRepository;
             _mapper = mapper;
+            _configuration = configuration;
         }
 
         public async Task CancelPatientAppointment(CancelPatientAppointmentDTO cancelPatientAppointmentDTO, string patientId)
@@ -56,16 +72,61 @@ namespace PsychosocialSupportPlatformAPI.Business.Appointments
             appointmentSchedule.PatientId = patientId;
             appointmentSchedule.Status = true;
 
-            //Toplantı bağlantısı oluşturulacak.
+            appointmentSchedule.URL = await GenerateZoomMeetingUrl();
 
             await _appointmentScheduleRepository.UpdateAppointmentSchedule(appointmentSchedule);
 
             return true;
         }
 
-        //private async Task<string> GenerateZoomMeetingUrl()
-        //{
+        private async Task<string> GenerateZoomMeetingUrl()
+        {
+            var tokenhandler = new JwtSecurityTokenHandler();
 
-        //}
+            HttpClient httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+
+            var now = DateTime.UtcNow;
+            var apiSecret = "pBMwoo9u5qoKf7ScJh9FF1gT1IdVSzv1";
+            byte[] symmetricKey = Encoding.ASCII.GetBytes(apiSecret);
+
+
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Issuer = "X7ialNJvTKq1NdmclN0Sg",
+                Expires = now.AddSeconds(300),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(symmetricKey), SecurityAlgorithms.HmacSha256),
+            };
+
+            var token = tokenhandler.CreateToken(tokenDescriptor);
+            var finaltoken = tokenhandler.WriteToken(token);
+
+            string apiUrl = "https://api.zoom.us/v2/users/me/meetings";
+
+            httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", finaltoken);
+
+
+            var requestBody = new
+            {
+                topic = "deneme",
+                type = 2,
+                start_time = DateTime.UtcNow.AddMinutes(10).ToString("yyyy-MM-ddTHH:mm:ssZ"),
+                duration = 60,
+                timezone = "UTC",
+                settings = new
+                {
+                    host_video = true,
+                    participant_video = true
+                }
+
+            };
+            var requestContent = new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(requestBody), Encoding.UTF8, "application/json");
+            var response = await httpClient.PostAsync(apiUrl, requestContent);
+            var responseContent = await response.Content.ReadAsStringAsync();
+
+
+
+            return "deneme";
+        }
     }
 }
