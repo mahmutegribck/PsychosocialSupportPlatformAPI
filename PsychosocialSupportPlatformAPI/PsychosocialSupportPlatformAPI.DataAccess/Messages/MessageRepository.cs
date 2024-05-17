@@ -61,13 +61,13 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Messages
 
         public async Task<List<Message>> GetMessages(string senderId, string receiverId)
         {
-            var deneme = await _context.Messages.Include(m => m.Sender).Include(m => m.Receiver).Where(m => (m.SenderId == senderId && m.ReceiverId == receiverId) || (m.SenderId == receiverId && m.ReceiverId == senderId)).OrderBy(m => m.SendedTime).ToListAsync();
+            var deneme = await _context.Messages.Include(m => m.Sender).Include(m => m.Receiver).Where(m => (m.SenderId == senderId && m.ReceiverId == receiverId) || (m.SenderId == receiverId && m.ReceiverId == senderId)).OrderBy(m => m.SendedTime).AsNoTracking().ToListAsync();
             return deneme;
         }
-         
+
         public async Task<List<MessageOutbox>> GetOutboxMessages(string receiverId)
         {
-            var outboxMessages = await _context.MessageOutboxes.Where(m => m.ReceiverId == receiverId).ToListAsync();
+            var outboxMessages = await _context.MessageOutboxes.Include(m => m.Message).Where(m => m.ReceiverId == receiverId).ToListAsync();
             return outboxMessages;
         }
 
@@ -88,7 +88,7 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Messages
         public async Task SetSendedMessage(int messageId)
         {
             var message = await _context.Messages.FindAsync(messageId);
-            var messageOutbox = await _context.MessageOutboxes.FindAsync(messageId);
+            var messageOutbox = await _context.MessageOutboxes.Where(o => o.MessageId == messageId).FirstAsync();
             message.IsSended = true;
             _context.MessageOutboxes.Remove(messageOutbox);
             await _context.SaveChangesAsync();
