@@ -43,7 +43,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Users
 
             if (!result.Succeeded)
             {
-                throw new Exception("Şifre değiştirme başarısız oldu.");
+                throw new Exception($"Şifre Değiştirme İşlemi Başarısız Oldu. {string.Join(", ", result.Errors.Select(e => e.Description))}");
             }
         }
 

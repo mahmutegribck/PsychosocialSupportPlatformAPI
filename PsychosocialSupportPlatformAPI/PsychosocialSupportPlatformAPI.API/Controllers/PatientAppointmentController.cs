@@ -67,9 +67,9 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
 
             if (await _appointmentService.MakeAppointment(currentUserID, makeAppointmentDTO))
             {
-                return Ok();
+                return Ok("Randevu Oluşturuldu.");
             }
-            return BadRequest();
+            return BadRequest("Randevu Oluşturulamadı");
         }
 
         [HttpPatch]

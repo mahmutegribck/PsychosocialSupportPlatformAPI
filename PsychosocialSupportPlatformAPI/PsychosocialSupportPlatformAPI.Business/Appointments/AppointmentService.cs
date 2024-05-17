@@ -1,18 +1,25 @@
 ﻿using AutoMapper;
+using Azure;
+using Azure.Core;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json.Linq;
 using PsychosocialSupportPlatformAPI.Business.Appointments.DTOs;
 using PsychosocialSupportPlatformAPI.Business.AppointmentSchedules.DTOs;
+using PsychosocialSupportPlatformAPI.Business.Auth;
 using PsychosocialSupportPlatformAPI.Business.Auth.JwtToken.DTOs;
 using PsychosocialSupportPlatformAPI.Business.Users.DTOs;
 using PsychosocialSupportPlatformAPI.DataAccess.Appointments;
 using PsychosocialSupportPlatformAPI.DataAccess.AppointmentSchedules;
 using PsychosocialSupportPlatformAPI.Entity.Entities.Appointments;
+using System;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net;
 using System.Security.Claims;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 
 namespace PsychosocialSupportPlatformAPI.Business.Appointments
 {
@@ -81,52 +88,65 @@ namespace PsychosocialSupportPlatformAPI.Business.Appointments
 
         private async Task<string> GenerateZoomMeetingUrl()
         {
-            var tokenhandler = new JwtSecurityTokenHandler();
+            string authHeader = Convert.ToBase64String(Encoding.UTF8.GetBytes(_configuration["Zoom:ApiKey"] + ":" + _configuration["Zoom:SecretKey"]));
 
-            HttpClient httpClient = new HttpClient();
-            httpClient.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+            string authorization = "Basic " + authHeader;
 
-            var now = DateTime.UtcNow;
-            var apiSecret = "pBMwoo9u5qoKf7ScJh9FF1gT1IdVSzv1";
-            byte[] symmetricKey = Encoding.ASCII.GetBytes(apiSecret);
+            using HttpClient client = new();
 
+            client.DefaultRequestHeaders.Add("Authorization", authorization);
 
-            var tokenDescriptor = new SecurityTokenDescriptor
+            HttpResponseMessage responseToken = await client.PostAsync(_configuration["Zoom:TokenURl"] + _configuration["Zoom:AccountId"], null);
+
+            string tokenResponseBody = await responseToken.Content.ReadAsStringAsync();
+
+            var jsonObject = JsonDocument.Parse(tokenResponseBody).RootElement;
+
+            string? accessToken = jsonObject.GetProperty("access_token").GetString() ?? throw new Exception("Zoom Token Bulunamadı");
+
+            HttpClient clientMeet = new();
+
+            clientMeet.DefaultRequestHeaders.Add("Authorization", "Bearer " + accessToken);
+
+            var requestData = new
             {
-                Issuer = "X7ialNJvTKq1NdmclN0Sg",
-                Expires = now.AddSeconds(300),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(symmetricKey), SecurityAlgorithms.HmacSha256),
-            };
-
-            var token = tokenhandler.CreateToken(tokenDescriptor);
-            var finaltoken = tokenhandler.WriteToken(token);
-
-            string apiUrl = "https://api.zoom.us/v2/users/me/meetings";
-
-            httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", finaltoken);
-
-
-            var requestBody = new
-            {
-                topic = "deneme",
+                topic = "Artı Bir Destek",
                 type = 2,
-                start_time = DateTime.UtcNow.AddMinutes(10).ToString("yyyy-MM-ddTHH:mm:ssZ"),
+                start_time = TimeZoneInfo.ConvertTimeToUtc(DateTime.Now.AddHours(3)).ToString("yyyy-MM-ddTHH:mm:ssZ"),
                 duration = 60,
-                timezone = "UTC",
+                timezone = "Europe/Istanbul",
                 settings = new
                 {
                     host_video = true,
-                    participant_video = true
-                }
-
+                    participant_video = true,
+                    cn_meeting = false,
+                    in_meeting = false,
+                    join_before_host = true,
+                    mute_upon_entry = false,
+                    watermark = false,
+                    use_pmi = false,
+                    approval_type = 2,
+                    registration_type = 1,
+                    audio = "both",
+                    auto_recording = "none",
+                    enforce_login = false,
+                    meeting_authentication = true,
+                    registration_close_time = TimeZoneInfo.ConvertTimeToUtc(DateTime.Now.AddHours(3).AddMinutes(2)).ToString("yyyy-MM-ddTHH:mm:ssZ"),
+                    allow_multiple_devices = false,
+                },
             };
-            var requestContent = new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(requestBody), Encoding.UTF8, "application/json");
-            var response = await httpClient.PostAsync(apiUrl, requestContent);
-            var responseContent = await response.Content.ReadAsStringAsync();
 
+            var json = JsonSerializer.Serialize(requestData);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
 
+            HttpResponseMessage responseMeeting = await clientMeet.PostAsync(_configuration["Zoom:CreateMeetingUrl"], content);
 
-            return "deneme";
+            string responseBody = await responseMeeting.Content.ReadAsStringAsync();
+
+            var meetingJson = JsonDocument.Parse(responseBody).RootElement;
+            string joinUrl = meetingJson.GetProperty("join_url").GetString() ?? throw new Exception("Meet Toplantı Bağlantısı Oluşturulamadı");
+            Console.WriteLine(meetingJson);
+            return joinUrl;
         }
     }
 }

@@ -132,11 +132,12 @@ var app = builder.Build();
 
 app.UseSwagger();
 app.UseSwaggerUI();
+app.UseCors();
+
 app.UseStaticFiles();
 
 app.UseHttpsRedirection();
 //app.UseRouting();
-app.UseCors();
 app.UseWebSockets();
 
 app.UseAuthentication();
