@@ -174,6 +174,16 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
             return Ok();
         }
 
+        [HttpPatch]
+        public async Task<IActionResult> DeleteProfileImage()
+        {
+            var currentUserID = User.Identity?.Name;
+            if (currentUserID == null) return Unauthorized();
+
+            await _userService.DeleteProfileImage(currentUserID);
+            return Ok();
+        }
+
 
         [HttpPatch]
         public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDTO changePasswordDTO)
@@ -184,6 +194,8 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
             await _userService.ChangePassword(changePasswordDTO, currentUserID);
             return Ok();
         }
+
+
 
 
 

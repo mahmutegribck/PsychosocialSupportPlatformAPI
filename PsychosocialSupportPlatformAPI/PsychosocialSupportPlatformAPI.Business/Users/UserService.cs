@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
-using PsychosocialSupportPlatformAPI.Business.Auth.AuthService.ResponseModel;
 using PsychosocialSupportPlatformAPI.Business.Users.DTOs;
 using PsychosocialSupportPlatformAPI.Business.Users.DTOs.Admin;
 using PsychosocialSupportPlatformAPI.Business.Users.DTOs.DoctorDTOs;
@@ -46,6 +45,8 @@ namespace PsychosocialSupportPlatformAPI.Business.Users
                 throw new Exception($"Şifre Değiştirme İşlemi Başarısız Oldu. {string.Join(", ", result.Errors.Select(e => e.Description))}");
             }
         }
+
+
 
         public async Task<IdentityResult> DeleteUser(string id)
         {
@@ -129,5 +130,19 @@ namespace PsychosocialSupportPlatformAPI.Business.Users
 
             await _userManager.UpdateAsync(user);
         }
+
+        public async Task DeleteProfileImage(string userId)
+        {
+            ApplicationUser user = await _userManager.FindByIdAsync(userId) ?? throw new Exception("Kullanıcı Bulunamadı");
+            if (user.ProfileImagePath != null)
+            {
+                File.Delete(user.ProfileImagePath);
+            }
+            user.ProfileImagePath = null;
+            user.ProfileImageUrl = null;
+
+            await _userManager.UpdateAsync(user);
+        }
+
     }
 }
