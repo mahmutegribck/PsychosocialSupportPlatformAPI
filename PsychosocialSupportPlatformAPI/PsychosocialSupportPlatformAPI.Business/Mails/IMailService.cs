@@ -4,6 +4,6 @@ namespace PsychosocialSupportPlatformAPI.Business.Mails
 {
     public interface IMailService
     {
-        Task SendMail(MailDto mailDto);
+        Task SendEmail(MailDto mailDto);
     }
 }

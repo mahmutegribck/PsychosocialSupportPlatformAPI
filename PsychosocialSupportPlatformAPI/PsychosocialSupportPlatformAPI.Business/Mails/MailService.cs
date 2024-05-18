@@ -1,7 +1,7 @@
-﻿using MailKit.Security;
-using Microsoft.Extensions.Configuration;
-using MimeKit;
+﻿using Microsoft.Extensions.Configuration;
 using PsychosocialSupportPlatformAPI.Business.Mails.DTOs;
+using System.Net;
+using System.Net.Mail;
 
 namespace PsychosocialSupportPlatformAPI.Business.Mails
 {
@@ -13,31 +13,32 @@ namespace PsychosocialSupportPlatformAPI.Business.Mails
         {
             _configuration = configuration;
         }
-        public async Task SendMail(MailDto mailDto)
+
+
+        public async Task SendEmail(MailDto mailDto)
         {
-            try
+            var meesage = new MailMessage()
             {
-                var email = new MimeMessage();
-                email.From.Add(MailboxAddress.Parse(_configuration["Mail:Username"]));
+                From = new MailAddress(_configuration["Mailing:Sender"]!),
+                Subject = mailDto.Subject,
+                IsBodyHtml = true,
+                Body = mailDto.Body
+            };
 
-                foreach (var kullanici in mailDto.ToKullanici)
-                {
-                    email.To.Add(MailboxAddress.Parse(kullanici));
-
-                }
-                email.Subject = mailDto.Baslik;
-                email.Body = new TextPart(MimeKit.Text.TextFormat.Html) { Text = mailDto.Icerik };
-
-                using var smtp = new MailKit.Net.Smtp.SmtpClient();
-                await smtp.ConnectAsync(_configuration["Mail:Host"], Convert.ToInt32(_configuration["Mail:Port"]), SecureSocketOptions.StartTls);
-                await smtp.AuthenticateAsync(_configuration["Mail:Username"], _configuration["Mail:Password"]);
-                smtp.Send(email);
-                await smtp.DisconnectAsync(true);
-            }
-            catch (Exception)
+            foreach (string toUserEmail in mailDto.ToUserEmails)
             {
-                throw new Exception("Mail gönderilirken bir hata oluştu. Lütfen daha sonra tekrar deneyin.");
+                meesage.To.Add(new MailAddress(toUserEmail));
             }
+
+            using SmtpClient client = new();
+            client.EnableSsl = true;
+            client.UseDefaultCredentials = false;
+            client.Credentials = new NetworkCredential(_configuration["Mailing:Sender"], _configuration["Mailing:Password"]);
+            client.Host = _configuration["Mailing:Host"]!;
+            client.Port = Convert.ToInt32(_configuration["Mailing:Port"]);
+            client.DeliveryMethod = SmtpDeliveryMethod.Network;
+
+            await client.SendMailAsync(meesage);
         }
     }
 }

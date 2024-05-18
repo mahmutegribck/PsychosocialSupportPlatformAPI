@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PsychosocialSupportPlatformAPI.Business.DoctorSchedules;
+using PsychosocialSupportPlatformAPI.Business.Mails;
+using PsychosocialSupportPlatformAPI.Business.Mails.DTOs;
 using PsychosocialSupportPlatformAPI.Business.Statistics.Appointments;
 using PsychosocialSupportPlatformAPI.Business.Statistics.Appointments.DTOs;
 using PsychosocialSupportPlatformAPI.Business.Statistics.Videos;
@@ -142,7 +144,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllVideoStatisticsByPatientID([FromQuery] string patientUserName)
+        public async Task<IActionResult> GetAllVideoStatisticsByPatientUserName([FromQuery] string patientUserName)
         {
             var allVideoStatisticsByPatientID = await _videoStatisticsService.GetAllVideoStatisticsByPatientUserName(patientUserName);
             if (!allVideoStatisticsByPatientID.Any()) return NotFound();

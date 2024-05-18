@@ -1,4 +1,5 @@
-﻿using PsychosocialSupportPlatformAPI.Entity.Entities.Videos;
+﻿using PsychosocialSupportPlatformAPI.Entity.Entities.Users;
+using PsychosocialSupportPlatformAPI.Entity.Entities.Videos;
 
 namespace PsychosocialSupportPlatformAPI.DataAccess.Statistics
 {
@@ -9,6 +10,7 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Statistics
         Task DeleteVideoStatistics(int statisticsID);
         Task<IEnumerable<object>> GetAllVideoStatistics();
         Task<VideoStatistics> GetVideoStatisticsByID(int statisticsID);
+        Task<IEnumerable<object>> GetAllVideoStatisticsByPatientId(string patientId);
         Task<IEnumerable<object>> GetAllVideoStatisticsByPatientUserName(string patientUserName);
         Task<VideoStatistics> GetVideoStatisticsByPatientID(string patientID);
         Task<VideoStatistics> GetPatientVideoStatisticsByVideoID(string patientID, int videoID);

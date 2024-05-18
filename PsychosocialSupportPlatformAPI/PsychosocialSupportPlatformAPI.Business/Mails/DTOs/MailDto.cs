@@ -2,8 +2,8 @@
 {
     public class MailDto
     {
-        public string[] ToKullanici { get; set; }
-        public string Baslik { get; set; } = string.Empty;
-        public string Icerik { get; set; } = string.Empty;
+        public required string[] ToUserEmails { get; set; }
+        public required string Subject { get; set; }
+        public required string Body { get; set; }
     }
 }
