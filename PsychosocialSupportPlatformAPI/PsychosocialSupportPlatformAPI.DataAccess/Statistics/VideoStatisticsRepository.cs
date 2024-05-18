@@ -89,22 +89,29 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Statistics
 
         public async Task<IEnumerable<object>> GetAllVideoStatisticsByPatientUserName(string patientUserName)
         {
-            return await _context.Videos.Include(v => v.Statistics).ThenInclude(v => v.Patient).Select(v => new
+            return await _context.Patients.Where(p => p.UserName == patientUserName).Select(p => new
             {
-                VideoId = v.Id,
-                VideoTitle = v.Title,
-                VideoStatistics = v.Statistics.Where(s => s.Patient.UserName == patientUserName).Select(s => new
+                PatientName = p.Name,
+                PatientSurname = p.Surname,
+                PatientProfileImageUrl = p.ProfileImageUrl,
+
+                Videos = _context.Videos.Select(v => new
                 {
-                    PatientProfileImageUrl = s.Patient.ProfileImageUrl,
-                    VideoClicksNumber = s.ClicksNumber,
-                    VideoViewingRate = s.ViewingRate
-                }),
+                    VideoId = v.Id,
+                    VideoTitle = v.Title,
+                    VideoStatistics = p.Statistics.Where(s => s.VideoId == v.Id).Select(s => new
+                    {
+                        VideoClicksNumber = s.ClicksNumber,
+                        VideoViewingRate = s.ViewingRate
+                    }).ToList(),
+                }).ToList(),
+
             }).AsNoTracking().ToListAsync();
         }
 
         public async Task<IEnumerable<object>> GetAllVideoStatisticsByPatientUserName(string patientUserName, string doctorId)
         {
-            return await _context.Patients.Where(p => p.UserName == patientUserName).Select(p => new
+            return await _context.Patients.Include(p => p.AppointmentSchedules).Where(p => p.UserName == patientUserName && p.AppointmentSchedules.Any(a => a.DoctorId == doctorId)).Select(p => new
             {
                 PatientName = p.Name,
                 PatientSurname = p.Surname,

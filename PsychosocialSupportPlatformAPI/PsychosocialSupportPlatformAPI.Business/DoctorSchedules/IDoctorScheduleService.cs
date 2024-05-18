@@ -4,7 +4,7 @@ namespace PsychosocialSupportPlatformAPI.Business.DoctorSchedules
 {
     public interface IDoctorScheduleService
     {
-        Task CreateDoctorSchedule(List<CreateDoctorScheduleDTO> createDoctorScheduleDTOs, string currentUserID);
+        Task AddDoctorSchedule(List<CreateDoctorScheduleDTO> createDoctorScheduleDTOs, string currentUserID);
         Task UpdateDoctorSchedule(UpdateDoctorScheduleDTO updateDoctorScheduleDTO, string currentUserID);
         Task DeleteDoctorSchedule(string doctorId, int scheduleId);
         Task<GetDoctorScheduleDTO?> GetDoctorScheduleByDay(string doctorId, DateTime day);

@@ -21,8 +21,7 @@ namespace PsychosocialSupportPlatformAPI.Business.DoctorSchedules
         }
 
 
-
-        public async Task CreateDoctorSchedule(List<CreateDoctorScheduleDTO> createDoctorScheduleDTOs, string currentUserID)
+        public async Task AddDoctorSchedule(List<CreateDoctorScheduleDTO> createDoctorScheduleDTOs, string currentUserID)
         {
             if (!createDoctorScheduleDTOs.Any() || currentUserID == null) throw new Exception();
 

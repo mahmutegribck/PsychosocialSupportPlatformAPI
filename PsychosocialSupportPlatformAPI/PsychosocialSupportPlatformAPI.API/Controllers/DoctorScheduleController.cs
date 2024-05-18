@@ -18,13 +18,12 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
         }
 
 
-
         [HttpPost]
         public async Task<IActionResult> AddDoctorSchedule([FromBody] List<CreateDoctorScheduleDTO> createDoctorScheduleDTOs)
         {
             string? currentUserID = User.Identity?.Name;
             if (currentUserID == null) return Unauthorized();
-            await _doctorScheduleService.CreateDoctorSchedule(createDoctorScheduleDTOs, currentUserID);
+            await _doctorScheduleService.AddDoctorSchedule(createDoctorScheduleDTOs, currentUserID);
             return Ok();
         }
 
@@ -59,15 +58,5 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
             if (doctorSchedule == null) return NotFound();
             return Ok(doctorSchedule);
         }
-
-
-        //[HttpPut]
-        //public async Task<IActionResult> UpdateDoctorSchedule([FromBody] UpdateDoctorScheduleDTO updateDoctorScheduleDTO)
-        //{
-        //    string? currentUserID = User.Identity?.Name;
-        //    if (currentUserID == null) return Unauthorized();
-        //    await _doctorScheduleService.UpdateDoctorSchedule(updateDoctorScheduleDTO, currentUserID);
-        //    return Ok();
-        //}
     }
 }
