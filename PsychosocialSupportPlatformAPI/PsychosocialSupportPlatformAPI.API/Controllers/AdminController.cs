@@ -66,7 +66,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
         }
 
 
-        [HttpDelete]]
+        [HttpDelete]
         public async Task<IActionResult> DeleteUser([FromBody] string id)
         {
             if (id != null)
