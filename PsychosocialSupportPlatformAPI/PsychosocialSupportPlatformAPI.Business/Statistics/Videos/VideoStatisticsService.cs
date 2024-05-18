@@ -44,9 +44,9 @@ namespace PsychosocialSupportPlatformAPI.Business.Statistics.Videos
             return await _videoStatisticsRepository.GetAllVideoStatistics();
         }
 
-        public async Task<IEnumerable<object>> GetAllVideoStatisticsByPatientID(string patientID)
+        public async Task<IEnumerable<object>> GetAllVideoStatisticsByPatientUserName(string patientID)
         {
-            return await _videoStatisticsRepository.GetAllVideoStatisticsByPatientID(patientID);
+            return await _videoStatisticsRepository.GetAllVideoStatisticsByPatientUserName(patientID);
         }
 
         public async Task<IEnumerable<object>> GetAllVideoStatisticsByPatientUserName(string patientUserName, string doctorId)

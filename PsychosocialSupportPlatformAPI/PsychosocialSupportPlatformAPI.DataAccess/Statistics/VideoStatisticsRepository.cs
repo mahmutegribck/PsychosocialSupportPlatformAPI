@@ -73,20 +73,30 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Statistics
             //return deneme;
         }
 
-        public async Task<IEnumerable<object>> GetAllVideoStatisticsByPatientID(string patientID)
+        public async Task<IEnumerable<object>> GetAllVideoStatisticsByPatientUserName(string patientUserName)
         {
-
-            return await _context.Videos.Select(v => new
+            return await _context.VideoStatistics.Include(v => v.Patient).Include(v => v.Video).Where(v => v.Patient.UserName == patientUserName).Select(v => new
             {
-                VideoId = v.Id,
-                VideoTitle = v.Title,
-                VideoStatistics = v.Statistics.Where(s => s.PatientId == patientID).Select(s => new
-                {
-                    PatientProfileImageUrl = s.Patient.ProfileImageUrl,
-                    VideoClicksNumber = s.ClicksNumber,
-                    VideoViewingRate = s.ViewingRate
-                }),
-            }).ToListAsync();
+                VideoId = v.VideoId,
+                VideoTitle = v.Video.Title,
+
+                PatientProfileImageUrl = v.Patient.ProfileImageUrl,
+                VideoClicksNumber = v.ClicksNumber,
+                VideoViewingRate = v.ViewingRate
+
+            }).AsNoTracking().ToListAsync();
+
+            //return await _context.Videos.Select(v => new
+            //{
+            //    VideoId = v.Id,
+            //    VideoTitle = v.Title,
+            //    VideoStatistics = v.Statistics.Where(s => s.PatientId == patientID).Select(s => new
+            //    {
+            //        PatientProfileImageUrl = s.Patient.ProfileImageUrl,
+            //        VideoClicksNumber = s.ClicksNumber,
+            //        VideoViewingRate = s.ViewingRate
+            //    }),
+            //}).ToListAsync();
         }
 
         public async Task<IEnumerable<object>> GetAllVideoStatisticsByPatientUserName(string patientUserName, string doctorId)

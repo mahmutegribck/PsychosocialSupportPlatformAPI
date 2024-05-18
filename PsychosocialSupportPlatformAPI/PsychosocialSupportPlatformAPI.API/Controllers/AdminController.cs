@@ -23,6 +23,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
         private readonly IDoctorScheduleService _doctorScheduleService;
         private readonly IUserService _userService;
         private readonly UserManager<Patient> _patientManager;
+        private readonly UserManager<Doctor> _doctorManager;
         private readonly IMapper _mapper;
         private readonly IVideoService _videoService;
         private readonly IVideoStatisticsService _videoStatisticsService;
@@ -34,6 +35,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
             IDoctorScheduleService doctorScheduleService,
             IUserService userService,
             UserManager<Patient> patientManager,
+            UserManager<Doctor> doctorManager,
             IMapper mapper,
             IVideoService videoService,
             IVideoStatisticsService videoStatisticsService,
@@ -44,6 +46,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
             _doctorScheduleService = doctorScheduleService;
             _userService = userService;
             _patientManager = patientManager;
+            _doctorManager = doctorManager;
             _mapper = mapper;
             _videoService = videoService;
             _videoStatisticsService = videoStatisticsService;
@@ -82,6 +85,17 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
             if (patients.Count != 0)
             {
                 return Ok(patients);
+            }
+            return NotFound("Kullanici Bulunamadi");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllDoctors()
+        {
+            var doctors = _mapper.Map<List<GetDoctorDto>>(await _doctorManager.Users.ToListAsync());
+            if (doctors.Count != 0)
+            {
+                return Ok(doctors);
             }
             return NotFound("Kullanici Bulunamadi");
         }
@@ -128,9 +142,9 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllVideoStatisticsByPatientID([FromQuery] string patientID)
+        public async Task<IActionResult> GetAllVideoStatisticsByPatientID([FromQuery] string patientUserName)
         {
-            var allVideoStatisticsByPatientID = await _videoStatisticsService.GetAllVideoStatisticsByPatientID(patientID);
+            var allVideoStatisticsByPatientID = await _videoStatisticsService.GetAllVideoStatisticsByPatientUserName(patientUserName);
             if (!allVideoStatisticsByPatientID.Any()) return NotFound();
             return Ok(allVideoStatisticsByPatientID);
         }

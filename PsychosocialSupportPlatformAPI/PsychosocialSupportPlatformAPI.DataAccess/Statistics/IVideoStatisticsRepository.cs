@@ -9,7 +9,7 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Statistics
         Task DeleteVideoStatistics(int statisticsID);
         Task<IEnumerable<object>> GetAllVideoStatistics();
         Task<VideoStatistics> GetVideoStatisticsByID(int statisticsID);
-        Task<IEnumerable<object>> GetAllVideoStatisticsByPatientID(string patientID);
+        Task<IEnumerable<object>> GetAllVideoStatisticsByPatientUserName(string patientUserName);
         Task<VideoStatistics> GetVideoStatisticsByPatientID(string patientID);
         Task<VideoStatistics> GetPatientVideoStatisticsByVideoID(string patientID, int videoID);
         Task<IEnumerable<object>> GetAllVideoStatisticsByPatientUserName(string patientUserName, string doctorId);

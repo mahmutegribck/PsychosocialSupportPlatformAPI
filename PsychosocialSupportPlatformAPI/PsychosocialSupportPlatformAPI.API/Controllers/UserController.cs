@@ -18,7 +18,6 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
     [Authorize]
     public class UserController : ControllerBase
     {
-        private readonly UserManager<Doctor> _userManagerDoctor;
         private readonly UserManager<Patient> _patientManager;
         private readonly IMapper _mapper;
         private readonly IUserService _userService;
@@ -26,7 +25,6 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
         private readonly IWebHostEnvironment _webHostEnvironment;
 
         public UserController(
-            UserManager<Doctor> userManagerDoctor,
             IMapper mapper,
             UserManager<Patient> patientManager,
             IUserService userService,
@@ -34,7 +32,6 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
             IWebHostEnvironment webHostEnvironment
             )
         {
-            _userManagerDoctor = userManagerDoctor;
             _mapper = mapper;
             _patientManager = patientManager;
             _userService = userService;
@@ -42,16 +39,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
             _webHostEnvironment = webHostEnvironment;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAllDoctors()
-        {
-            var doctors = _mapper.Map<List<GetDoctorDto>>(await _userManagerDoctor.Users.ToListAsync());
-            if (doctors.Count != 0)
-            {
-                return Ok(doctors);
-            }
-            return NotFound("Kullanici Bulunamadi");
-        }
+       
 
         [HttpGet]
         [Authorize(Roles = "Doctor")]
