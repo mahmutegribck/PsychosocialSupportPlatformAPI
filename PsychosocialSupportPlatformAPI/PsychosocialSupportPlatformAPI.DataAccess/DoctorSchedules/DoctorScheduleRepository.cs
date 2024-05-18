@@ -55,9 +55,9 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.DoctorSchedules
             return await _context.DoctorSchedules.AsNoTracking().Where(s => s.DoctorId == doctorId).ToListAsync();
         }
 
-        public async Task<IEnumerable<DoctorSchedule?>> GetAllDoctorSchedules()
+        public async Task<IEnumerable<DoctorSchedule?>> GetAllDoctorSchedulesByDate(DateTime day)
         {
-            return await _context.DoctorSchedules.Include(ds => ds.Doctor).AsNoTracking().ToListAsync();
+            return await _context.DoctorSchedules.Include(ds => ds.Doctor).Where(ds => ds.Day == day).AsNoTracking().ToListAsync();
         }
     }
 }

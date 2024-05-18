@@ -145,9 +145,10 @@ namespace PsychosocialSupportPlatformAPI.Business.DoctorSchedules
         }
 
 
-        public async Task<IEnumerable<object>> GetAllDoctorSchedules()
+        public async Task<IEnumerable<object>> GetAllDoctorSchedulesByDate(DateTime day)
         {
-            IEnumerable<GetDoctorScheduleByAdminDTO?> allDoctorSchedules = _mapper.Map<IEnumerable<GetDoctorScheduleByAdminDTO?>>(await _doctorScheduleRepository.GetAllDoctorSchedules());
+            IEnumerable<GetDoctorScheduleByAdminDTO?> allDoctorSchedules = _mapper.Map<IEnumerable<GetDoctorScheduleByAdminDTO?>>(await _doctorScheduleRepository.GetAllDoctorSchedulesByDate(day));
+
             if (!allDoctorSchedules.Any()) throw new Exception();
 
             IEnumerable<object> groupedSchedules = allDoctorSchedules.GroupBy(dto => DateTime.Parse(dto!.Day)).OrderBy(group => group.Key)

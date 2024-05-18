@@ -58,14 +58,15 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> GetAllDoctorSchedule()
+        public async Task<IActionResult> GetAllDoctorSchedulesByDate([FromQuery] string day)
         {
-            IEnumerable<object> allDoctorSchedules = await _doctorScheduleService.GetAllDoctorSchedules();
+            IEnumerable<object> allDoctorSchedules = await _doctorScheduleService.GetAllDoctorSchedulesByDate(DateTime.Parse(day));
             if (!allDoctorSchedules.Any()) return NotFound();
             return Ok(allDoctorSchedules);
         }
 
-        [HttpDelete]
+
+        [HttpDelete]]
         public async Task<IActionResult> DeleteUser([FromBody] string id)
         {
             if (id != null)
@@ -80,10 +81,11 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
             return NotFound();
         }
 
+
         [HttpGet]
         public async Task<IActionResult> GetAllPatients()
         {
-            var patients = _mapper.Map<List<GetPatientDto>>(await _patientManager.Users.ToListAsync());
+            var patients = _mapper.Map<List<GetPatientDto>>(await _patientManager.Users.AsNoTracking().ToListAsync());
             if (patients.Count != 0)
             {
                 return Ok(patients);
@@ -91,10 +93,11 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
             return NotFound("Kullanici Bulunamadi");
         }
 
+
         [HttpGet]
         public async Task<IActionResult> GetAllDoctors()
         {
-            var doctors = _mapper.Map<List<GetDoctorDto>>(await _doctorManager.Users.ToListAsync());
+            var doctors = _mapper.Map<List<GetDoctorDto>>(await _doctorManager.Users.AsNoTracking().ToListAsync());
             if (doctors.Count != 0)
             {
                 return Ok(doctors);
@@ -102,38 +105,6 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
             return NotFound("Kullanici Bulunamadi");
         }
 
-        [HttpPost, DisableRequestSizeLimit]
-        public async Task<IActionResult> UploadVideo([FromForm] UploadVideoDTO uploadVideoDTO)
-        {
-            try
-            {
-                if (uploadVideoDTO.File == null && uploadVideoDTO.File!.Length == 0)
-                {
-                    return BadRequest("Video Bulunamadı.");
-                }
-                await _videoService.UploadVideo(uploadVideoDTO, _webHostEnvironment.WebRootPath);
-                return Ok();
-
-            }
-            catch (Exception)
-            {
-                return BadRequest("Video Uzantısı MP4 Olmalıdır.");
-            }
-        }
-
-        [HttpDelete]
-        public async Task<IActionResult> DeleteVideo([FromQuery] int videoID)
-        {
-            await _videoService.DeleteVideo(videoID);
-            return Ok("Video Başarıyla Silindi");
-        }
-
-        [HttpPut]
-        public async Task<IActionResult> UpdateVideo([FromBody] UpdateVideoDTO updateVideoDTO)
-        {
-            await _videoService.UpdateVideo(updateVideoDTO);
-            return Ok();
-        }
 
         [HttpGet]
         public async Task<IActionResult> GetAllVideoStatistics()
@@ -142,6 +113,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
             if (!allVideoStatistics.Any()) return NotFound();
             return Ok(allVideoStatistics);
         }
+
 
         [HttpGet]
         public async Task<IActionResult> GetAllVideoStatisticsByPatientUserName([FromQuery] string patientUserName)
@@ -176,6 +148,42 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
             var allPatientAppointmentStatistics = await _appointmentStatisticsService.GetAllPatientAppointmentStatisticsByPatientUserName(patientUserName);
             if (!allPatientAppointmentStatistics.Any()) return NotFound();
             return Ok(allPatientAppointmentStatistics);
+        }
+
+
+        [HttpPost, DisableRequestSizeLimit]
+        public async Task<IActionResult> UploadVideo([FromForm] UploadVideoDTO uploadVideoDTO)
+        {
+            try
+            {
+                if (uploadVideoDTO.File == null && uploadVideoDTO.File!.Length == 0)
+                {
+                    return BadRequest("Video Bulunamadı.");
+                }
+                await _videoService.UploadVideo(uploadVideoDTO, _webHostEnvironment.WebRootPath);
+                return Ok();
+
+            }
+            catch (Exception)
+            {
+                return BadRequest("Video Uzantısı MP4 Olmalıdır.");
+            }
+        }
+
+
+        [HttpDelete]
+        public async Task<IActionResult> DeleteVideo([FromQuery] int videoID)
+        {
+            await _videoService.DeleteVideo(videoID);
+            return Ok("Video Başarıyla Silindi");
+        }
+
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateVideo([FromBody] UpdateVideoDTO updateVideoDTO)
+        {
+            await _videoService.UpdateVideo(updateVideoDTO);
+            return Ok();
         }
     }
 }
