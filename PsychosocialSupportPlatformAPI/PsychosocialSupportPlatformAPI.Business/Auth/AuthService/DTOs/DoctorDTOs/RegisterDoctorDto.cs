@@ -9,7 +9,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService.DTOs.DoctorDT
 
         [Required(ErrorMessage = "Soyisim zorunlu")]
         public string Surname { get; set; }
-        public int TitleId { get; set; }
+        public int DoctorTitleId { get; set; }
 
         [Required(ErrorMessage = "Email adresi zorunlu")]
         [EmailAddress(ErrorMessage = "Geçerli bir email adresi giriniz.")]

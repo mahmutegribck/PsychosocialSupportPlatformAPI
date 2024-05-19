@@ -8,6 +8,7 @@ using PsychosocialSupportPlatformAPI.Business.Messages.DTOs;
 using PsychosocialSupportPlatformAPI.Business.Users;
 using PsychosocialSupportPlatformAPI.Business.Users.DTOs;
 using PsychosocialSupportPlatformAPI.Business.Users.DTOs.DoctorDTOs;
+using PsychosocialSupportPlatformAPI.Business.Users.DTOs.DoctorTitle;
 using PsychosocialSupportPlatformAPI.Business.Users.DTOs.PatientDTOs;
 using PsychosocialSupportPlatformAPI.Entity.Entities.Users;
 
@@ -39,7 +40,17 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
             _webHostEnvironment = webHostEnvironment;
         }
 
-       
+
+
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetAllDoctorTitles()
+        {
+            IEnumerable<GetDoctorTitleDTO> doctorTitles = await _userService.GetAllDoctorTitles();
+            if (!doctorTitles.Any()) return NotFound();
+            return Ok(doctorTitles);
+        }
+
 
         [HttpGet]
         [Authorize(Roles = "Doctor")]
@@ -52,6 +63,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
             }
             return NotFound("Kullanici Bulunamadi");
         }
+
 
         [HttpGet]
         public async Task<IActionResult> GetCurrentUser()
@@ -85,6 +97,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
             return NotFound();
         }
 
+
         [HttpGet]
         public async Task<IActionResult> GetUserBySlug([FromQuery] string userSlug)
         {
@@ -99,6 +112,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
             }
             return NotFound();
         }
+
 
         [HttpDelete]
         [Authorize(Roles = "Doctor,Patient")]
@@ -162,6 +176,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
             return Ok();
         }
 
+
         [HttpPatch]
         public async Task<IActionResult> DeleteProfileImage()
         {
@@ -182,13 +197,6 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
             await _userService.ChangePassword(changePasswordDTO, currentUserID);
             return Ok();
         }
-
-
-
-
-
-
-
 
 
 

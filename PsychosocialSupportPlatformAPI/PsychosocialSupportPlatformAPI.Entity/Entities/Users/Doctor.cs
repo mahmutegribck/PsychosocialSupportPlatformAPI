@@ -11,6 +11,7 @@ namespace PsychosocialSupportPlatformAPI.Entity.Entities.Users
             AppointmentStatistics = new HashSet<AppointmentStatistics>();
 
         }
+        public bool Confirmed { get; set; } = false;
 
         public ICollection<DoctorSchedule> DoctorSchedules { get; set; }
         public ICollection<AppointmentSchedule> AppointmentSchedules { get; set; }

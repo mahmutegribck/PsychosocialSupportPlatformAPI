@@ -38,10 +38,14 @@ namespace PsychosocialSupportPlatformAPI.Business.Mapper
             CreateMap<Patient, RegisterPatientDto>().ReverseMap();
             CreateMap<Patient, ResetPasswordDto>().ReverseMap();
 
+            CreateMap<Doctor, UpdateDoctorDTO>().ReverseMap();
+            CreateMap<Patient, UpdatePatientDTO>().ReverseMap();
+
+
             CreateMap<ApplicationUser, GetApplicationUserDto>().ReverseMap();
             CreateMap<ApplicationUser, GetAdminDto>().ReverseMap();
-            CreateMap<Doctor, GetDoctorDto>().ReverseMap();
-            CreateMap<Doctor, GetPatientDoctorDto>().ReverseMap();
+            CreateMap<Doctor, GetDoctorDto>().ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.DoctorTitle.Title)).ReverseMap();
+            CreateMap<Doctor, GetPatientDoctorDto>().ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.DoctorTitle.Title)).ReverseMap();
             CreateMap<Patient, GetPatientDto>().ReverseMap();
 
 
@@ -65,11 +69,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Mapper
                 .ForMember(dest => dest.VideoTitle, opt => opt.MapFrom(s => s.Video.Title))
                 .ReverseMap();
 
-            CreateMap<Doctor, UpdateDoctorDTO>().ReverseMap();
-            CreateMap<Patient, UpdatePatientDTO>().ReverseMap();
 
-            CreateMap<Patient, RegisterPatientDto>().ReverseMap();
-            CreateMap<Doctor, RegisterDoctorDto>().ReverseMap();
 
 
             CreateMap<DoctorSchedule, CreateDoctorScheduleDTO>().ReverseMap();

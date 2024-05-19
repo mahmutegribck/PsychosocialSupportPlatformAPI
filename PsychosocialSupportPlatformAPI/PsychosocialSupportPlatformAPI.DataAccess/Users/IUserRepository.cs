@@ -13,6 +13,7 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Users
         Task<IEnumerable<Patient>> GetAllPatientsByDoctorId(string doctorId);
         Task AddDoctorTitle(DoctorTitle doctorTitle);
         Task DeleteDoctorTitle(DoctorTitle doctorTitle);
+        Task<bool> CheckDoctorTitle(string doctorTitle);
         Task<DoctorTitle?> GetDoctorTitleById(int doctorTitleId);
         Task<IEnumerable<DoctorTitle>> GetAllDoctorTitles();
     }

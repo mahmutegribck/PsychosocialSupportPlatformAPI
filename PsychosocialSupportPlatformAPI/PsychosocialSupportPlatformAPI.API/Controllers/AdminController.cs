@@ -79,15 +79,6 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> GetAllDoctorTitles()
-        {
-            IEnumerable<GetDoctorTitleDTO> doctorTitles = await _userService.GetAllDoctorTitles();
-            if (!doctorTitles.Any()) return NotFound();
-            return Ok(doctorTitles);
-        }
-
-
-        [HttpGet]
         public async Task<IActionResult> GetAllDoctorSchedulesByDate([FromQuery] string day)
         {
             IEnumerable<object> allDoctorSchedules = await _doctorScheduleService.GetAllDoctorSchedulesByDate(DateTime.Parse(day));

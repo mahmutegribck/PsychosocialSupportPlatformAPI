@@ -64,7 +64,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
                     throw new ArgumentNullException(nameof(model), "Model boş olamaz.");
                 }
 
-                if (await _userService.GetDoctorTitleById(model.TitleId) == null) throw new Exception("Ünvan Bulunamadı");
+                if (await _userService.GetDoctorTitleById(model.DoctorTitleId) == null) throw new Exception("Ünvan Bulunamadı");
 
                 if (model.Password != model.ConfirmPassword)
                     return new RegisterResponse
@@ -97,7 +97,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
                     bool roleExists = await _roleManager.RoleExistsAsync(role);
                     if (!roleExists)
                     {
-                        ApplicationRole newRole = new ApplicationRole();
+                        ApplicationRole newRole = new();
                         newRole.Id = Guid.NewGuid().ToString();
                         newRole.Name = role;
 

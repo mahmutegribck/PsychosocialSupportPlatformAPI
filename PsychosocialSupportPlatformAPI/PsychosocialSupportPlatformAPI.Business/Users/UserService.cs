@@ -93,6 +93,8 @@ namespace PsychosocialSupportPlatformAPI.Business.Users
 
         public async Task<IdentityResult> UpdateDoctor(string currentUserID, UpdateDoctorDTO updateDoctorDTO)
         {
+            if (await _userRepository.GetDoctorTitleById(updateDoctorDTO.DoctorTitleId) == null) throw new Exception("Ünvan Bulunamadı");
+
             return await _userRepository.UpdateDoctor(currentUserID, _mapper.Map<Doctor>(updateDoctorDTO));
         }
 
@@ -145,12 +147,14 @@ namespace PsychosocialSupportPlatformAPI.Business.Users
 
         public async Task AddDoctorTitle(AddDoctorTitleDTO addDoctorTitleDTO)
         {
-            await _userRepository.AddDoctorTitle(_mapper.Map<DoctorTitle>(addDoctorTitleDTO));
+            DoctorTitle doctorTitle = _mapper.Map<DoctorTitle>(addDoctorTitleDTO) ?? throw new Exception();
+            if (await _userRepository.CheckDoctorTitle(doctorTitle.Title)) throw new Exception("Ünvan Kaydı Mevcut");
+            await _userRepository.AddDoctorTitle(doctorTitle);
         }
 
         public async Task DeleteDoctorTitle(int doctorTitleId)
         {
-            DoctorTitle? doctorTitle = await _userRepository.GetDoctorTitleById(doctorTitleId) ?? throw new Exception("Ünvan Bulunamadı.");
+            DoctorTitle? doctorTitle = await _userRepository.GetDoctorTitleById(doctorTitleId) ?? throw new Exception("Ünvan Bulunamadı");
 
             await _userRepository.DeleteDoctorTitle(doctorTitle);
         }

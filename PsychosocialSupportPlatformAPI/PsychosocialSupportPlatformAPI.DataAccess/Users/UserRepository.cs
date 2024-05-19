@@ -31,6 +31,12 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Users
             await _context.SaveChangesAsync();
         }
 
+        public async Task<bool> CheckDoctorTitle(string doctorTitle)
+        {
+            return await _context.DoctorTitles.AnyAsync(t => t.Title == doctorTitle);
+
+        }
+
         public async Task<DoctorTitle?> GetDoctorTitleById(int doctorTitleId)
         {
             return await _context.DoctorTitles.AsNoTracking().FirstOrDefaultAsync(t => t.Id == doctorTitleId);
