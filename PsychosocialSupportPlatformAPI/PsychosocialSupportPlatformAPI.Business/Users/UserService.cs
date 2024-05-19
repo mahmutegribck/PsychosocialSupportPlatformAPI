@@ -155,6 +155,11 @@ namespace PsychosocialSupportPlatformAPI.Business.Users
             await _userRepository.DeleteDoctorTitle(doctorTitle);
         }
 
+        public async Task<GetDoctorTitleDTO?> GetDoctorTitleById(int doctorTitleId)
+        {
+            return _mapper.Map<GetDoctorTitleDTO>(await _userRepository.GetDoctorTitleById(doctorTitleId));
+        }
+
         public async Task<IEnumerable<GetDoctorTitleDTO>> GetAllDoctorTitles()
         {
             return _mapper.Map<IEnumerable<GetDoctorTitleDTO>>(await _userRepository.GetAllDoctorTitles());

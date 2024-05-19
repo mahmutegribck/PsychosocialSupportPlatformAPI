@@ -10,6 +10,7 @@ using PsychosocialSupportPlatformAPI.Business.Auth.AuthService.DTOs.PatientDTOs;
 using PsychosocialSupportPlatformAPI.Business.Auth.AuthService.ResponseModel;
 using PsychosocialSupportPlatformAPI.Business.Auth.JwtToken;
 using PsychosocialSupportPlatformAPI.Business.Auth.JwtToken.DTOs;
+using PsychosocialSupportPlatformAPI.Business.Users;
 using PsychosocialSupportPlatformAPI.Entity.Entities.Users;
 using System;
 using System.Text;
@@ -29,8 +30,18 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
         private readonly IMapper _mapper;
         private readonly IConfiguration _config;
         private readonly HttpClient _httpClient;
+        private readonly IUserService _userService;
 
-        public AuthService(UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager, IJwtService jwtService, IMapper mapper, IConfiguration config, HttpClient httpClient, UserManager<Patient> patientManager, UserManager<Doctor> doctorManager)
+        public AuthService(
+            UserManager<ApplicationUser> userManager,
+            RoleManager<ApplicationRole> roleManager,
+            IJwtService jwtService,
+            IMapper mapper,
+            IConfiguration config,
+            HttpClient httpClient,
+            UserManager<Patient> patientManager,
+            UserManager<Doctor> doctorManager,
+            IUserService userService)
         {
             _userManager = userManager;
             _roleManager = roleManager;
@@ -40,6 +51,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
             _httpClient = httpClient;
             _patientManager = patientManager;
             _doctorManager = doctorManager;
+            _userService = userService;
         }
 
 
@@ -51,6 +63,9 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
                 {
                     throw new ArgumentNullException(nameof(model), "Model boş olamaz.");
                 }
+
+                if (await _userService.GetDoctorTitleById(model.TitleId) == null) throw new Exception("Ünvan Bulunamadı");
+
                 if (model.Password != model.ConfirmPassword)
                     return new RegisterResponse
                     {

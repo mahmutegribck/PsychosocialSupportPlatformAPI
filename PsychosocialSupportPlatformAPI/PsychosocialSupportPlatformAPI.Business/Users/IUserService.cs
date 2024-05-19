@@ -4,7 +4,6 @@ using PsychosocialSupportPlatformAPI.Business.Users.DTOs;
 using PsychosocialSupportPlatformAPI.Business.Users.DTOs.DoctorDTOs;
 using PsychosocialSupportPlatformAPI.Business.Users.DTOs.DoctorTitle;
 using PsychosocialSupportPlatformAPI.Business.Users.DTOs.PatientDTOs;
-using PsychosocialSupportPlatformAPI.Entity.Entities.Users;
 
 namespace PsychosocialSupportPlatformAPI.Business.Users
 {
@@ -21,6 +20,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Users
         Task ChangePassword(ChangePasswordDTO changePasswordDTO, string currentUserId);
         Task AddDoctorTitle(AddDoctorTitleDTO AddDoctorTitleDTO);
         Task DeleteDoctorTitle(int doctorTitleId);
+        Task<GetDoctorTitleDTO?> GetDoctorTitleById(int doctorTitleId);
         Task<IEnumerable<GetDoctorTitleDTO>> GetAllDoctorTitles();
     }
 }

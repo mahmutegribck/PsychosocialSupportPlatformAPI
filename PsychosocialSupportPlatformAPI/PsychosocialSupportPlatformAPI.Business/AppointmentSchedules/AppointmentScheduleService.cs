@@ -1,9 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 using PsychosocialSupportPlatformAPI.Business.Appointments.DTOs.Doctor;
 using PsychosocialSupportPlatformAPI.Business.Mails;
-using PsychosocialSupportPlatformAPI.Business.Mails.DTOs;
 using PsychosocialSupportPlatformAPI.DataAccess.AppointmentSchedules;
 using PsychosocialSupportPlatformAPI.Entity.Entities.Appointments;
 using PsychosocialSupportPlatformAPI.Entity.Entities.Users;
@@ -16,19 +14,16 @@ namespace PsychosocialSupportPlatformAPI.Business.AppointmentSchedules
         private readonly IAppointmentScheduleRepository _appointmentScheduleRepository;
         private readonly IMapper _mapper;
         private readonly IMailService _mailService;
-        private readonly UserManager<Doctor> _doctorManager;
 
 
         public AppointmentScheduleService(
             IAppointmentScheduleRepository appointmentScheduleRepository,
             IMapper mapper,
-            IMailService mailService,
-             UserManager<Doctor> doctorManager)
+            IMailService mailService)
         {
             _appointmentScheduleRepository = appointmentScheduleRepository;
             _mapper = mapper;
             _mailService = mailService;
-            _doctorManager = doctorManager;
         }
 
 
@@ -442,6 +437,13 @@ namespace PsychosocialSupportPlatformAPI.Business.AppointmentSchedules
 
         }
 
+        public async Task<GetDoctorAppointmentDTO> GetDoctorAppointmentByDateAndTimeRange(DateTime day, TimeRange timeRange, string doctorId)
+        {
+            AppointmentSchedule? doctorAppointment = await _appointmentScheduleRepository.GetDoctorAppointmentByDateAndTimeRange(day, timeRange, doctorId);
 
+            if (doctorAppointment == null) throw new Exception("Randevu Bulunamadı.");
+
+            return _mapper.Map<GetDoctorAppointmentDTO>(doctorAppointment);
+        }
     }
 }

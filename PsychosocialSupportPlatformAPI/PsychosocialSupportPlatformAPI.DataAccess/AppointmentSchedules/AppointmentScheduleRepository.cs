@@ -125,5 +125,14 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.AppointmentSchedules
         {
             return await _context.AppointmentSchedules.Include(a => a.Patient).Where(a => a.Day == day && a.DoctorId == doctorId && a.PatientId != null).AsNoTracking().ToListAsync();
         }
+
+        public async Task<AppointmentSchedule?> GetDoctorAppointmentByDateAndTimeRange(DateTime day, TimeRange timeRange, string doctorId)
+        {
+            return await _context.AppointmentSchedules
+                .Include(a => a.Patient)
+                .Where(a => a.Day == day && a.TimeRange == timeRange && a.DoctorId == doctorId && a.PatientId != null)
+                .AsNoTracking()
+                .FirstOrDefaultAsync();
+        }
     }
 }

@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ValueGeneration.Internal;
+using PsychosocialSupportPlatformAPI.Business.Appointments.DTOs.Doctor;
+using PsychosocialSupportPlatformAPI.Business.AppointmentSchedules;
 using PsychosocialSupportPlatformAPI.Business.DoctorSchedules;
 using PsychosocialSupportPlatformAPI.Business.Mails;
 using PsychosocialSupportPlatformAPI.Business.Mails.DTOs;
@@ -16,6 +18,7 @@ using PsychosocialSupportPlatformAPI.Business.Users.DTOs.DoctorTitle;
 using PsychosocialSupportPlatformAPI.Business.Videos;
 using PsychosocialSupportPlatformAPI.Business.Videos.DTOs;
 using PsychosocialSupportPlatformAPI.Entity.Entities.Users;
+using PsychosocialSupportPlatformAPI.Entity.Enums;
 
 namespace PsychosocialSupportPlatformAPI.API.Controllers
 {
@@ -33,6 +36,8 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
         private readonly IVideoStatisticsService _videoStatisticsService;
         private readonly IAppointmentStatisticsService _appointmentStatisticsService;
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IAppointmentScheduleService _appointmentScheduleService;
+
 
 
         public AdminController(
@@ -44,7 +49,8 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
             IVideoService videoService,
             IVideoStatisticsService videoStatisticsService,
             IAppointmentStatisticsService appointmentStatisticsService,
-            IWebHostEnvironment webHostEnvironment
+            IWebHostEnvironment webHostEnvironment,
+            IAppointmentScheduleService appointmentScheduleService,
             )
         {
             _doctorScheduleService = doctorScheduleService;
@@ -56,6 +62,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
             _videoStatisticsService = videoStatisticsService;
             _appointmentStatisticsService = appointmentStatisticsService;
             _webHostEnvironment = webHostEnvironment;
+            _appointmentScheduleService = appointmentScheduleService;
         }
 
 
@@ -90,6 +97,19 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
             IEnumerable<object> allDoctorSchedules = await _doctorScheduleService.GetAllDoctorSchedulesByDate(DateTime.Parse(day));
             if (!allDoctorSchedules.Any()) return NotFound();
             return Ok(allDoctorSchedules);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetDoctorAppointmentByDateAndTimeRange([FromQuery] string date, [FromQuery] TimeRange timeRange)
+        {
+            string? currentUserID = User.Identity?.Name;
+            if (currentUserID == null) return Unauthorized();
+
+            GetDoctorAppointmentDTO? allDoctorAppointments = await _appointmentScheduleService.GetDoctorAppointmentByDateAndTimeRange(DateTime.Parse(date), timeRange, currentUserID);
+
+            if (allDoctorAppointments == null) return NotFound();
+
+            return Ok(allDoctorAppointments);
         }
 
 
