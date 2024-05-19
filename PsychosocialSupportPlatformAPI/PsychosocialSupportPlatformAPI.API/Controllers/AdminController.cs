@@ -3,14 +3,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ValueGeneration.Internal;
 using PsychosocialSupportPlatformAPI.Business.Appointments.DTOs.Doctor;
 using PsychosocialSupportPlatformAPI.Business.AppointmentSchedules;
 using PsychosocialSupportPlatformAPI.Business.DoctorSchedules;
-using PsychosocialSupportPlatformAPI.Business.Mails;
-using PsychosocialSupportPlatformAPI.Business.Mails.DTOs;
 using PsychosocialSupportPlatformAPI.Business.Statistics.Appointments;
-using PsychosocialSupportPlatformAPI.Business.Statistics.Appointments.DTOs;
 using PsychosocialSupportPlatformAPI.Business.Statistics.Videos;
 using PsychosocialSupportPlatformAPI.Business.Users;
 using PsychosocialSupportPlatformAPI.Business.Users.DTOs;
@@ -50,7 +46,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
             IVideoStatisticsService videoStatisticsService,
             IAppointmentStatisticsService appointmentStatisticsService,
             IWebHostEnvironment webHostEnvironment,
-            IAppointmentScheduleService appointmentScheduleService,
+            IAppointmentScheduleService appointmentScheduleService
             )
         {
             _doctorScheduleService = doctorScheduleService;
@@ -98,6 +94,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
             if (!allDoctorSchedules.Any()) return NotFound();
             return Ok(allDoctorSchedules);
         }
+
 
         [HttpGet]
         public async Task<IActionResult> GetDoctorAppointmentByDateAndTimeRange([FromQuery] string date, [FromQuery] TimeRange timeRange)
@@ -170,6 +167,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
             return Ok(allVideoStatisticsByPatientID);
         }
 
+
         [HttpGet]
         public async Task<IActionResult> GetAllPatientAppointmentStatistics()
         {
@@ -178,6 +176,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
             return Ok(allPatientAppointmentStatistics);
         }
 
+
         [HttpGet]
         public async Task<IActionResult> GetAllPatientAppointmentStatisticsByDoctorUserName([FromQuery] string doctorUserName)
         {
@@ -185,6 +184,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
             if (!allPatientAppointmentStatistics.Any()) return NotFound();
             return Ok(allPatientAppointmentStatistics);
         }
+
 
         [HttpGet]
         public async Task<IActionResult> GetAllPatientAppointmentStatisticsByPatientUserName([FromQuery] string patientUserName)
