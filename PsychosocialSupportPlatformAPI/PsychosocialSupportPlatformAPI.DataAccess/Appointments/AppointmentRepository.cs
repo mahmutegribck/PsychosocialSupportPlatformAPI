@@ -58,7 +58,7 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Appointments
                         DoctorId = appointment.DoctorId,
                         DoctorName = appointment.Doctor.Name,
                         DoctorSurname = appointment.Doctor.Surname,
-                        DoctorTitle = appointment.Doctor.Title,
+                        DoctorTitle = appointment.Doctor.DoctorTitle.Title,
                         AppointmentURL = appointment.URL
                     }).ToList()
 

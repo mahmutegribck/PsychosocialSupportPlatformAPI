@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using PsychosocialSupportPlatformAPI.Business.Appointments.DTOs.Doctor;
 using PsychosocialSupportPlatformAPI.Business.Mails;
 using PsychosocialSupportPlatformAPI.Business.Mails.DTOs;
 using PsychosocialSupportPlatformAPI.DataAccess.AppointmentSchedules;
 using PsychosocialSupportPlatformAPI.Entity.Entities.Appointments;
+using PsychosocialSupportPlatformAPI.Entity.Entities.Users;
 using PsychosocialSupportPlatformAPI.Entity.Enums;
 
 namespace PsychosocialSupportPlatformAPI.Business.AppointmentSchedules
@@ -14,15 +16,19 @@ namespace PsychosocialSupportPlatformAPI.Business.AppointmentSchedules
         private readonly IAppointmentScheduleRepository _appointmentScheduleRepository;
         private readonly IMapper _mapper;
         private readonly IMailService _mailService;
+        private readonly UserManager<Doctor> _doctorManager;
+
 
         public AppointmentScheduleService(
             IAppointmentScheduleRepository appointmentScheduleRepository,
             IMapper mapper,
-            IMailService mailService)
+            IMailService mailService,
+             UserManager<Doctor> doctorManager)
         {
             _appointmentScheduleRepository = appointmentScheduleRepository;
             _mapper = mapper;
             _mailService = mailService;
+            _doctorManager = doctorManager;
         }
 
 
@@ -140,7 +146,7 @@ namespace PsychosocialSupportPlatformAPI.Business.AppointmentSchedules
 
         public async Task UpdateAppointmentSchedule(DoctorSchedule doctorSchedule)
         {
-            if (doctorSchedule == null) throw new Exception();
+            if (doctorSchedule == null) throw new Exception("Kayıtlı Doktor Randevu Takvimi Bulunamadı.");
 
             List<AppointmentSchedule> createAppointmentList = new List<AppointmentSchedule>();
             List<AppointmentSchedule> deleteAppointmentList = new List<AppointmentSchedule>();
@@ -318,16 +324,14 @@ namespace PsychosocialSupportPlatformAPI.Business.AppointmentSchedules
             }
             if (deleteAppointmentList.Any())
             {
+                await _appointmentScheduleRepository.DeleteAppointmentScheduleList(deleteAppointmentList);
                 foreach (AppointmentSchedule deleteAppointment in deleteAppointmentList)
                 {
-                    await _mailService.CancelAppointmentSendEmail(new MailDto
+                    if (deleteAppointment.PatientId != null)
                     {
-                        PatientEmail = deleteAppointment.Patient!.Email,
-                        Body = "Randevunuz İptal Olmuştur",
-                        Subject = $"{deleteAppointment.Day.ToShortDateString()} {deleteAppointment.TimeRange}.00 Tarihli {deleteAppointment.Doctor.Title} {deleteAppointment.Doctor.Name} {deleteAppointment.Doctor.Surname} İle Olan Randevunuz İptal Edilmiştir."
-                    });
+                        await _mailService.CancelAppointmentSendEmailToPatient(deleteAppointment);
+                    }
                 }
-                await _appointmentScheduleRepository.DeleteAppointmentScheduleList(deleteAppointmentList);
             }
             if (createAppointmentList.Any())
             {

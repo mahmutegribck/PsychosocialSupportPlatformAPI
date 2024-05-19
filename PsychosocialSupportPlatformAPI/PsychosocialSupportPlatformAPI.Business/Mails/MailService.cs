@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
-using PsychosocialSupportPlatformAPI.Business.Mails.DTOs;
+using PsychosocialSupportPlatformAPI.Entity.Entities.Appointments;
 using System.Net;
 using System.Net.Mail;
 
@@ -9,26 +9,28 @@ namespace PsychosocialSupportPlatformAPI.Business.Mails
     {
         private readonly IConfiguration _configuration;
 
+
         public MailService(IConfiguration configuration)
         {
             _configuration = configuration;
         }
 
 
-        public async Task CancelAppointmentSendEmail(MailDto mailDto)
+        public async Task CancelAppointmentSendEmailToPatient(AppointmentSchedule appointment)
         {
             var meesage = new MailMessage()
             {
                 From = new MailAddress(_configuration["Mailing:Sender"]!),
-                Subject = mailDto.Subject,
+                Subject = "Randevunuz İptal Olmuştur",
                 IsBodyHtml = true,
-                Body = mailDto.Body
+                Body = $"{appointment.Day.ToShortDateString()} {appointment.TimeRange}.00 Tarihli {appointment.Doctor.DoctorTitle.Title} {appointment.Doctor.Name} {appointment.Doctor.Surname} İle Olan Randevunuz İptal Edilmiştir.",
             };
+            meesage.To.Add(new MailAddress(appointment.Patient!.Email));
 
-            foreach (string toUserEmail in mailDto.ToUserEmails)
-            {
-                meesage.To.Add(new MailAddress(toUserEmail));
-            }
+            //foreach (string toUserEmail in mailDto.ToUserEmails)
+            //{
+            //    meesage.To.Add(new MailAddress(toUserEmail));
+            //}
 
             using SmtpClient client = new();
             client.EnableSsl = true;

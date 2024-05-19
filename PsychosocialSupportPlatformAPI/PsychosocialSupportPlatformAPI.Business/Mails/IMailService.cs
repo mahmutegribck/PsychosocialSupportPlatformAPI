@@ -1,9 +1,9 @@
-﻿using PsychosocialSupportPlatformAPI.Business.Mails.DTOs;
+﻿using PsychosocialSupportPlatformAPI.Entity.Entities.Appointments;
 
 namespace PsychosocialSupportPlatformAPI.Business.Mails
 {
     public interface IMailService
     {
-        Task CancelAppointmentSendEmail(MailDto mailDto);
+        Task CancelAppointmentSendEmailToPatient(AppointmentSchedule appointment);
     }
 }

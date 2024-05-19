@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using PsychosocialSupportPlatformAPI.Business.Users.DTOs;
 using PsychosocialSupportPlatformAPI.Business.Users.DTOs.Admin;
 using PsychosocialSupportPlatformAPI.Business.Users.DTOs.DoctorDTOs;
+using PsychosocialSupportPlatformAPI.Business.Users.DTOs.DoctorTitle;
 using PsychosocialSupportPlatformAPI.Business.Users.DTOs.PatientDTOs;
 using PsychosocialSupportPlatformAPI.DataAccess.Users;
 using PsychosocialSupportPlatformAPI.Entity.Entities.Users;
@@ -46,8 +47,6 @@ namespace PsychosocialSupportPlatformAPI.Business.Users
             }
         }
 
-
-
         public async Task<IdentityResult> DeleteUser(string id)
         {
             return await _userRepository.DeleteUser(id);
@@ -77,7 +76,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Users
 
         public async Task<object> GetUserBySlug(string userSlug)
         {
-            var user = await _userRepository.GetUserBySlug(userSlug);
+            ApplicationUser? user = await _userRepository.GetUserBySlug(userSlug) ?? throw new Exception("Kullanıcı Bulunamadı");
 
             if (await _userManager.IsInRoleAsync(user, _config["Roles:Patient"]))
             {
@@ -144,5 +143,21 @@ namespace PsychosocialSupportPlatformAPI.Business.Users
             await _userManager.UpdateAsync(user);
         }
 
+        public async Task AddDoctorTitle(AddDoctorTitleDTO addDoctorTitleDTO)
+        {
+            await _userRepository.AddDoctorTitle(_mapper.Map<DoctorTitle>(addDoctorTitleDTO));
+        }
+
+        public async Task DeleteDoctorTitle(int doctorTitleId)
+        {
+            DoctorTitle? doctorTitle = await _userRepository.GetDoctorTitleById(doctorTitleId) ?? throw new Exception("Ünvan Bulunamadı.");
+
+            await _userRepository.DeleteDoctorTitle(doctorTitle);
+        }
+
+        public async Task<IEnumerable<GetDoctorTitleDTO>> GetAllDoctorTitles()
+        {
+            return _mapper.Map<IEnumerable<GetDoctorTitleDTO>>(await _userRepository.GetAllDoctorTitles());
+        }
     }
 }

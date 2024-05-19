@@ -6,6 +6,7 @@ using PsychosocialSupportPlatformAPI.Entity.Entities.Appointments;
 using PsychosocialSupportPlatformAPI.Entity.Entities.Messages;
 using PsychosocialSupportPlatformAPI.Entity.Entities.Users;
 using PsychosocialSupportPlatformAPI.Entity.Entities.Videos;
+using System.Reflection.Emit;
 
 namespace PsychosocialSupportPlatformAPI.DataAccess
 {
@@ -22,6 +23,7 @@ namespace PsychosocialSupportPlatformAPI.DataAccess
         public DbSet<DoctorSchedule> DoctorSchedules { get; set; }
         public DbSet<AppointmentSchedule> AppointmentSchedules { get; set; }
         public DbSet<AppointmentStatistics> AppointmentStatistics { get; set; }
+        public DbSet<DoctorTitle> DoctorTitles { get; set; }
 
 
 
@@ -62,6 +64,9 @@ namespace PsychosocialSupportPlatformAPI.DataAccess
                .WithOne(a => a.Doctor)
                .OnDelete(DeleteBehavior.Cascade);
 
+            builder.Entity<Doctor>()
+                .Navigation(d => d.DoctorTitle)
+                .AutoInclude();
 
 
             //builder.Entity<AppointmentStatistics>()

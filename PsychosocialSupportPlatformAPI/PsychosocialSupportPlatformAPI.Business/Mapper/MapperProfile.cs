@@ -12,6 +12,7 @@ using PsychosocialSupportPlatformAPI.Business.Statistics.Videos.DTOs;
 using PsychosocialSupportPlatformAPI.Business.Users.DTOs;
 using PsychosocialSupportPlatformAPI.Business.Users.DTOs.Admin;
 using PsychosocialSupportPlatformAPI.Business.Users.DTOs.DoctorDTOs;
+using PsychosocialSupportPlatformAPI.Business.Users.DTOs.DoctorTitle;
 using PsychosocialSupportPlatformAPI.Business.Users.DTOs.PatientDTOs;
 using PsychosocialSupportPlatformAPI.Business.Videos.DTOs;
 using PsychosocialSupportPlatformAPI.Entity.Entities;
@@ -78,7 +79,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Mapper
                 .ForMember(dest => dest.DoctorName, opt => opt.MapFrom(src => src.Doctor.Name))
                 .ForMember(dest => dest.DoctorSurname, opt => opt.MapFrom(src => src.Doctor.Surname))
                 .ForMember(dest => dest.DoctorProfileImageUrl, opt => opt.MapFrom(src => src.Doctor.ProfileImageUrl))
-                .ForMember(dest => dest.DoctorTitle, opt => opt.MapFrom(src => src.Doctor.Title));
+                .ForMember(dest => dest.DoctorTitle, opt => opt.MapFrom(src => src.Doctor.DoctorTitle.Title));
 
             CreateMap<DoctorSchedule, GetDoctorScheduleDTO>()
                 .ForMember(dest => dest.Day, opt => opt.MapFrom(src => src.Day.ToShortDateString()))
@@ -91,7 +92,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Mapper
                 .ForMember(dest => dest.Day, opt => opt.MapFrom(src => src.Day.ToShortDateString()))
                 .ForMember(dest => dest.DoctorName, opt => opt.MapFrom(src => src.Doctor.Name))
                 .ForMember(dest => dest.DoctorSurname, opt => opt.MapFrom(src => src.Doctor.Surname))
-                .ForMember(dest => dest.DoctorTitle, opt => opt.MapFrom(src => src.Doctor.Title));
+                .ForMember(dest => dest.DoctorTitle, opt => opt.MapFrom(src => src.Doctor.DoctorTitle.Title));
 
 
 
@@ -101,7 +102,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Mapper
             CreateMap<AppointmentStatistics, GetAppointmentStatisticsDTO>()
                 .ForMember(dest => dest.DoctorName, opt => opt.MapFrom(src => src.Doctor.Name))
                 .ForMember(dest => dest.DoctorSurname, opt => opt.MapFrom(src => src.Doctor.Surname))
-                .ForMember(dest => dest.DoctorTitle, opt => opt.MapFrom(src => src.Doctor.Title))
+                .ForMember(dest => dest.DoctorTitle, opt => opt.MapFrom(src => src.Doctor.DoctorTitle.Title))
                 .ForMember(dest => dest.DoctorProfileImageUrl, opt => opt.MapFrom(src => src.Doctor.ProfileImageUrl))
                 .ForMember(dest => dest.AppointmentDay, opt => opt.MapFrom(src => src.AppointmentSchedule.Day.ToShortDateString()));
 
@@ -113,9 +114,8 @@ namespace PsychosocialSupportPlatformAPI.Business.Mapper
                 .ForMember(dest => dest.PatientSurname, opt => opt.MapFrom(src => src.Patient!.Surname))
                 .ForMember(dest => dest.Day, opt => opt.MapFrom(src => src.Day.ToShortDateString()));
 
-
-
-
+            CreateMap<DoctorTitle, AddDoctorTitleDTO>().ReverseMap();
+            CreateMap<DoctorTitle, GetDoctorTitleDTO>().ReverseMap();
 
 
             CreateMap<DateTime, DateOnly>().ConvertUsing(dt => DateOnly.FromDateTime(dt));

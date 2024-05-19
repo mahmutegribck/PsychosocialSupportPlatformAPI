@@ -87,7 +87,7 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Statistics.Appointments
                     DoctorName = s.Doctor.Name,
                     DoctorSurname = s.Doctor.Surname,
                     DoctorProfileImageUrl = s.Doctor.ProfileImageUrl,
-                    DoctorTitle = s.Doctor.Title,
+                    DoctorTitle = s.Doctor.DoctorTitle.Title,
                     AppointmentDay = s.AppointmentSchedule.Day.ToShortDateString(),
                     AppointmentStartTime = s.AppointmentStartTime,
                     AppointmentEndTime = s.AppointmentEndTime,

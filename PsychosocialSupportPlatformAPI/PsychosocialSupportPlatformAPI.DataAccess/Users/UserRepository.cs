@@ -19,6 +19,28 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Users
             _patientManager = patientManager;
         }
 
+        public async Task AddDoctorTitle(DoctorTitle doctorTitle)
+        {
+            await _context.DoctorTitles.AddAsync(doctorTitle);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteDoctorTitle(DoctorTitle doctorTitle)
+        {
+            _context.DoctorTitles.Remove(doctorTitle);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<DoctorTitle?> GetDoctorTitleById(int doctorTitleId)
+        {
+            return await _context.DoctorTitles.AsNoTracking().FirstOrDefaultAsync(t => t.Id == doctorTitleId);
+        }
+
+        public async Task<IEnumerable<DoctorTitle>> GetAllDoctorTitles()
+        {
+            return await _context.DoctorTitles.AsNoTracking().ToListAsync();
+        }
+
         public async Task<IdentityResult> DeleteUser(string id)
         {
             var deletUser = await GetUser(id);
@@ -46,9 +68,9 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Users
             return await _userManager.FindByIdAsync(id);
         }
 
-        public async Task<ApplicationUser> GetUserBySlug(string userSlug)
+        public async Task<ApplicationUser?> GetUserBySlug(string userSlug)
         {
-            return await _context.Users.Where(a => a.UserName == userSlug).FirstOrDefaultAsync();
+            return await _context.Users.Where(a => a.UserName == userSlug).AsNoTracking().FirstOrDefaultAsync();
         }
 
         public async Task<IdentityResult> UpdateDoctor(string currentUserID, Doctor doctor)
@@ -58,7 +80,7 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Users
 
             updatedDoctor.Name = doctor.Name;
             updatedDoctor.Surname = doctor.Surname;
-            updatedDoctor.Title = doctor.Title;
+            updatedDoctor.DoctorTitle.Title = doctor.DoctorTitle.Title;
             updatedDoctor.PhoneNumber = doctor.PhoneNumber;
 
             IdentityResult result = await _doctorManager.UpdateAsync(updatedDoctor);

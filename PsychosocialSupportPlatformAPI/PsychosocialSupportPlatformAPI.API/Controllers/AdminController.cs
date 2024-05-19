@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ValueGeneration.Internal;
 using PsychosocialSupportPlatformAPI.Business.DoctorSchedules;
 using PsychosocialSupportPlatformAPI.Business.Mails;
 using PsychosocialSupportPlatformAPI.Business.Mails.DTOs;
@@ -11,6 +12,7 @@ using PsychosocialSupportPlatformAPI.Business.Statistics.Appointments.DTOs;
 using PsychosocialSupportPlatformAPI.Business.Statistics.Videos;
 using PsychosocialSupportPlatformAPI.Business.Users;
 using PsychosocialSupportPlatformAPI.Business.Users.DTOs;
+using PsychosocialSupportPlatformAPI.Business.Users.DTOs.DoctorTitle;
 using PsychosocialSupportPlatformAPI.Business.Videos;
 using PsychosocialSupportPlatformAPI.Business.Videos.DTOs;
 using PsychosocialSupportPlatformAPI.Entity.Entities.Users;
@@ -54,6 +56,31 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
             _videoStatisticsService = videoStatisticsService;
             _appointmentStatisticsService = appointmentStatisticsService;
             _webHostEnvironment = webHostEnvironment;
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> AddDoctorTitle([FromBody] AddDoctorTitleDTO addDoctorTitleDTO)
+        {
+            await _userService.AddDoctorTitle(addDoctorTitleDTO);
+            return Ok();
+        }
+
+
+        [HttpDelete]
+        public async Task<IActionResult> DeleteDoctorTitle([FromQuery] int doctorTitleId)
+        {
+            await _userService.DeleteDoctorTitle(doctorTitleId);
+            return Ok();
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllDoctorTitles()
+        {
+            IEnumerable<GetDoctorTitleDTO> doctorTitles = await _userService.GetAllDoctorTitles();
+            if (!doctorTitles.Any()) return NotFound();
+            return Ok(doctorTitles);
         }
 
 
