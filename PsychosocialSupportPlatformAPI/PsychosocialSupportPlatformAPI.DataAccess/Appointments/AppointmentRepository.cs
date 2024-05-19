@@ -27,12 +27,31 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Appointments
                 .FirstOrDefaultAsync();
         }
 
+        public async Task<AppointmentSchedule?> GetDoctorAppointment(AppointmentSchedule appointmentSchedule)
+        {
+            return await _context.AppointmentSchedules
+                .Include(a => a.Patient)
+                .Include(a => a.Doctor)
+                .Where(a =>
+                a.DoctorId == appointmentSchedule.DoctorId &&
+                a.TimeRange == appointmentSchedule.TimeRange &&
+                a.Day == appointmentSchedule.Day)
+                .AsNoTracking()
+                .FirstOrDefaultAsync();
+        }
+
         public async Task CancelPatientAppointment(AppointmentSchedule appointmentSchedule)
         {
             appointmentSchedule.Status = false;
             appointmentSchedule.PatientId = null;
             appointmentSchedule.URL = null;
             _context.AppointmentSchedules.Update(appointmentSchedule);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task CancelDoctorAppointment(AppointmentSchedule appointmentSchedule)
+        {
+            _context.AppointmentSchedules.Remove(appointmentSchedule);
             await _context.SaveChangesAsync();
         }
 

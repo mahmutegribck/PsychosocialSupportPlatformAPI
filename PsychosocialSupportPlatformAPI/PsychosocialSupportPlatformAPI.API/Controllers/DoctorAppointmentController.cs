@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PsychosocialSupportPlatformAPI.Business.Appointments;
+using PsychosocialSupportPlatformAPI.Business.Appointments.DTOs;
 using PsychosocialSupportPlatformAPI.Business.Appointments.DTOs.Doctor;
 using PsychosocialSupportPlatformAPI.Business.AppointmentSchedules;
 using PsychosocialSupportPlatformAPI.Business.Users;
@@ -14,11 +16,17 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
     {
         private readonly IAppointmentScheduleService _appointmentScheduleService;
         private readonly IUserService _userService;
+        private readonly IAppointmentService _appointmentService;
 
-        public DoctorAppointmentController(IAppointmentScheduleService appointmentScheduleService, IUserService userService)
+
+        public DoctorAppointmentController(
+            IAppointmentScheduleService appointmentScheduleService,
+            IUserService userService,
+            IAppointmentService appointmentService)
         {
             _appointmentScheduleService = appointmentScheduleService;
             _userService = userService;
+            _appointmentService = appointmentService;
         }
 
         [HttpGet]
@@ -79,6 +87,21 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
             if (!allPatients.Any()) return NotFound();
 
             return Ok(allPatients);
+        }
+
+
+        [HttpPatch]
+        public async Task<IActionResult> CancelDoctorAppointment([FromBody] CancelDoctorAppointmentDTO cancelDoctorAppointmentDTO)
+        {
+            string? currentUserID = User.Identity?.Name;
+            if (currentUserID == null) return Unauthorized();
+
+            if (cancelDoctorAppointmentDTO == null) return BadRequest();
+
+            await _appointmentService.CancelDoctorAppointment(cancelDoctorAppointmentDTO, currentUserID);
+
+            return Ok();
+
         }
     }
 }

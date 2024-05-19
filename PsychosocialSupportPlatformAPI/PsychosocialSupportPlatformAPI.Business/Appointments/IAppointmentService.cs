@@ -1,7 +1,6 @@
 ﻿using PsychosocialSupportPlatformAPI.Business.Appointments.DTOs;
 using PsychosocialSupportPlatformAPI.Business.AppointmentSchedules.DTOs;
 using PsychosocialSupportPlatformAPI.Business.Users.DTOs;
-using PsychosocialSupportPlatformAPI.Entity.Entities.Appointments;
 
 namespace PsychosocialSupportPlatformAPI.Business.Appointments
 {
@@ -13,6 +12,8 @@ namespace PsychosocialSupportPlatformAPI.Business.Appointments
 
         Task CancelPatientAppointment(CancelPatientAppointmentDTO cancelPatientAppointmentDTO, string patientId);
         Task<bool> MakeAppointment(string patientId, MakeAppointmentDTO makeAppointmentDTO);
+        Task CancelDoctorAppointment(CancelDoctorAppointmentDTO cancelDoctorAppointmentDTO, string doctorId);
+
 
     }
 }

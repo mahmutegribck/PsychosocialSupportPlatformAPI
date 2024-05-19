@@ -1,27 +1,15 @@
 ﻿using AutoMapper;
-using Azure;
-using Azure.Core;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
-using Newtonsoft.Json.Linq;
 using PsychosocialSupportPlatformAPI.Business.Appointments.DTOs;
 using PsychosocialSupportPlatformAPI.Business.AppointmentSchedules.DTOs;
-using PsychosocialSupportPlatformAPI.Business.Auth;
-using PsychosocialSupportPlatformAPI.Business.Auth.JwtToken.DTOs;
 using PsychosocialSupportPlatformAPI.Business.Mails;
 using PsychosocialSupportPlatformAPI.Business.Users.DTOs;
 using PsychosocialSupportPlatformAPI.DataAccess.Appointments;
 using PsychosocialSupportPlatformAPI.DataAccess.AppointmentSchedules;
 using PsychosocialSupportPlatformAPI.Entity.Entities.Appointments;
-using System;
-using System.IdentityModel.Tokens.Jwt;
-using System.Net;
-using System.Reflection.Metadata;
-using System.Security.Claims;
+using PsychosocialSupportPlatformAPI.Entity.Entities.Users;
 using System.Text;
 using System.Text.Json;
-using System.Text.Json.Nodes;
 
 namespace PsychosocialSupportPlatformAPI.Business.Appointments
 {
@@ -46,6 +34,17 @@ namespace PsychosocialSupportPlatformAPI.Business.Appointments
             _mapper = mapper;
             _configuration = configuration;
             _mailService = mailService;
+        }
+
+        public async Task CancelDoctorAppointment(CancelDoctorAppointmentDTO cancelDoctorAppointmentDTO, string doctorId)
+        {
+            AppointmentSchedule appointmentSchedule = _mapper.Map<AppointmentSchedule>(cancelDoctorAppointmentDTO);
+            appointmentSchedule.DoctorId = doctorId;
+
+            AppointmentSchedule? cancelAppointmentSchedule = await _appointmentRepository.GetDoctorAppointment(appointmentSchedule) ?? throw new Exception("İptal Edilmek İstenen Randevu Kaydı Bulunamadı");
+
+            await _appointmentRepository.CancelDoctorAppointment(cancelAppointmentSchedule);
+            await _mailService.SendEmailToPatientForCancelAppointment(cancelAppointmentSchedule);
         }
 
         public async Task CancelPatientAppointment(CancelPatientAppointmentDTO cancelPatientAppointmentDTO, string patientId)
