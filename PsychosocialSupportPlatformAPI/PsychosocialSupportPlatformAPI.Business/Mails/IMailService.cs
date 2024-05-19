@@ -4,6 +4,6 @@ namespace PsychosocialSupportPlatformAPI.Business.Mails
 {
     public interface IMailService
     {
-        Task SendEmail(MailDto mailDto);
+        Task CancelAppointmentSendEmail(MailDto mailDto);
     }
 }

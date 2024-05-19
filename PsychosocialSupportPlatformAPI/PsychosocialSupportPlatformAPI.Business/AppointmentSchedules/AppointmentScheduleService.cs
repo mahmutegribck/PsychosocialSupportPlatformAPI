@@ -1,5 +1,8 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using PsychosocialSupportPlatformAPI.Business.Appointments.DTOs.Doctor;
+using PsychosocialSupportPlatformAPI.Business.Mails;
+using PsychosocialSupportPlatformAPI.Business.Mails.DTOs;
 using PsychosocialSupportPlatformAPI.DataAccess.AppointmentSchedules;
 using PsychosocialSupportPlatformAPI.Entity.Entities.Appointments;
 using PsychosocialSupportPlatformAPI.Entity.Enums;
@@ -10,11 +13,16 @@ namespace PsychosocialSupportPlatformAPI.Business.AppointmentSchedules
     {
         private readonly IAppointmentScheduleRepository _appointmentScheduleRepository;
         private readonly IMapper _mapper;
+        private readonly IMailService _mailService;
 
-        public AppointmentScheduleService(IAppointmentScheduleRepository appointmentScheduleRepository, IMapper mapper)
+        public AppointmentScheduleService(
+            IAppointmentScheduleRepository appointmentScheduleRepository,
+            IMapper mapper,
+            IMailService mailService)
         {
             _appointmentScheduleRepository = appointmentScheduleRepository;
             _mapper = mapper;
+            _mailService = mailService;
         }
 
 
@@ -310,8 +318,16 @@ namespace PsychosocialSupportPlatformAPI.Business.AppointmentSchedules
             }
             if (deleteAppointmentList.Any())
             {
+                foreach (AppointmentSchedule deleteAppointment in deleteAppointmentList)
+                {
+                    await _mailService.CancelAppointmentSendEmail(new MailDto
+                    {
+                        PatientEmail = deleteAppointment.Patient!.Email,
+                        Body = "Randevunuz İptal Olmuştur",
+                        Subject = $"{deleteAppointment.Day.ToShortDateString()} {deleteAppointment.TimeRange}.00 Tarihli {deleteAppointment.Doctor.Title} {deleteAppointment.Doctor.Name} {deleteAppointment.Doctor.Surname} İle Olan Randevunuz İptal Edilmiştir."
+                    });
+                }
                 await _appointmentScheduleRepository.DeleteAppointmentScheduleList(deleteAppointmentList);
-
             }
             if (createAppointmentList.Any())
             {

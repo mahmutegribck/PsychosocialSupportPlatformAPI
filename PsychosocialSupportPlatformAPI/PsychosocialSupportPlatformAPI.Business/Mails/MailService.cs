@@ -15,7 +15,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Mails
         }
 
 
-        public async Task SendEmail(MailDto mailDto)
+        public async Task CancelAppointmentSendEmail(MailDto mailDto)
         {
             var meesage = new MailMessage()
             {
