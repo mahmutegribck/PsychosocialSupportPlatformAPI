@@ -82,7 +82,12 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.AppointmentSchedules
 
         public async Task<IEnumerable<AppointmentSchedule>> GetAppointmentScheduleByDay(string doctorId, DateTime day)
         {
-            return await _context.AppointmentSchedules.Include(a => a.Doctor).Include(a => a.Patient).Where(a => a.DoctorId == doctorId && a.Day == day).AsNoTracking().ToListAsync();
+            return await _context.AppointmentSchedules
+                .Include(a => a.Doctor)
+                .Include(a => a.Patient)
+                .Where(a => a.DoctorId == doctorId && a.Day == day)
+                .AsNoTracking()
+                .ToListAsync();
         }
 
         public async Task<AppointmentSchedule?> GetAppointmentScheduleById(int appointmentScheduleId)

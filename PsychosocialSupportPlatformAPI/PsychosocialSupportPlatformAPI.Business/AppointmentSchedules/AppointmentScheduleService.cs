@@ -148,8 +148,8 @@ namespace PsychosocialSupportPlatformAPI.Business.AppointmentSchedules
         {
             if (doctorSchedule == null) throw new Exception("Kayıtlı Doktor Randevu Takvimi Bulunamadı.");
 
-            List<AppointmentSchedule> createAppointmentList = new List<AppointmentSchedule>();
-            List<AppointmentSchedule> deleteAppointmentList = new List<AppointmentSchedule>();
+            List<AppointmentSchedule> createAppointmentList = new();
+            List<AppointmentSchedule> deleteAppointmentList = new();
 
             IEnumerable<AppointmentSchedule> appointmentSchedules = await _appointmentScheduleRepository.GetAppointmentScheduleByDay(doctorSchedule.DoctorId, doctorSchedule.Day);
             if (!appointmentSchedules.Any())
@@ -329,7 +329,7 @@ namespace PsychosocialSupportPlatformAPI.Business.AppointmentSchedules
                 {
                     if (deleteAppointment.PatientId != null)
                     {
-                        await _mailService.CancelAppointmentSendEmailToPatient(deleteAppointment);
+                        await _mailService.SendEmailToPatientForCancelAppointment(deleteAppointment);
                     }
                 }
             }

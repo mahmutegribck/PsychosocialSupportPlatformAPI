@@ -9,6 +9,7 @@ using PsychosocialSupportPlatformAPI.Business.Appointments.DTOs;
 using PsychosocialSupportPlatformAPI.Business.AppointmentSchedules.DTOs;
 using PsychosocialSupportPlatformAPI.Business.Auth;
 using PsychosocialSupportPlatformAPI.Business.Auth.JwtToken.DTOs;
+using PsychosocialSupportPlatformAPI.Business.Mails;
 using PsychosocialSupportPlatformAPI.Business.Users.DTOs;
 using PsychosocialSupportPlatformAPI.DataAccess.Appointments;
 using PsychosocialSupportPlatformAPI.DataAccess.AppointmentSchedules;
@@ -16,6 +17,7 @@ using PsychosocialSupportPlatformAPI.Entity.Entities.Appointments;
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net;
+using System.Reflection.Metadata;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
@@ -29,29 +31,30 @@ namespace PsychosocialSupportPlatformAPI.Business.Appointments
         private readonly IAppointmentScheduleRepository _appointmentScheduleRepository;
         private readonly IMapper _mapper;
         private readonly IConfiguration _configuration;
+        private readonly IMailService _mailService;
 
 
         public AppointmentService(
             IAppointmentRepository appointmentRepository,
             IAppointmentScheduleRepository appointmentScheduleRepository,
             IMapper mapper,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            IMailService mailService)
         {
             _appointmentRepository = appointmentRepository;
             _appointmentScheduleRepository = appointmentScheduleRepository;
             _mapper = mapper;
             _configuration = configuration;
+            _mailService = mailService;
         }
 
         public async Task CancelPatientAppointment(CancelPatientAppointmentDTO cancelPatientAppointmentDTO, string patientId)
         {
             AppointmentSchedule appointmentSchedule = _mapper.Map<AppointmentSchedule>(cancelPatientAppointmentDTO);
             appointmentSchedule.PatientId = patientId;
-            AppointmentSchedule? cancelAppointmentSchedule = await _appointmentRepository.GetPatientAppointment(appointmentSchedule);
-
-            if (cancelAppointmentSchedule == null) throw new Exception();
-
+            AppointmentSchedule? cancelAppointmentSchedule = await _appointmentRepository.GetPatientAppointment(appointmentSchedule) ?? throw new Exception("İptal Edilmek İstenen Randevu Kaydı Bulunamadı");
             await _appointmentRepository.CancelPatientAppointment(cancelAppointmentSchedule);
+            await _mailService.SendEmailToDoctorForCancelAppointment(cancelAppointmentSchedule);
         }
 
         public async Task<GetPatientAppointmentDTO?> GetPatientAppointmentById(int patientAppointmentId, string patientId)

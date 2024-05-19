@@ -15,13 +15,15 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Appointments
         public async Task<AppointmentSchedule?> GetPatientAppointment(AppointmentSchedule appointmentSchedule)
         {
             return await _context.AppointmentSchedules
-                .AsNoTracking()
+                .Include(a => a.Patient)
+                .Include(a => a.Doctor)
                 .Where(a =>
                 a.PatientId == appointmentSchedule.PatientId &&
                 a.DoctorId == appointmentSchedule.DoctorId &&
                 a.TimeRange == appointmentSchedule.TimeRange &&
                 a.Day == appointmentSchedule.Day &&
                 a.Status == true)
+                .AsNoTracking()
                 .FirstOrDefaultAsync();
         }
 
