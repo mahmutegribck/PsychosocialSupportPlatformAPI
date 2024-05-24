@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using PsychosocialSupportPlatformAPI.Entity.Entities.Appointments;
+using PsychosocialSupportPlatformAPI.Entity.Entities.Users;
 using System.Net;
 using System.Net.Mail;
 
@@ -37,6 +38,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Mails
             await client.SendMailAsync(meesage);
         }
 
+
         public async Task SendEmailToPatientForCancelAppointment(AppointmentSchedule appointment)
         {
             var meesage = new MailMessage()
@@ -48,10 +50,28 @@ namespace PsychosocialSupportPlatformAPI.Business.Mails
             };
             meesage.To.Add(new MailAddress(appointment.Patient!.Email));
 
-            //foreach (string toUserEmail in mailDto.ToUserEmails)
-            //{
-            //    meesage.To.Add(new MailAddress(toUserEmail));
-            //}
+            using SmtpClient client = new();
+            client.EnableSsl = true;
+            client.UseDefaultCredentials = false;
+            client.Credentials = new NetworkCredential(_configuration["Mailing:Sender"], _configuration["Mailing:Password"]);
+            client.Host = _configuration["Mailing:Host"]!;
+            client.Port = Convert.ToInt32(_configuration["Mailing:Port"]);
+            client.DeliveryMethod = SmtpDeliveryMethod.Network;
+
+            await client.SendMailAsync(meesage);
+        }
+
+
+        public async Task SendEmailToDoctorForConfirmationAccount(Doctor doctor)
+        {
+            var meesage = new MailMessage()
+            {
+                From = new MailAddress(_configuration["Mailing:Sender"]!),
+                Subject = "Hesabınız Onaylanmıştır",
+                IsBodyHtml = true,
+                Body = $"Sayın {doctor.DoctorTitle.Title} {doctor.Name} {doctor.Surname} Hesabınız Onaylanmıştır. Sisteme Erişim Sağlayabilirsiniz.",
+            };
+            meesage.To.Add(new MailAddress(doctor.Email));
 
             using SmtpClient client = new();
             client.EnableSsl = true;

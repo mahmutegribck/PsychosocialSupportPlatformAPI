@@ -1,4 +1,5 @@
 ﻿using PsychosocialSupportPlatformAPI.Entity.Entities.Appointments;
+using PsychosocialSupportPlatformAPI.Entity.Entities.Users;
 
 namespace PsychosocialSupportPlatformAPI.Business.Mails
 {
@@ -6,5 +7,6 @@ namespace PsychosocialSupportPlatformAPI.Business.Mails
     {
         Task SendEmailToPatientForCancelAppointment(AppointmentSchedule appointment);
         Task SendEmailToDoctorForCancelAppointment(AppointmentSchedule appointment);
+        Task SendEmailToDoctorForConfirmationAccount(Doctor doctor);
     }
 }

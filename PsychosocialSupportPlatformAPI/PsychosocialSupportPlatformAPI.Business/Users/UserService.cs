@@ -184,11 +184,11 @@ namespace PsychosocialSupportPlatformAPI.Business.Users
 
         public async Task ConfirmDoctor(string doctorUserName)
         {
-            Doctor doctor = _mapper.Map<Doctor>(await _userRepository.GetUserBySlug(doctorUserName));
-            if (doctor == null) throw new Exception("Doktor Bulunamadı");
+            Doctor doctor = _mapper.Map<Doctor>(await _userRepository.GetUserBySlug(doctorUserName)) ?? throw new Exception("Doktor Bulunamadı");
 
             await _userRepository.ConfirmDoctor(doctor);
-            //MAil Atılacak
+
+            await _mailService.SendEmailToDoctorForConfirmationAccount(doctor);
         }
     }
 }
