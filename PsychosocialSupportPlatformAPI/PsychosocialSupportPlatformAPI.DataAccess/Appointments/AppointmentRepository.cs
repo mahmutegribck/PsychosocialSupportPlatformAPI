@@ -44,6 +44,7 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Appointments
         {
             appointmentSchedule.Status = false;
             appointmentSchedule.PatientId = null;
+            appointmentSchedule.Patient = null;
             appointmentSchedule.URL = null;
             _context.AppointmentSchedules.Update(appointmentSchedule);
             await _context.SaveChangesAsync();

@@ -62,6 +62,24 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
         }
 
 
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllUnConfirmedDoctor()
+        {
+            IEnumerable<GetDoctorDto> unConfirmedDoctors = await _userService.GetAllUnConfirmedDoctor();
+            if (!unConfirmedDoctors.Any()) return NotFound();
+            return Ok(unConfirmedDoctors);
+        }
+
+
+        [HttpPatch]
+        public async Task<IActionResult> ConfirmDoctor([FromQuery] string doctorUserName)
+        {
+            await _userService.ConfirmDoctor(doctorUserName);
+            return Ok();
+        }
+
+
         [HttpPost]
         public async Task<IActionResult> AddDoctorTitle([FromBody] AddDoctorTitleDTO addDoctorTitleDTO)
         {

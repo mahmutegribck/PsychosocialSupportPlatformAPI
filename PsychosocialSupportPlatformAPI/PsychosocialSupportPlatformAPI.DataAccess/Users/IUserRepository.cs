@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using PsychosocialSupportPlatformAPI.Entity.Entities.Users;
+using System.Numerics;
 
 namespace PsychosocialSupportPlatformAPI.DataAccess.Users
 {
@@ -16,5 +17,7 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Users
         Task<bool> CheckDoctorTitle(string doctorTitle);
         Task<DoctorTitle?> GetDoctorTitleById(int doctorTitleId);
         Task<IEnumerable<DoctorTitle>> GetAllDoctorTitles();
+        Task<IEnumerable<Doctor>> GetAllUnConfirmedDoctor();
+        Task ConfirmDoctor(Doctor doctor);
     }
 }

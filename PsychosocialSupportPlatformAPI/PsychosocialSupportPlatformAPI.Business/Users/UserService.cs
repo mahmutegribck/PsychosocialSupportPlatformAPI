@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
+using PsychosocialSupportPlatformAPI.Business.Mails;
 using PsychosocialSupportPlatformAPI.Business.Users.DTOs;
 using PsychosocialSupportPlatformAPI.Business.Users.DTOs.Admin;
 using PsychosocialSupportPlatformAPI.Business.Users.DTOs.DoctorDTOs;
@@ -18,14 +19,21 @@ namespace PsychosocialSupportPlatformAPI.Business.Users
         private readonly IMapper _mapper;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IConfiguration _config;
+        private readonly IMailService _mailService;
 
 
-        public UserService(IUserRepository userRepository, IMapper mapper, UserManager<ApplicationUser> userManager, IConfiguration config)
+        public UserService(
+            IUserRepository userRepository, 
+            IMapper mapper, 
+            UserManager<ApplicationUser> userManager, 
+            IConfiguration config,
+            IMailService mailService)
         {
             _userRepository = userRepository;
             _mapper = mapper;
             _userManager = userManager;
             _config = config;
+            _mailService = mailService;
         }
 
         public async Task ChangePassword(ChangePasswordDTO changePasswordDTO, string currentUserId)
@@ -167,6 +175,20 @@ namespace PsychosocialSupportPlatformAPI.Business.Users
         public async Task<IEnumerable<GetDoctorTitleDTO>> GetAllDoctorTitles()
         {
             return _mapper.Map<IEnumerable<GetDoctorTitleDTO>>(await _userRepository.GetAllDoctorTitles());
+        }
+
+        public async Task<IEnumerable<GetDoctorDto>> GetAllUnConfirmedDoctor()
+        {
+            return _mapper.Map<IEnumerable<GetDoctorDto>>(await _userRepository.GetAllUnConfirmedDoctor());
+        }
+
+        public async Task ConfirmDoctor(string doctorUserName)
+        {
+            Doctor doctor = _mapper.Map<Doctor>(await _userRepository.GetUserBySlug(doctorUserName));
+            if (doctor == null) throw new Exception("Doktor Bulunamadı");
+
+            await _userRepository.ConfirmDoctor(doctor);
+            //MAil Atılacak
         }
     }
 }

@@ -42,10 +42,6 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Users
             return await _context.DoctorTitles.AsNoTracking().FirstOrDefaultAsync(t => t.Id == doctorTitleId);
         }
 
-        public async Task<IEnumerable<DoctorTitle>> GetAllDoctorTitles()
-        {
-            return await _context.DoctorTitles.AsNoTracking().ToListAsync();
-        }
 
         public async Task<IdentityResult> DeleteUser(string id)
         {
@@ -94,6 +90,7 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Users
             return result;
         }
 
+
         public async Task<IdentityResult> UpdatePatient(string currentUserID, Patient patient)
         {
             Patient updatedPatient = await _patientManager.FindByIdAsync(currentUserID);
@@ -106,6 +103,25 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Users
             IdentityResult result = await _patientManager.UpdateAsync(updatedPatient);
             await _context.SaveChangesAsync();
             return result;
+        }
+
+
+        public async Task<IEnumerable<DoctorTitle>> GetAllDoctorTitles()
+        {
+            return await _context.DoctorTitles.AsNoTracking().ToListAsync();
+        }
+
+
+        public async Task<IEnumerable<Doctor>> GetAllUnConfirmedDoctor()
+        {
+            return await _context.Doctors.Where(d => d.Confirmed == false).ToListAsync();
+        }
+
+        public async Task ConfirmDoctor(Doctor doctor)
+        {
+            doctor.Confirmed = true;
+            _context.Doctors.Update(doctor);
+            await _context.SaveChangesAsync();
         }
     }
 }

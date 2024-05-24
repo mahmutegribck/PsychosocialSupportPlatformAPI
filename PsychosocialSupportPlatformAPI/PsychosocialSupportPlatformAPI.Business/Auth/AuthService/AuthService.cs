@@ -12,11 +12,10 @@ using PsychosocialSupportPlatformAPI.Business.Auth.JwtToken;
 using PsychosocialSupportPlatformAPI.Business.Auth.JwtToken.DTOs;
 using PsychosocialSupportPlatformAPI.Business.Users;
 using PsychosocialSupportPlatformAPI.Entity.Entities.Users;
-using System;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using static Google.Apis.Auth.GoogleJsonWebSignature;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
 {
@@ -235,36 +234,61 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
         {
             try
             {
-                ApplicationUser user = await _userManager.FindByEmailAsync(model.Email);
+                ApplicationUser? user = await _userManager.FindByEmailAsync(model.Email);
                 if (user == null)
                 {
                     return new LoginResponse
                     {
-                        Message = "",
+                        Message = "Kullanıcı Bulunamadı",
                         IsSuccess = false,
                     };
                 }
+
+                var userRoles = await _userManager.GetRolesAsync(user);
+
+                if (userRoles.Contains(_config["Roles:Doctor"]) ) 
+                {
+                    if (user is Doctor doctor)
+                    {
+                        if (!doctor.Confirmed)
+                        {
+                            return new LoginResponse
+                            {
+                                Message = "Danışman Henüz Yönetici Tarafından Onaylanmadı",
+                                IsSuccess = false,
+                            };
+                        }
+                    }
+                }
+                
                 var result = await _userManager.CheckPasswordAsync(user, model.Password);
                 if (!result)
                     return new LoginResponse
                     {
-                        Message = "",
+                        Message = "Kullanıcı Şifresi Hatalı",
                         IsSuccess = false,
                     };
 
-                JwtTokenDTO token = await _jwtService.CreateJwtToken(user);
+                JwtTokenDTO? token = await _jwtService.CreateJwtToken(user);
+
+                if (token == null) 
+                {
+                    return new LoginResponse
+                    {
+                        Message = "Giriş Başarısız",
+                        IsSuccess = false,
+                    };
+                }
 
                 return new LoginResponse
                 {
                     JwtTokenDTO = token,
-                    Message = "",
+                    Message = "Giriş Başarılı",
                     IsSuccess = true,
-
                 };
             }
             catch (Exception)
             {
-
                 throw;
             }
         }

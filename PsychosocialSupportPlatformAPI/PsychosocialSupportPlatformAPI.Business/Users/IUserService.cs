@@ -22,5 +22,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Users
         Task DeleteDoctorTitle(int doctorTitleId);
         Task<GetDoctorTitleDTO?> GetDoctorTitleById(int doctorTitleId);
         Task<IEnumerable<GetDoctorTitleDTO>> GetAllDoctorTitles();
+        Task<IEnumerable<GetDoctorDto>> GetAllUnConfirmedDoctor();
+        Task ConfirmDoctor(string doctorUserName);
     }
 }
