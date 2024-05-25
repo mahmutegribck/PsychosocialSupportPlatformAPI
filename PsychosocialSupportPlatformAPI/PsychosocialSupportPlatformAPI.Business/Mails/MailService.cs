@@ -40,7 +40,6 @@ namespace PsychosocialSupportPlatformAPI.Business.Mails
             await client.SendMailAsync(meesage);
         }
 
-
         public async Task SendEmailToPatientForCancelAppointment(AppointmentSchedule appointment)
         {
             var meesage = new MailMessage()
@@ -63,7 +62,6 @@ namespace PsychosocialSupportPlatformAPI.Business.Mails
 
             await client.SendMailAsync(meesage);
         }
-
 
         public async Task SendEmailToDoctorForConfirmationAccount(Doctor doctor)
         {
@@ -96,7 +94,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Mails
                 Subject = "Şifremi Unuttum",
                 IsBodyHtml = true,
                 Body = $"<h3>Sayın {user.Name} {user.Surname} Şifrenizi Güncellemek İçin Bağlantıya Tıklayın:</h3><br>" +
-                $"{_configuration["Urls:DevBaseUrl"]}/api/Authentication/ResetPassword?token={HttpUtility.UrlEncode(token)}",
+                $"{_configuration["Urls:DevBaseUrl"]}/api/Authentication/ResetPassword?token={HttpUtility.UrlEncode(token)}?mail={user.Email}",
             };
             meesage.To.Add(new MailAddress(user.Email));
 

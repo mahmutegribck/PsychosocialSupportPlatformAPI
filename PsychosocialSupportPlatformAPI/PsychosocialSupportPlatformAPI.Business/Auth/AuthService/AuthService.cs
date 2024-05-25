@@ -312,7 +312,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
 
                 if (model.NewPassword != model.ConfirmPassword) throw new Exception("Şifreler Eşleşemedi");
 
-                var result = await _userManager.ResetPasswordAsync(user, HttpUtility.UrlDecode(token), model.NewPassword);
+                var result = await _userManager.ResetPasswordAsync(user, token, model.NewPassword);
 
                 if (!result.Succeeded) throw new Exception("Şifre Değişirilemedi");
 
