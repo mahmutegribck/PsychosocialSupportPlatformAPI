@@ -10,7 +10,9 @@ namespace PsychosocialSupportPlatformAPI.Business.Messages
         private readonly IMessageRepository _messageRepository;
         private readonly IMapper _mapper;
 
-        public MessageService(IMessageRepository messageRepository, IMapper mapper)
+        public MessageService(
+            IMessageRepository messageRepository, 
+            IMapper mapper)
         {
             _messageRepository = messageRepository;
             _mapper = mapper;

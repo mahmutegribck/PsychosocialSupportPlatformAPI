@@ -10,7 +10,7 @@ namespace PsychosocialSupportPlatformAPI.API.Configurators
         {
             services.AddIdentityCore<ApplicationUser>(options =>
             {
-
+                options.SignIn.RequireConfirmedAccount = true;
                 options.Password.RequiredLength = 3;
                 options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequireDigit = false;
@@ -20,11 +20,15 @@ namespace PsychosocialSupportPlatformAPI.API.Configurators
                 options.Lockout.AllowedForNewUsers = false;
                 options.User.AllowedUserNameCharacters = "abcçdefgğhiıjklmnoöpqrsştuüvwxyzABCÇDEFGĞHIİJKLMNOÖPQRSŞTUÜVWXYZ0123456789-._@+ ";
 
-            }).AddRoles<ApplicationRole>().AddEntityFrameworkStores<PsychosocialSupportPlatformDBContext>().AddDefaultTokenProviders();
+            }).AddRoles<ApplicationRole>()
+            .AddEntityFrameworkStores<PsychosocialSupportPlatformDBContext>()
+            .AddDefaultTokenProviders();
+
+            //.AddTokenProvider<DataProtectorTokenProvider<ApplicationUser>>(TokenOptions.DefaultProvider);
 
             services.AddIdentityCore<Doctor>(options =>
             {
-
+                options.SignIn.RequireConfirmedAccount = true;
                 options.Password.RequiredLength = 3;
                 options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequireDigit = false;
@@ -34,12 +38,13 @@ namespace PsychosocialSupportPlatformAPI.API.Configurators
                 options.Lockout.AllowedForNewUsers = false;
                 options.User.AllowedUserNameCharacters = "abcçdefgğhiıjklmnoöpqrsştuüvwxyzABCÇDEFGĞHIİJKLMNOÖPQRSŞTUÜVWXYZ0123456789-._@+ ";
 
-            }).AddRoles<ApplicationRole>().AddEntityFrameworkStores<PsychosocialSupportPlatformDBContext>().AddDefaultTokenProviders();
+            }).AddRoles<ApplicationRole>()
+            .AddEntityFrameworkStores<PsychosocialSupportPlatformDBContext>();
 
 
             services.AddIdentityCore<Patient>(options =>
             {
-
+                options.SignIn.RequireConfirmedAccount = true;
                 options.Password.RequiredLength = 3;
                 options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequireDigit = false;
@@ -49,8 +54,10 @@ namespace PsychosocialSupportPlatformAPI.API.Configurators
                 options.Lockout.AllowedForNewUsers = false;
                 options.User.AllowedUserNameCharacters = "abcçdefgğhiıjklmnoöpqrsştuüvwxyzABCÇDEFGĞHIİJKLMNOÖPQRSŞTUÜVWXYZ0123456789-._@+ ";
 
-            }).AddRoles<ApplicationRole>().AddEntityFrameworkStores<PsychosocialSupportPlatformDBContext>().AddDefaultTokenProviders();
-        }
+            }).AddRoles<ApplicationRole>()
+            .AddEntityFrameworkStores<PsychosocialSupportPlatformDBContext>();
 
+            //services.Configure<DataProtectionTokenProviderOptions>(opts => opts.TokenLifespan = TimeSpan.FromMinutes(10));
+        }
     }
 }

@@ -2,8 +2,8 @@
 {
     public class SetUserMessages
     {
-        public string SenderId { get; set; }
-        public string ReceiverId { get; set; }
+        public required string SenderId { get; set; }
+        public required string ReceiverId { get; set; }
 
     }
 }

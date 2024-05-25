@@ -6,6 +6,7 @@ using PsychosocialSupportPlatformAPI.Business.Auth.AuthService.DTOs.DoctorDTOs;
 using PsychosocialSupportPlatformAPI.Business.Auth.AuthService.DTOs.PatientDTOs;
 using PsychosocialSupportPlatformAPI.Business.Auth.AuthService.ResponseModel;
 using PsychosocialSupportPlatformAPI.Business.Auth.JwtToken.DTOs;
+using System.ComponentModel.DataAnnotations;
 
 namespace PsychosocialSupportPlatformAPI.API.Controllers
 {
@@ -85,19 +86,20 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
 
 
         [HttpPost]
-        [Authorize(Roles = "Doctor,Patient")]
-        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDto model)
+        [AllowAnonymous]
+        public async Task<IActionResult> ResetPassword([FromQuery] string token, [FromBody] ResetPasswordDto model)
         {
-            if (ModelState.IsValid)
-            {
-                LoginResponse result = await _authService.ResetPasswordAsync(model);
+            await _authService.ResetPassword(token, model);
+            return Ok("Şifre Değiştirildi");
+        }
 
-                if (result.IsSuccess)
-                    return Ok(result);
 
-                return BadRequest(result);
-            }
-            return BadRequest();
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<IActionResult> ForgotPassword([Required] string email)
+        {
+            await _authService.ForgotPassword(email);
+            return Ok("Şifre Değiştirme Bağlantısı Mail Adresinize Gönderildi");
         }
 
 
@@ -116,6 +118,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
             }
             return BadRequest();
         }
+
 
         [HttpPost]
         public async Task<IActionResult> LoginViaFacebook([FromBody] string token)

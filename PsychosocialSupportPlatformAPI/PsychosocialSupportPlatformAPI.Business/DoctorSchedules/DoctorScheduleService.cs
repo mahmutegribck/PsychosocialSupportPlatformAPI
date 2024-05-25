@@ -13,7 +13,10 @@ namespace PsychosocialSupportPlatformAPI.Business.DoctorSchedules
         private readonly IAppointmentScheduleService _appointmentScheduleService;
         private readonly IMapper _mapper;
 
-        public DoctorScheduleService(IDoctorScheduleRepository doctorScheduleRepository, IAppointmentScheduleService appointmentScheduleService, IMapper mapper)
+        public DoctorScheduleService(
+            IDoctorScheduleRepository doctorScheduleRepository, 
+            IAppointmentScheduleService appointmentScheduleService, 
+            IMapper mapper)
         {
             _doctorScheduleRepository = doctorScheduleRepository;
             _appointmentScheduleService = appointmentScheduleService;
@@ -151,7 +154,9 @@ namespace PsychosocialSupportPlatformAPI.Business.DoctorSchedules
 
             if (!allDoctorSchedules.Any()) throw new Exception();
 
-            IEnumerable<object> groupedSchedules = allDoctorSchedules.GroupBy(dto => DateTime.Parse(dto!.Day)).OrderBy(group => group.Key)
+            IEnumerable<object> groupedSchedules = allDoctorSchedules
+                .GroupBy(dto => DateTime.Parse(dto!.Day))
+                .OrderBy(group => group.Key)
                 .Select(group =>
                 {
                     return new

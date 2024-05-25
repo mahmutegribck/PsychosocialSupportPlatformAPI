@@ -197,20 +197,5 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
             await _userService.ChangePassword(changePasswordDTO, currentUserID);
             return Ok();
         }
-
-
-
-        [HttpPost]
-        public async Task<IActionResult> AddMessageDeneme(string SenderId, string ReceiverId, string Text)
-        {
-            SendMessageDto sendMessageDto = new SendMessageDto();
-
-            sendMessageDto.SendedTime = DateTime.Now;
-            sendMessageDto.ReceiverId = ReceiverId;
-            sendMessageDto.Text = Text;
-            sendMessageDto.SenderId = SenderId;
-            await _messageService.AddMessage(sendMessageDto);
-            return Ok();
-        }
     }
 }

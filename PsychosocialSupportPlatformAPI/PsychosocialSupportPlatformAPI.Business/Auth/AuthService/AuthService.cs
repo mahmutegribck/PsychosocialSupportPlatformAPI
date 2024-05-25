@@ -10,11 +10,12 @@ using PsychosocialSupportPlatformAPI.Business.Auth.AuthService.DTOs.PatientDTOs;
 using PsychosocialSupportPlatformAPI.Business.Auth.AuthService.ResponseModel;
 using PsychosocialSupportPlatformAPI.Business.Auth.JwtToken;
 using PsychosocialSupportPlatformAPI.Business.Auth.JwtToken.DTOs;
+using PsychosocialSupportPlatformAPI.Business.Mails;
 using PsychosocialSupportPlatformAPI.Business.Users;
 using PsychosocialSupportPlatformAPI.Entity.Entities.Users;
-using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Web;
 using static Google.Apis.Auth.GoogleJsonWebSignature;
 
 namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
@@ -30,6 +31,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
         private readonly IConfiguration _config;
         private readonly HttpClient _httpClient;
         private readonly IUserService _userService;
+        private readonly IMailService _mailService;
 
         public AuthService(
             UserManager<ApplicationUser> userManager,
@@ -40,7 +42,8 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
             HttpClient httpClient,
             UserManager<Patient> patientManager,
             UserManager<Doctor> doctorManager,
-            IUserService userService)
+            IUserService userService,
+            IMailService mailService)
         {
             _userManager = userManager;
             _roleManager = roleManager;
@@ -51,6 +54,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
             _patientManager = patientManager;
             _doctorManager = doctorManager;
             _userService = userService;
+            _mailService = mailService;
         }
 
 
@@ -300,50 +304,39 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
         }
 
 
-        public async Task<LoginResponse> ResetPasswordAsync(ResetPasswordDto model)
+        public async Task ResetPassword(string token, ResetPasswordDto model)
         {
             try
             {
-                var user = await _userManager.FindByEmailAsync(model.Email);
-                if (user == null)
-                    return new LoginResponse
-                    {
-                        IsSuccess = false,
-                        Message = "",
-                    };
+                var user = await _userManager.FindByEmailAsync(model.Email) ?? throw new Exception($"{model.Email} Adresine Ait Hesap Bulunamadı");
 
-                if (model.NewPassword != model.ConfirmPassword)
-                    return new LoginResponse
-                    {
-                        IsSuccess = false,
-                        Message = "",
-                    };
+                if (model.NewPassword != model.ConfirmPassword) throw new Exception("Şifreler Eşleşemedi");
 
-                var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+                var result = await _userManager.ResetPasswordAsync(user, HttpUtility.UrlDecode(token), model.NewPassword);
 
-                var result = await _userManager.ResetPasswordAsync(user, token, model.NewPassword);
+                if (!result.Succeeded) throw new Exception("Şifre Değişirilemedi");
 
-                if (result.Succeeded)
-                    return new LoginResponse
-                    {
-                        Message = "",
-                        IsSuccess = true,
-                    };
-
-                return new LoginResponse
-                {
-                    Message = "",
-                    IsSuccess = false
-                };
             }
             catch (Exception)
             {
-
                 throw;
             }
-
         }
 
+        public async Task ForgotPassword(string email)
+        {
+            ApplicationUser? user = await _userManager.FindByEmailAsync(email);
+
+            if (user != null)
+            {
+                string? token = await _userManager.GeneratePasswordResetTokenAsync(user) ?? throw new Exception("Token Oluşturulamadı");
+                await _mailService.SendEmailForForgotPassword(user, token);
+            }
+            else
+            {
+                throw new Exception($"{email} Adresine Ait Kullanıcı Bulunamadı");
+            }
+        }
 
         public async Task<LoginResponse> LoginUserViaGoogle(string token)
         {
@@ -500,5 +493,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
             };
 
         }
+
+
     }
 }

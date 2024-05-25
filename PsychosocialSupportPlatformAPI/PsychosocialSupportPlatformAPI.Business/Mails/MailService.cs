@@ -3,6 +3,8 @@ using PsychosocialSupportPlatformAPI.Entity.Entities.Appointments;
 using PsychosocialSupportPlatformAPI.Entity.Entities.Users;
 using System.Net;
 using System.Net.Mail;
+using System.Numerics;
+using System.Web;
 
 namespace PsychosocialSupportPlatformAPI.Business.Mails
 {
@@ -74,6 +76,29 @@ namespace PsychosocialSupportPlatformAPI.Business.Mails
             };
 
             meesage.To.Add(new MailAddress(doctor.Email));
+
+            using SmtpClient client = new();
+            client.EnableSsl = true;
+            client.UseDefaultCredentials = false;
+            client.Credentials = new NetworkCredential(_configuration["Mailing:Sender"], _configuration["Mailing:Password"]);
+            client.Host = _configuration["Mailing:Host"]!;
+            client.Port = Convert.ToInt32(_configuration["Mailing:Port"]);
+            client.DeliveryMethod = SmtpDeliveryMethod.Network;
+
+            await client.SendMailAsync(meesage);
+        }
+
+        public async Task SendEmailForForgotPassword(ApplicationUser user, string token)
+        {
+            var meesage = new MailMessage()
+            {
+                From = new MailAddress(_configuration["Mailing:Sender"]!),
+                Subject = "Şifremi Unuttum",
+                IsBodyHtml = true,
+                Body = $"<h3>Sayın {user.Name} {user.Surname} Şifrenizi Güncellemek İçin Bağlantıya Tıklayın:</h3><br>" +
+                $"{_configuration["Urls:DevBaseUrl"]}/api/Authentication/ResetPassword?token={HttpUtility.UrlEncode(token)}",
+            };
+            meesage.To.Add(new MailAddress(user.Email));
 
             using SmtpClient client = new();
             client.EnableSsl = true;

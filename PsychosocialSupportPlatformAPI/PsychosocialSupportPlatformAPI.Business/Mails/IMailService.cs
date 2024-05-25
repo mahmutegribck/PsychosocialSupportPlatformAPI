@@ -8,5 +8,6 @@ namespace PsychosocialSupportPlatformAPI.Business.Mails
         Task SendEmailToPatientForCancelAppointment(AppointmentSchedule appointment);
         Task SendEmailToDoctorForCancelAppointment(AppointmentSchedule appointment);
         Task SendEmailToDoctorForConfirmationAccount(Doctor doctor);
+        Task SendEmailForForgotPassword(ApplicationUser user, string token);
     }
 }

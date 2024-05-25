@@ -10,12 +10,10 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
     {
         Task<RegisterResponse> RegisterForDoctor(RegisterDoctorDto model);
         Task<RegisterResponse> RegisterForPatient(RegisterPatientDto model);
-
         Task<LoginResponse> LoginUserAsync(LoginDto model);
-
         Task<JwtTokenDTO?> LoginWithRefreshToken(string refreshToken);
-        Task<LoginResponse> ResetPasswordAsync(ResetPasswordDto model);
-
+        Task ResetPassword(string token, ResetPasswordDto model);
+        Task ForgotPassword(string email);
         Task<LoginResponse> LoginUserViaGoogle(string token);
         Task<LoginResponse> LoginUserViaFacebook(string token);
     }
