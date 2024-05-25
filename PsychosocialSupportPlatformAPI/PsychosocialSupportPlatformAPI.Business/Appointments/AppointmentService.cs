@@ -82,6 +82,17 @@ namespace PsychosocialSupportPlatformAPI.Business.Appointments
 
         public async Task<bool> MakeAppointment(string patientId, MakeAppointmentDTO makeAppointmentDTO)
         {
+            AppointmentSchedule? patientLastAppointment = await _appointmentRepository.GetPatientLastAppointment(patientId);
+
+            if (patientLastAppointment != null)
+            {
+                if (Math.Abs((DateTime.Parse(makeAppointmentDTO.Day) - patientLastAppointment.Day).Days) < 14)
+                    throw new Exception("Son 14 Gün İçerisinde Alınmış Randevunuz Bulunmaktadır.");
+
+                if (patientLastAppointment.DoctorId != makeAppointmentDTO.DoctorId) 
+                    throw new Exception("Sadece Doktorunuzdan Randevu Alabilirsiniz.");
+            }
+
             AppointmentSchedule? appointmentSchedule = await _appointmentScheduleRepository.GetAppointmentScheduleByDayAndTimeRange(makeAppointmentDTO.DoctorId, DateTime.Parse(makeAppointmentDTO.Day), makeAppointmentDTO.TimeRange);
 
             if (appointmentSchedule == null)

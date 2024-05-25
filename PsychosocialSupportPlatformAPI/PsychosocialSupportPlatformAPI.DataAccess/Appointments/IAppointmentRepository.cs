@@ -10,6 +10,7 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Appointments
         Task<AppointmentSchedule?> GetPatientAppointmentById(int patientAppointmentId, string patientId);
         Task<IEnumerable<Doctor>> GetPatientDoctorsByPatientId(string patientId);
         Task<IEnumerable<object>> GetPatientAppointmentsByPatientId(string patientId);
+        Task<AppointmentSchedule?> GetPatientLastAppointment(string patientId);
         Task CancelPatientAppointment(AppointmentSchedule appointmentSchedule);
         Task CancelDoctorAppointment(AppointmentSchedule appointmentSchedule);
 

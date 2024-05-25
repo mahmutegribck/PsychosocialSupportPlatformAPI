@@ -27,9 +27,17 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.AppointmentSchedules
         }
 
 
-        public async Task<IEnumerable<object>> GetAllAppointmentSchedules(DateTime day)
+        public async Task<IEnumerable<object>> GetAllAppointmentSchedules(DateTime day, string patientId)
         {
-            var mergedSchedules = await _context.AppointmentSchedules.AsNoTracking().Where(s => s.Day == day.Date)
+            string? patientLastAppointmentDoctorId = await _context.AppointmentSchedules
+                .Where(a => a.PatientId == patientId)
+                .OrderByDescending(a => a.Day)
+                .AsNoTracking()
+                .Select(a=>a.DoctorId)
+                .FirstOrDefaultAsync();
+
+
+            var query = _context.AppointmentSchedules.AsNoTracking().Where(s => s.Day == day.Date)
                 .OrderBy(a => a.Day)
                 .ThenBy(a => a.TimeRange)
                 .Select(a => new
@@ -42,7 +50,14 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.AppointmentSchedules
                     DoctorSurname = a.Doctor.Surname,
                     DoctorTitle = a.Doctor.DoctorTitle.Title
 
-                }).ToListAsync();
+                });
+
+            if (patientLastAppointmentDoctorId != null)
+            {
+                query = query.Where(s => s.DoctorID == patientLastAppointmentDoctorId);
+            }
+
+            var mergedSchedules = await query.ToListAsync();
 
             var groupedSchedules = mergedSchedules
                 .GroupBy(a => new { a.Day, a.DoctorID })

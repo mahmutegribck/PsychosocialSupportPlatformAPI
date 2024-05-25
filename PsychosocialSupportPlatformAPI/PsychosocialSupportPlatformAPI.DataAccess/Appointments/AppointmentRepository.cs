@@ -96,5 +96,10 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Appointments
         {
             return await _context.AppointmentSchedules.AnyAsync(a => a.Id == appointmentScheduleId && a.PatientId == patientId && a.DoctorId == doctorId);
         }
+
+        public async Task<AppointmentSchedule?> GetPatientLastAppointment(string patientId)
+        {
+            return await _context.AppointmentSchedules.Where(a => a.PatientId == patientId).OrderByDescending(a => a.Day).FirstOrDefaultAsync();
+        }
     }
 }
