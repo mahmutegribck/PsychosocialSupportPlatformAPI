@@ -87,7 +87,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
                 newUser.UserName += "-" + new Random().Next(1000, 1000000);
 
 
-                var result = await _doctorManager.CreateAsync(newUser, model.Password);
+                var result = await _userManager.CreateAsync(newUser, model.Password);
 
                 if (result.Succeeded)
                 {
@@ -174,7 +174,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
                 newUser.UserName = Regex.Replace(newUser.UserName, @"[^a-zA-Z0-9]", "-");
                 newUser.UserName += "-" + new Random().Next(1000, 1000000);
 
-                var result = await _patientManager.CreateAsync(newUser, model.Password);
+                var result = await _userManager.CreateAsync(newUser, model.Password);
 
                 if (result.Succeeded)
                 {
@@ -246,7 +246,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
 
                 var userRoles = await _userManager.GetRolesAsync(user);
 
-                if (userRoles.Contains(_config["Roles:Doctor"]) ) 
+                if (userRoles.Contains(_config["Roles:Doctor"]))
                 {
                     if (user is Doctor doctor)
                     {
@@ -260,7 +260,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
                         }
                     }
                 }
-                
+
                 var result = await _userManager.CheckPasswordAsync(user, model.Password);
                 if (!result)
                     return new LoginResponse
@@ -271,7 +271,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
 
                 JwtTokenDTO? token = await _jwtService.CreateJwtToken(user);
 
-                if (token == null) 
+                if (token == null)
                 {
                     return new LoginResponse
                     {
@@ -363,6 +363,9 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
             if (user == null)
             {
                 user = await _patientManager.FindByEmailAsync(payload.Email);
+                var doctor = await _doctorManager.FindByEmailAsync(payload.Email);
+                if (doctor != null) throw new Exception("Lütfen Giriş Yap Ekranından Giriş Yapınız.");
+
                 if (user == null)
                 {
                     user = new()
@@ -372,9 +375,18 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
                         Name = payload.GivenName,
                         Surname = payload.FamilyName,
                         ProfileImageUrl = payload.Picture,
-                        UserName = payload.Email,
                         EmailConfirmed = payload.EmailVerified
                     };
+                    user.UserName = user.Name.ToLower() + "-" + user.Surname.ToLower();
+
+                    char[] turkishChars = { 'ı', 'ğ', 'İ', 'Ğ', 'ç', 'Ç', 'ş', 'Ş', 'ö', 'Ö', 'ü', 'Ü' };
+                    char[] englishChars = { 'i', 'g', 'I', 'G', 'c', 'C', 's', 'S', 'o', 'O', 'u', 'U' };
+
+                    for (int i = 0; i < turkishChars.Length; i++)
+                        user.UserName = user.UserName.Replace(turkishChars[i], englishChars[i]);
+
+                    user.UserName = Regex.Replace(user.UserName, @"[^a-zA-Z0-9]", "-");
+                    user.UserName += "-" + new Random().Next(1000, 1000000);
 
                     IdentityResult createResult = await _patientManager.CreateAsync(user);
                     result = createResult.Succeeded;

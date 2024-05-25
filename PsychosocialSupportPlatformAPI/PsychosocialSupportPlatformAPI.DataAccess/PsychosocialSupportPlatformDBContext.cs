@@ -68,7 +68,7 @@ namespace PsychosocialSupportPlatformAPI.DataAccess
                 .Navigation(d => d.DoctorTitle)
                 .AutoInclude();
 
-
+            
             //builder.Entity<AppointmentStatistics>()
             //.HasOne(a => a.AppointmentSchedule)
             //.WithMany(s => s.AppointmentStatistics)
