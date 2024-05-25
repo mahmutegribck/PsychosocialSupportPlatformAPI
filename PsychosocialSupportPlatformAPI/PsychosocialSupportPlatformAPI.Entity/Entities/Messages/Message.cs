@@ -1,26 +1,16 @@
-﻿using PsychosocialSupportPlatformAPI.Entity.Entities.Messages;
-using PsychosocialSupportPlatformAPI.Entity.Entities.Users;
-using System.ComponentModel.DataAnnotations;
+﻿using PsychosocialSupportPlatformAPI.Entity.Entities.Users;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 
-namespace PsychosocialSupportPlatformAPI.Entity.Entities
+namespace PsychosocialSupportPlatformAPI.Entity.Entities.Messages
 {
     public class Message
     {
-        public Message()
-        {
-            MessageOutboxes = new HashSet<MessageOutbox>();
-        }
-
         [Key]
         public int Id { get; set; }
         public required string Text { get; set; }
         public DateTime SendedTime { get; set; }
-
         public bool Status { get; set; } = false;
-
-        public bool IsSended { get; set; } = true;
-
         public required string SenderId { get; set; }
 
         [ForeignKey("SenderId")]
@@ -30,7 +20,5 @@ namespace PsychosocialSupportPlatformAPI.Entity.Entities
 
         [ForeignKey("ReceiverId")]
         public ApplicationUser Receiver { get; set; } = null!;
-
-        public ICollection<MessageOutbox> MessageOutboxes { get; set; }
     }
 }

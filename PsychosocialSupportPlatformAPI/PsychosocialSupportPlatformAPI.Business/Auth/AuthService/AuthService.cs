@@ -254,7 +254,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
                         {
                             return new LoginResponse
                             {
-                                Message = "Danışman Henüz Yönetici Tarafından Onaylanmadı",
+                                Message = "Hesabınız Henüz Yönetici Tarafından Onaylanmadı",
                                 IsSuccess = false,
                             };
                         }

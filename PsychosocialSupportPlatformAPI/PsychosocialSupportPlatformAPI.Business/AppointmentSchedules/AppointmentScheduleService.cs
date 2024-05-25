@@ -1,10 +1,8 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Identity;
 using PsychosocialSupportPlatformAPI.Business.Appointments.DTOs.Doctor;
 using PsychosocialSupportPlatformAPI.Business.Mails;
 using PsychosocialSupportPlatformAPI.DataAccess.AppointmentSchedules;
 using PsychosocialSupportPlatformAPI.Entity.Entities.Appointments;
-using PsychosocialSupportPlatformAPI.Entity.Entities.Users;
 using PsychosocialSupportPlatformAPI.Entity.Enums;
 
 namespace PsychosocialSupportPlatformAPI.Business.AppointmentSchedules

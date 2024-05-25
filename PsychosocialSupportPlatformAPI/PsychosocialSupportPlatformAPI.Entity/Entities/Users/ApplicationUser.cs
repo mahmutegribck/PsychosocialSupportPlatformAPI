@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using PsychosocialSupportPlatformAPI.Entity.Entities.Messages;
 
 namespace PsychosocialSupportPlatformAPI.Entity.Entities.Users
 {

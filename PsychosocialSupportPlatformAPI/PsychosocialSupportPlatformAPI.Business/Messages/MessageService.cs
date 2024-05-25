@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using PsychosocialSupportPlatformAPI.Business.Messages.DTOs;
 using PsychosocialSupportPlatformAPI.DataAccess.Messages;
-using PsychosocialSupportPlatformAPI.Entity.Entities;
+using PsychosocialSupportPlatformAPI.Entity.Entities.Messages;
 
 namespace PsychosocialSupportPlatformAPI.Business.Messages
 {
@@ -43,16 +43,6 @@ namespace PsychosocialSupportPlatformAPI.Business.Messages
         public async Task<bool> MessageChangeStatus(SetUserMessages setUserMessages)
         {
             return await _messageRepository.MessageChangeStatus(setUserMessages.SenderId, setUserMessages.ReceiverId);
-        }
-
-        public async Task<List<GetOutboxMessageDto>> GetOutboxMessages(string receiverId)
-        {
-            return _mapper.Map<List<GetOutboxMessageDto>>(await _messageRepository.GetOutboxMessages(receiverId));
-        }
-
-        public async Task SetSendedMessage(int messageId)
-        {
-            await _messageRepository.SetSendedMessage(messageId);
         }
     }
 }

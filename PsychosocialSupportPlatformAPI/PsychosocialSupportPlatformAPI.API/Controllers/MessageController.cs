@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using PsychosocialSupportPlatformAPI.Business.Messages;
 using PsychosocialSupportPlatformAPI.Business.Messages.DTOs;
-using PsychosocialSupportPlatformAPI.DataAccess;
 
 namespace PsychosocialSupportPlatformAPI.API.Controllers
 {
@@ -13,23 +11,12 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
     public class MessageController : ControllerBase
     {
         private readonly IMessageService _messageService;
-        private readonly PsychosocialSupportPlatformDBContext _context;
-        public MessageController(IMessageService messageService, PsychosocialSupportPlatformDBContext context)
+        public MessageController(IMessageService messageService)
         {
             _messageService = messageService;
-            _context = context;
         }
 
-        [HttpDelete]
-        public async Task<IActionResult> DeleteAllMessages()
-        {
-            var deleteOutbox = await _context.MessageOutboxes.ToListAsync();
-            var messages = await _context.Messages.ToListAsync();
-            _context.RemoveRange(deleteOutbox);
-            _context.RemoveRange(messages);
-            return Ok();
-
-        }
+        
         [HttpPost]
         public async Task<IActionResult> GetMessages([FromBody] GetUserMessageDto getUserMessageDto)
         {

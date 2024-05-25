@@ -10,7 +10,6 @@ namespace PsychosocialSupportPlatformAPI.Business.Mails
     {
         private readonly IConfiguration _configuration;
 
-
         public MailService(IConfiguration configuration)
         {
             _configuration = configuration;
@@ -23,8 +22,9 @@ namespace PsychosocialSupportPlatformAPI.Business.Mails
                 From = new MailAddress(_configuration["Mailing:Sender"]!),
                 Subject = "Randevunuz İptal Olmuştur",
                 IsBodyHtml = true,
-                Body = $"{appointment.Day.ToShortDateString()} {appointment.TimeRange}.00 Tarihli {appointment.Patient!.Name} {appointment.Patient.Surname} İle Olan Randevunuz İptal Edilmiştir.",
+                Body = $"{appointment.Day.ToShortDateString()} {(int)appointment.TimeRange}.00 Tarihli {appointment.Patient!.Name} {appointment.Patient.Surname} İle Olan Randevunuz İptal Olmuştur.",
             };
+
             meesage.To.Add(new MailAddress(appointment.Doctor!.Email));
 
             using SmtpClient client = new();
@@ -46,8 +46,9 @@ namespace PsychosocialSupportPlatformAPI.Business.Mails
                 From = new MailAddress(_configuration["Mailing:Sender"]!),
                 Subject = "Randevunuz İptal Olmuştur",
                 IsBodyHtml = true,
-                Body = $"{appointment.Day.ToShortDateString()} {appointment.TimeRange}.00 Tarihli {appointment.Doctor.DoctorTitle.Title} {appointment.Doctor.Name} {appointment.Doctor.Surname} İle Olan Randevunuz İptal Edilmiştir.",
+                Body = $"{appointment.Day.ToShortDateString()} {(int)appointment.TimeRange}.00 Tarihli {appointment.Doctor.DoctorTitle.Title} {appointment.Doctor.Name} {appointment.Doctor.Surname} İle Olan Randevunuz İptal Olmuştur.",
             };
+
             meesage.To.Add(new MailAddress(appointment.Patient!.Email));
 
             using SmtpClient client = new();
@@ -71,6 +72,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Mails
                 IsBodyHtml = true,
                 Body = $"Sayın {doctor.DoctorTitle.Title} {doctor.Name} {doctor.Surname} Hesabınız Onaylanmıştır. Sisteme Erişim Sağlayabilirsiniz.",
             };
+
             meesage.To.Add(new MailAddress(doctor.Email));
 
             using SmtpClient client = new();

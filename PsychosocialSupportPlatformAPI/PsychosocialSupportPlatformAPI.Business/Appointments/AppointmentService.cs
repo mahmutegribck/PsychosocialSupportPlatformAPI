@@ -7,7 +7,6 @@ using PsychosocialSupportPlatformAPI.Business.Users.DTOs;
 using PsychosocialSupportPlatformAPI.DataAccess.Appointments;
 using PsychosocialSupportPlatformAPI.DataAccess.AppointmentSchedules;
 using PsychosocialSupportPlatformAPI.Entity.Entities.Appointments;
-using PsychosocialSupportPlatformAPI.Entity.Entities.Users;
 using System.Text;
 using System.Text.Json;
 
@@ -36,6 +35,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Appointments
             _mailService = mailService;
         }
 
+
         public async Task CancelDoctorAppointment(CancelDoctorAppointmentDTO cancelDoctorAppointmentDTO, string doctorId)
         {
             AppointmentSchedule appointmentSchedule = _mapper.Map<AppointmentSchedule>(cancelDoctorAppointmentDTO);
@@ -43,33 +43,42 @@ namespace PsychosocialSupportPlatformAPI.Business.Appointments
 
             AppointmentSchedule? cancelAppointmentSchedule = await _appointmentRepository.GetDoctorAppointment(appointmentSchedule) ?? throw new Exception("İptal Edilmek İstenen Randevu Kaydı Bulunamadı");
 
+            if (cancelAppointmentSchedule.PatientId != null)
+            {
+                await _mailService.SendEmailToPatientForCancelAppointment(cancelAppointmentSchedule);
+            }
             await _appointmentRepository.CancelDoctorAppointment(cancelAppointmentSchedule);
-            await _mailService.SendEmailToPatientForCancelAppointment(cancelAppointmentSchedule);
         }
+
 
         public async Task CancelPatientAppointment(CancelPatientAppointmentDTO cancelPatientAppointmentDTO, string patientId)
         {
             AppointmentSchedule appointmentSchedule = _mapper.Map<AppointmentSchedule>(cancelPatientAppointmentDTO);
             appointmentSchedule.PatientId = patientId;
             AppointmentSchedule? cancelAppointmentSchedule = await _appointmentRepository.GetPatientAppointment(appointmentSchedule) ?? throw new Exception("İptal Edilmek İstenen Randevu Kaydı Bulunamadı");
-            await _appointmentRepository.CancelPatientAppointment(cancelAppointmentSchedule);
+
             await _mailService.SendEmailToDoctorForCancelAppointment(cancelAppointmentSchedule);
+            await _appointmentRepository.CancelPatientAppointment(cancelAppointmentSchedule);
         }
+
 
         public async Task<GetPatientAppointmentDTO?> GetPatientAppointmentById(int patientAppointmentId, string patientId)
         {
             return _mapper.Map<GetPatientAppointmentDTO>(await _appointmentRepository.GetPatientAppointmentById(patientAppointmentId, patientId));
         }
 
+
         public async Task<IEnumerable<object>> GetPatientAppointmentsByPatientId(string patientID)
         {
             return await _appointmentRepository.GetPatientAppointmentsByPatientId(patientID);
         }
 
+
         public async Task<IEnumerable<GetPatientDoctorDto>> GetPatientDoctorsByPatientId(string patientId)
         {
             return _mapper.Map<IEnumerable<GetPatientDoctorDto>>(await _appointmentRepository.GetPatientDoctorsByPatientId(patientId));
         }
+
 
         public async Task<bool> MakeAppointment(string patientId, MakeAppointmentDTO makeAppointmentDTO)
         {
@@ -87,6 +96,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Appointments
 
             return true;
         }
+
 
         private async Task<string> GenerateZoomMeetingUrl()
         {

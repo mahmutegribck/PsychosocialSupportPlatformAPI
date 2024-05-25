@@ -9,11 +9,9 @@ namespace PsychosocialSupportPlatformAPI.Business.Appointments
         Task<IEnumerable<GetPatientDoctorDto>> GetPatientDoctorsByPatientId(string patientId);
         Task<IEnumerable<object>> GetPatientAppointmentsByPatientId(string patientId);
         Task<GetPatientAppointmentDTO?> GetPatientAppointmentById(int patientAppointmentId, string patientId);
-
         Task CancelPatientAppointment(CancelPatientAppointmentDTO cancelPatientAppointmentDTO, string patientId);
         Task<bool> MakeAppointment(string patientId, MakeAppointmentDTO makeAppointmentDTO);
         Task CancelDoctorAppointment(CancelDoctorAppointmentDTO cancelDoctorAppointmentDTO, string doctorId);
-
 
     }
 }

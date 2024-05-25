@@ -27,7 +27,6 @@ namespace PsychosocialSupportPlatformAPI.API.Chat
             };
             if (BagliKullaniciIdler.Contains(receiverID))
             {
-                messageDto.IsSended = true;
                 await Clients.Group(receiverID).SendAsync("messageToUserReceived", senderID, receiverID, message);
             }
             await _messageService.AddMessage(messageDto);
@@ -40,12 +39,6 @@ namespace PsychosocialSupportPlatformAPI.API.Chat
             if (kullaniciId == null)
                 throw new Exception("Kullanıcı bulunamadı.");
 
-            var outboxMessages = await _messageService.GetOutboxMessages(kullaniciId);
-            foreach (var outboxMessage in outboxMessages)
-            {
-                await Clients.Group(outboxMessage.ReceiverId).SendAsync("messageToUserReceived", outboxMessage.SenderId, outboxMessage.ReceiverId, outboxMessage.Text);
-                await _messageService.SetSendedMessage(outboxMessage.MessageId);
-            }
             if (kullaniciId == null)
                 throw new Exception("kullanici adı bulunamadı.");
 

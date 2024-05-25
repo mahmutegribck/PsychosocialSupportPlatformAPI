@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using PsychosocialSupportPlatformAPI.Entity.Entities;
 using PsychosocialSupportPlatformAPI.Entity.Entities.Messages;
 
 namespace PsychosocialSupportPlatformAPI.DataAccess.Messages
@@ -14,16 +13,6 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Messages
 
         public async Task AddMessage(Message message)
         {
-            if (!message.IsSended)
-            {
-                var outboxMessage = new MessageOutbox
-                {
-                    SenderId = message.SenderId,
-                    ReceiverId = message.ReceiverId,
-                    Message = message
-                };
-                await _context.MessageOutboxes.AddAsync(outboxMessage);
-            }
             await _context.Messages.AddAsync(message);
             await _context.SaveChangesAsync();
         }
@@ -65,12 +54,6 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Messages
             return deneme;
         }
 
-        public async Task<List<MessageOutbox>> GetOutboxMessages(string receiverId)
-        {
-            var outboxMessages = await _context.MessageOutboxes.Include(m => m.Message).Where(m => m.ReceiverId == receiverId).ToListAsync();
-            return outboxMessages;
-        }
-
         public async Task<bool> MessageChangeStatus(string senderId, string receiverId)
         {
             var userMessage = await _context.Messages.Where(m => m.SenderId == senderId && m.ReceiverId == receiverId && m.Status == false).ToListAsync();
@@ -83,15 +66,6 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Messages
             }
             await _context.SaveChangesAsync();
             return true;
-        }
-
-        public async Task SetSendedMessage(int messageId)
-        {
-            var message = await _context.Messages.FindAsync(messageId);
-            var messageOutbox = await _context.MessageOutboxes.Where(o => o.MessageId == messageId).FirstAsync();
-            message.IsSended = true;
-            _context.MessageOutboxes.Remove(messageOutbox);
-            await _context.SaveChangesAsync();
         }
     }
 }
