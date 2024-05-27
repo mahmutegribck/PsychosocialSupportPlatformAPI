@@ -176,7 +176,7 @@ namespace PsychosocialSupportPlatformAPI.Business.DoctorSchedules
                                 FourteenToFifteen = dto.FourteenToFifteen,
                                 FifteenToSixteen = dto.FifteenToSixteen,
                                 SixteenToSeventeen = dto.SixteenToSeventeen,
-                                DoctorUserName = dto.DoctorUserName,
+                                DoctorId = dto.DoctorId,
                                 DoctorName = dto.DoctorName,
                                 DoctorSurname = dto.DoctorSurname,
                                 DoctorTitle = dto.DoctorTitle,

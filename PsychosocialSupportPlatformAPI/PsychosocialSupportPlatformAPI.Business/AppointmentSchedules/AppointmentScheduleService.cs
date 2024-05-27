@@ -435,9 +435,10 @@ namespace PsychosocialSupportPlatformAPI.Business.AppointmentSchedules
 
         }
 
-        public async Task<GetDoctorAppointmentDTO> GetDoctorAppointmentByDateAndTimeRange(DateTime day, TimeRange timeRange, string doctorId, CancellationToken cancellationToken)
+        public async Task<GetDoctorAppointmentDTO> GetDoctorAppointmentByDateAndTimeRange(GetDoctorAppointmentByDateAndTimeRangeDTO getDoctorAppointmentByDateAndTimeRangeDTO, CancellationToken cancellationToken)
         {
-            AppointmentSchedule? doctorAppointment = await _appointmentScheduleRepository.GetDoctorAppointmentByDateAndTimeRange(day, timeRange, doctorId, cancellationToken) ?? throw new Exception("Randevu Bulunamadı");
+            AppointmentSchedule appointmentSchedule = _mapper.Map<AppointmentSchedule>(getDoctorAppointmentByDateAndTimeRangeDTO);
+            AppointmentSchedule? doctorAppointment = await _appointmentScheduleRepository.GetDoctorAppointmentByDateAndTimeRange(appointmentSchedule, cancellationToken) ?? throw new Exception("Randevu Bulunamadı");
 
             return _mapper.Map<GetDoctorAppointmentDTO>(doctorAppointment);
         }

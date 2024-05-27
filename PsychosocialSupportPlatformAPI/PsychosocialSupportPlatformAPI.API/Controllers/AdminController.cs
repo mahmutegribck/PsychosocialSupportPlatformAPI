@@ -97,12 +97,12 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> GetDoctorAppointmentByDateAndTimeRange([FromQuery] string doctorUserName, [FromQuery] string date, [FromQuery] TimeRange timeRange, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetDoctorAppointmentByDateAndTimeRange(GetDoctorAppointmentByDateAndTimeRangeDTO getDoctorAppointmentByDateAndTimeRangeDTO, CancellationToken cancellationToken)
         {
             string? currentUserID = User.Identity?.Name;
             if (currentUserID == null) return Unauthorized();
 
-            GetDoctorAppointmentDTO? allDoctorAppointments = await _appointmentScheduleService.GetDoctorAppointmentByDateAndTimeRange(DateTime.Parse(date), timeRange, doctorUserName, cancellationToken);
+            GetDoctorAppointmentDTO? allDoctorAppointments = await _appointmentScheduleService.GetDoctorAppointmentByDateAndTimeRange(getDoctorAppointmentByDateAndTimeRangeDTO, cancellationToken);
 
             if (allDoctorAppointments == null) return NotFound();
 

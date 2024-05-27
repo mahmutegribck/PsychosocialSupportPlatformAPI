@@ -13,7 +13,7 @@
         public bool FourteenToFifteen { get; set; }
         public bool FifteenToSixteen { get; set; }
         public bool SixteenToSeventeen { get; set; }
-        public required string DoctorUserName { get; set; }
+        public required string DoctorId { get; set; }
         public required string DoctorName { get; set; }
         public required string DoctorSurname { get; set; }
         public required string DoctorTitle { get; set; }

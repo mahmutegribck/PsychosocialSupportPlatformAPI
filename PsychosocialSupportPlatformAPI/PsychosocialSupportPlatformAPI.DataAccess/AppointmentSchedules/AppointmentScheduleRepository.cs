@@ -135,9 +135,9 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.AppointmentSchedules
         {
             return await _context.AppointmentSchedules
                 .AsNoTracking()
-                .Where(a => 
-                    a.DoctorId == doctorId && 
-                    a.Day == day && 
+                .Where(a =>
+                    a.DoctorId == doctorId &&
+                    a.Day == day &&
                     a.TimeRange == timeRange)
                 .FirstOrDefaultAsync();
         }
@@ -148,8 +148,8 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.AppointmentSchedules
             return await _context.AppointmentSchedules
                 .AsNoTracking()
                 .Include(a => a.Patient)
-                .Where(a => 
-                    a.DoctorId == doctorId && 
+                .Where(a =>
+                    a.DoctorId == doctorId &&
                     a.PatientId != null)
                 .ToListAsync();
         }
@@ -160,8 +160,8 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.AppointmentSchedules
             return await _context.AppointmentSchedules
                 .AsNoTracking()
                 .Include(a => a.Patient)
-                .Where(a => 
-                    a.DoctorId == doctorId && 
+                .Where(a =>
+                    a.DoctorId == doctorId &&
                     a.PatientId == patientId)
                 .ToListAsync();
         }
@@ -187,23 +187,23 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.AppointmentSchedules
             return await _context.AppointmentSchedules
                 .AsNoTracking()
                 .Include(a => a.Patient)
-                .Where(a => 
-                    a.Day == day && 
-                    a.DoctorId == doctorId && 
+                .Where(a =>
+                    a.Day == day &&
+                    a.DoctorId == doctorId &&
                     a.PatientId != null)
                 .ToListAsync();
         }
 
 
-        public async Task<AppointmentSchedule?> GetDoctorAppointmentByDateAndTimeRange(DateTime day, TimeRange timeRange, string doctorId, CancellationToken cancellationToken)
+        public async Task<AppointmentSchedule?> GetDoctorAppointmentByDateAndTimeRange(AppointmentSchedule appointmentSchedule, CancellationToken cancellationToken)
         {
             return await _context.AppointmentSchedules
                 .AsNoTracking()
                 .Include(a => a.Patient)
-                .Where(a => 
-                    a.Day == day && 
-                    a.TimeRange == timeRange && 
-                    a.DoctorId == doctorId && 
+                .Where(a =>
+                    a.Day == appointmentSchedule.Day &&
+                    a.TimeRange == appointmentSchedule.TimeRange &&
+                    a.DoctorId == appointmentSchedule.DoctorId &&
                     a.PatientId != null)
                 .FirstOrDefaultAsync(cancellationToken);
         }
