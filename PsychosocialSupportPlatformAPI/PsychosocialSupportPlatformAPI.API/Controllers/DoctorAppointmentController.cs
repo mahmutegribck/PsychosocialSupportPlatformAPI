@@ -89,6 +89,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
             return Ok(allPatients);
         }
 
+        public async Task<IActionResult> CreateAppointmentForPatient([FromBody] CreateAppointmentForPatientDTO createAppointmentForPatientDTO)
 
         [HttpPatch]
         public async Task<IActionResult> CancelDoctorAppointment([FromBody] CancelDoctorAppointmentDTO cancelDoctorAppointmentDTO)
