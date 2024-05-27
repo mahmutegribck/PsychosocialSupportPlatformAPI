@@ -10,25 +10,21 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Videos
         {
             _context = context;
         }
-        public async Task AddVideo(Video video)
+        public async Task AddVideo(Video video, CancellationToken cancellationToken)
         {
-            await _context.Videos.AddAsync(video);
-            await _context.SaveChangesAsync();
+            await _context.Videos.AddAsync(video, cancellationToken);
+            await _context.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task DeleteVideo(int videoID)
+        public async Task DeleteVideo(int videoID, CancellationToken cancellationToken)
         {
+            var deletedVideo = await _context.Videos
+                .Where(v => v.Id == videoID)
+                .FirstOrDefaultAsync(cancellationToken) ?? throw new Exception("Video Bulunamadı");
 
-            var deletedVideo = await _context.Videos.Where(v => v.Id == videoID).FirstOrDefaultAsync();
-            if (deletedVideo == null)
-            {
-                throw new Exception("Video Bulunamadı");
-            }
             File.Delete(deletedVideo.Path);
             _context.Videos.Remove(deletedVideo);
-            await _context.SaveChangesAsync();
-
-
+            await _context.SaveChangesAsync(cancellationToken);
         }
 
         public async Task<List<Video>> GetAllVideos()
@@ -41,15 +37,15 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Videos
             return await _context.Videos.Where(v => v.VideoSlug == videoSlug).FirstOrDefaultAsync();
         }
 
-        public async Task UpdateVideo(Video video)
+        public async Task UpdateVideo(Video video, CancellationToken cancellationToken)
         {
-            var updatedVideo = await _context.Videos.FindAsync(video.Id);
+            var updatedVideo = await _context.Videos.Where(v => v.Id == video.Id).FirstOrDefaultAsync(cancellationToken);
             if (updatedVideo != null)
             {
                 updatedVideo.Title = video.Title;
                 updatedVideo.Description = video.Description;
             }
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
         }
     }
 }

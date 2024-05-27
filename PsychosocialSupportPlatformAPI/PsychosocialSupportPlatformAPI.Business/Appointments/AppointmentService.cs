@@ -68,16 +68,19 @@ namespace PsychosocialSupportPlatformAPI.Business.Appointments
 
         public async Task CreateAppointmentForPatient(string doctorId, CreateAppointmentForPatientDTO createAppointmentForPatientDTO)
         {
-            AppointmentSchedule? appoitment = _mapper.Map<AppointmentSchedule>(createAppointmentForPatientDTO);
-            appoitment.DoctorId = doctorId;
-
             AppointmentSchedule? doctorAppoitment = await _appointmentScheduleRepository.GetAppointmentScheduleByDayAndTimeRange(doctorId, DateTime.Parse(createAppointmentForPatientDTO.Day), createAppointmentForPatientDTO.TimeRange);
 
             if (doctorAppoitment == null)
             {
-                await _appointmentScheduleRepository.AddAppointmentSchedule(appoitment);
+                AppointmentSchedule appointmentSchedule = new()
+                {
+                    DoctorId = doctorId,
+                    Day = DateTime.Parse(createAppointmentForPatientDTO.Day),
+                    TimeRange = createAppointmentForPatientDTO.TimeRange
+                };
+                await _appointmentScheduleRepository.AddAppointmentSchedule(appointmentSchedule);
 
-                doctorAppoitment = appoitment;
+                doctorAppoitment = appointmentSchedule;
             }
             if (doctorAppoitment!.Status == true)
                 throw new Exception("Başka Randevu Kaydınız Bulunmaktadır");

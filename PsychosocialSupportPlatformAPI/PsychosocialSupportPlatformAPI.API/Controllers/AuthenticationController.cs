@@ -24,11 +24,11 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> RegisterForDoctor([FromBody] RegisterDoctorDto model)
+        public async Task<IActionResult> RegisterForDoctor([FromBody] RegisterDoctorDto model, CancellationToken cancellationToken)
         {
             if (ModelState.IsValid)
             {
-                RegisterResponse result = await _authService.RegisterForDoctor(model);
+                RegisterResponse result = await _authService.RegisterForDoctor(model, cancellationToken);
                 if (result.IsSuccess)
                 {
                     return Ok(result);

@@ -195,7 +195,7 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.AppointmentSchedules
         }
 
 
-        public async Task<AppointmentSchedule?> GetDoctorAppointmentByDateAndTimeRange(DateTime day, TimeRange timeRange, string doctorId)
+        public async Task<AppointmentSchedule?> GetDoctorAppointmentByDateAndTimeRange(DateTime day, TimeRange timeRange, string doctorId, CancellationToken cancellationToken)
         {
             return await _context.AppointmentSchedules
                 .AsNoTracking()
@@ -205,7 +205,7 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.AppointmentSchedules
                     a.TimeRange == timeRange && 
                     a.DoctorId == doctorId && 
                     a.PatientId != null)
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync(cancellationToken);
         }
     }
 }

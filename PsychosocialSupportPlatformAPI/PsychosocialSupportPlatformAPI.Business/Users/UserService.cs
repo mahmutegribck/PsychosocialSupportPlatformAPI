@@ -23,9 +23,9 @@ namespace PsychosocialSupportPlatformAPI.Business.Users
 
 
         public UserService(
-            IUserRepository userRepository, 
-            IMapper mapper, 
-            UserManager<ApplicationUser> userManager, 
+            IUserRepository userRepository,
+            IMapper mapper,
+            UserManager<ApplicationUser> userManager,
             IConfiguration config,
             IMailService mailService)
         {
@@ -55,9 +55,9 @@ namespace PsychosocialSupportPlatformAPI.Business.Users
             }
         }
 
-        public async Task<IdentityResult> DeleteUser(string id)
+        public async Task<IdentityResult> DeleteUser(string id, CancellationToken cancellationToken)
         {
-            return await _userRepository.DeleteUser(id);
+            return await _userRepository.DeleteUser(id, cancellationToken);
         }
 
         public async Task<IEnumerable<GetPatientDto>> GetAllPatientsByDoctorId(string doctorId)
@@ -65,9 +65,9 @@ namespace PsychosocialSupportPlatformAPI.Business.Users
             return _mapper.Map<IEnumerable<GetPatientDto>>(await _userRepository.GetAllPatientsByDoctorId(doctorId));
         }
 
-        public async Task<object> GetUserByID(string userId)
+        public async Task<object> GetUserByID(string userId, CancellationToken cancellationToken)
         {
-            var user = await _userRepository.GetUser(userId);
+            var user = await _userRepository.GetUser(userId, cancellationToken);
 
             if (await _userManager.IsInRoleAsync(user, _config["Roles:Patient"]))
             {
@@ -82,9 +82,9 @@ namespace PsychosocialSupportPlatformAPI.Business.Users
             return _mapper.Map<GetAdminDto>(user);
         }
 
-        public async Task<object> GetUserBySlug(string userSlug)
+        public async Task<object> GetUserBySlug(string userSlug, CancellationToken cancellationToken)
         {
-            ApplicationUser? user = await _userRepository.GetUserBySlug(userSlug) ?? throw new Exception("Kullanıcı Bulunamadı");
+            ApplicationUser? user = await _userRepository.GetUserBySlug(userSlug, cancellationToken) ?? throw new Exception("Kullanıcı Bulunamadı");
 
             if (await _userManager.IsInRoleAsync(user, _config["Roles:Patient"]))
             {
@@ -99,9 +99,9 @@ namespace PsychosocialSupportPlatformAPI.Business.Users
             return _mapper.Map<GetAdminDto>(user);
         }
 
-        public async Task<IdentityResult> UpdateDoctor(string currentUserID, UpdateDoctorDTO updateDoctorDTO)
+        public async Task<IdentityResult> UpdateDoctor(string currentUserID, UpdateDoctorDTO updateDoctorDTO, CancellationToken cancellationToken)
         {
-            if (await _userRepository.GetDoctorTitleById(updateDoctorDTO.DoctorTitleId) == null) throw new Exception("Ünvan Bulunamadı");
+            if (await _userRepository.GetDoctorTitleById(updateDoctorDTO.DoctorTitleId, cancellationToken) == null) throw new Exception("Ünvan Bulunamadı");
 
             return await _userRepository.UpdateDoctor(currentUserID, _mapper.Map<Doctor>(updateDoctorDTO));
         }
@@ -153,42 +153,51 @@ namespace PsychosocialSupportPlatformAPI.Business.Users
             await _userManager.UpdateAsync(user);
         }
 
-        public async Task AddDoctorTitle(AddDoctorTitleDTO addDoctorTitleDTO)
+        public async Task AddDoctorTitle(AddDoctorTitleDTO addDoctorTitleDTO, CancellationToken cancellationToken)
         {
             DoctorTitle doctorTitle = _mapper.Map<DoctorTitle>(addDoctorTitleDTO) ?? throw new Exception();
-            if (await _userRepository.CheckDoctorTitle(doctorTitle.Title)) throw new Exception("Ünvan Kaydı Mevcut");
-            await _userRepository.AddDoctorTitle(doctorTitle);
+            if (await _userRepository.CheckDoctorTitle(doctorTitle.Title, cancellationToken)) throw new Exception("Ünvan Kaydı Mevcut");
+            await _userRepository.AddDoctorTitle(doctorTitle, cancellationToken);
         }
 
-        public async Task DeleteDoctorTitle(int doctorTitleId)
+        public async Task DeleteDoctorTitle(int doctorTitleId, CancellationToken cancellationToken)
         {
-            DoctorTitle? doctorTitle = await _userRepository.GetDoctorTitleById(doctorTitleId) ?? throw new Exception("Ünvan Bulunamadı");
+            DoctorTitle? doctorTitle = await _userRepository.GetDoctorTitleById(doctorTitleId, cancellationToken) ?? throw new Exception("Ünvan Bulunamadı");
 
-            await _userRepository.DeleteDoctorTitle(doctorTitle);
+            await _userRepository.DeleteDoctorTitle(doctorTitle, cancellationToken);
         }
 
-        public async Task<GetDoctorTitleDTO?> GetDoctorTitleById(int doctorTitleId)
+        public async Task<GetDoctorTitleDTO?> GetDoctorTitleById(int doctorTitleId, CancellationToken cancellationToken)
         {
-            return _mapper.Map<GetDoctorTitleDTO>(await _userRepository.GetDoctorTitleById(doctorTitleId));
+            return _mapper.Map<GetDoctorTitleDTO>(await _userRepository.GetDoctorTitleById(doctorTitleId, cancellationToken));
         }
 
-        public async Task<IEnumerable<GetDoctorTitleDTO>> GetAllDoctorTitles()
+        public async Task<IEnumerable<GetDoctorTitleDTO>> GetAllDoctorTitles(CancellationToken cancellationToken)
         {
-            return _mapper.Map<IEnumerable<GetDoctorTitleDTO>>(await _userRepository.GetAllDoctorTitles());
+            return _mapper.Map<IEnumerable<GetDoctorTitleDTO>>(await _userRepository.GetAllDoctorTitles(cancellationToken));
         }
 
-        public async Task<IEnumerable<GetDoctorDto>> GetAllUnConfirmedDoctor()
+        public async Task<IEnumerable<GetDoctorDto>> GetAllUnConfirmedDoctor(CancellationToken cancellationToken)
         {
-            return _mapper.Map<IEnumerable<GetDoctorDto>>(await _userRepository.GetAllUnConfirmedDoctor());
+            return _mapper.Map<IEnumerable<GetDoctorDto>>(await _userRepository.GetAllUnConfirmedDoctor(cancellationToken));
         }
 
-        public async Task ConfirmDoctor(string doctorUserName)
+        public async Task ConfirmDoctor(string doctorUserName, CancellationToken cancellationToken)
         {
-            Doctor doctor = _mapper.Map<Doctor>(await _userRepository.GetUserBySlug(doctorUserName)) ?? throw new Exception("Doktor Bulunamadı");
+            Doctor doctor = _mapper.Map<Doctor>(await _userRepository.GetUserBySlug(doctorUserName, cancellationToken)) ?? throw new Exception("Doktor Bulunamadı");
 
-            await _userRepository.ConfirmDoctor(doctor);
+            await _userRepository.ConfirmDoctor(doctor, cancellationToken);
 
             await _mailService.SendEmailToDoctorForConfirmationAccount(doctor);
+        }
+
+        public async Task<IEnumerable<GetPatientDto>> GetAllPatients(CancellationToken cancellationToken)
+        {
+            return _mapper.Map<IEnumerable<GetPatientDto>>(await _userRepository.GetAllPatients(cancellationToken));
+        }
+        public async Task<IEnumerable<GetDoctorDto>> GetAllDoctors(CancellationToken cancellationToken)
+        {
+            return _mapper.Map<IEnumerable<GetDoctorDto>>(await _userRepository.GetAllDoctors(cancellationToken));
         }
     }
 }

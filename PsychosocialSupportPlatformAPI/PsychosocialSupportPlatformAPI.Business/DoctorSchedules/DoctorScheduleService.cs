@@ -14,8 +14,8 @@ namespace PsychosocialSupportPlatformAPI.Business.DoctorSchedules
         private readonly IMapper _mapper;
 
         public DoctorScheduleService(
-            IDoctorScheduleRepository doctorScheduleRepository, 
-            IAppointmentScheduleService appointmentScheduleService, 
+            IDoctorScheduleRepository doctorScheduleRepository,
+            IAppointmentScheduleService appointmentScheduleService,
             IMapper mapper)
         {
             _doctorScheduleRepository = doctorScheduleRepository;
@@ -148,9 +148,9 @@ namespace PsychosocialSupportPlatformAPI.Business.DoctorSchedules
         }
 
 
-        public async Task<IEnumerable<object>> GetAllDoctorSchedulesByDate(DateTime day)
+        public async Task<IEnumerable<object>> GetAllDoctorSchedulesByDate(DateTime day, CancellationToken cancellationToken)
         {
-            IEnumerable<GetDoctorScheduleByAdminDTO?> allDoctorSchedules = _mapper.Map<IEnumerable<GetDoctorScheduleByAdminDTO?>>(await _doctorScheduleRepository.GetAllDoctorSchedulesByDate(day));
+            IEnumerable<GetDoctorScheduleByAdminDTO?> allDoctorSchedules = _mapper.Map<IEnumerable<GetDoctorScheduleByAdminDTO?>>(await _doctorScheduleRepository.GetAllDoctorSchedulesByDate(day, cancellationToken));
 
             if (!allDoctorSchedules.Any()) throw new Exception();
 
@@ -165,7 +165,7 @@ namespace PsychosocialSupportPlatformAPI.Business.DoctorSchedules
                         DoctorSchedules = group.Select(dto =>
                             new GetDoctorScheduleByAdminDTO
                             {
-                                Id = dto.Id,
+                                Id = dto!.Id,
                                 Day = dto.Day,
                                 EightToNine = dto.EightToNine,
                                 NineToTen = dto.NineToTen,
@@ -176,6 +176,7 @@ namespace PsychosocialSupportPlatformAPI.Business.DoctorSchedules
                                 FourteenToFifteen = dto.FourteenToFifteen,
                                 FifteenToSixteen = dto.FifteenToSixteen,
                                 SixteenToSeventeen = dto.SixteenToSeventeen,
+                                DoctorUserName = dto.DoctorUserName,
                                 DoctorName = dto.DoctorName,
                                 DoctorSurname = dto.DoctorSurname,
                                 DoctorTitle = dto.DoctorTitle,

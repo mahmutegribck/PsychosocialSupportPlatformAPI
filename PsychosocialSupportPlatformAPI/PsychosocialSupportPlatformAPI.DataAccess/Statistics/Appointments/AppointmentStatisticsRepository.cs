@@ -35,24 +35,37 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Statistics.Appointments
             return await _context.AppointmentStatistics.AsNoTracking().Where(s => s.Id == appointmentStatisticsId && s.PatientId == patientId && s.DoctorId == doctorId && s.AppointmentScheduleId == appointmentScheduleId).FirstOrDefaultAsync();
         }
 
-        public async Task<IEnumerable<object>> GetAllPatientAppointmentStatisticsByDoctorUserName(string doctorUserName)
+        public async Task<IEnumerable<object>> GetAllPatientAppointmentStatisticsByDoctorUserName(string doctorUserName, CancellationToken cancellationToken)
         {
-            var statistics = await _context.AppointmentStatistics.Include(s => s.Doctor).Include(s => s.Patient).Include(s => s.AppointmentSchedule).Where(s => s.Doctor.UserName == doctorUserName).AsNoTracking().ToListAsync();
+            var statistics = await _context.AppointmentStatistics
+                .AsNoTracking()
+                .Include(s => s.Doctor)
+                .Include(s => s.Patient)
+                .Include(s => s.AppointmentSchedule)
+                .Where(s => s.Doctor.UserName == doctorUserName)
+                .ToListAsync(cancellationToken);
 
-            var groupedStatistics = statistics.GroupBy(s => new { s.Patient.Id, s.Patient.Name, s.Patient.Surname }).Select(group => new
-            {
-                PatientId = group.Key.Id,
-                PatientName = group.Key.Name,
-                PatientSurname = group.Key.Surname,
-                Statistics = group.Select(s => new
+            var groupedStatistics = statistics
+                .GroupBy(s => new
                 {
-                    AppointmentStatisticId = s.Id,
-                    AppointmentStartTime = s.AppointmentStartTime,
-                    AppointmentEndTime = s.AppointmentEndTime,
-                    AppointmentComment = s.AppointmentComment,
-                    AppointmentDay = s.AppointmentSchedule.Day.ToShortDateString()
+                    s.Patient.Id,
+                    s.Patient.Name,
+                    s.Patient.Surname
                 })
-            });
+                .Select(group => new
+                {
+                    PatientId = group.Key.Id,
+                    PatientName = group.Key.Name,
+                    PatientSurname = group.Key.Surname,
+                    Statistics = group.Select(s => new
+                    {
+                        AppointmentStatisticId = s.Id,
+                        AppointmentStartTime = s.AppointmentStartTime,
+                        AppointmentEndTime = s.AppointmentEndTime,
+                        AppointmentComment = s.AppointmentComment,
+                        AppointmentDay = s.AppointmentSchedule.Day.ToShortDateString()
+                    })
+                });
 
             return groupedStatistics;
         }
@@ -75,35 +88,39 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Statistics.Appointments
             }).AsNoTracking().ToListAsync();
         }
 
-        public async Task<IEnumerable<object>> GetAllPatientAppointmentStatisticsByPatientUserName(string patienUserName)
+        public async Task<IEnumerable<object>> GetAllPatientAppointmentStatisticsByPatientUserName(string patienUserName, CancellationToken cancellationToken)
         {
-            return await _context.Patients.Include(p => p.AppointmentStatistics).Where(p => p.UserName == patienUserName).Select(p => new
-            {
-                PatientName = p.Name,
-                PatientSurname = p.Surname,
-                PatientProfileImageUrl = p.ProfileImageUrl,
-                AppointmentStatistics = p.AppointmentStatistics.Select(s => new
+            return await _context.Patients
+                .AsNoTracking()
+                .Include(p => p.AppointmentStatistics)
+                .Where(p => p.UserName == patienUserName)
+                .Select(p => new
                 {
-                    DoctorName = s.Doctor.Name,
-                    DoctorSurname = s.Doctor.Surname,
-                    DoctorProfileImageUrl = s.Doctor.ProfileImageUrl,
-                    DoctorTitle = s.Doctor.DoctorTitle.Title,
-                    AppointmentDay = s.AppointmentSchedule.Day.ToShortDateString(),
-                    AppointmentStartTime = s.AppointmentStartTime,
-                    AppointmentEndTime = s.AppointmentEndTime,
-                    AppointmentComment = s.AppointmentComment
-                })
-            }).ToListAsync();
+                    PatientName = p.Name,
+                    PatientSurname = p.Surname,
+                    PatientProfileImageUrl = p.ProfileImageUrl,
+                    AppointmentStatistics = p.AppointmentStatistics.Select(s => new
+                    {
+                        DoctorName = s.Doctor.Name,
+                        DoctorSurname = s.Doctor.Surname,
+                        DoctorProfileImageUrl = s.Doctor.ProfileImageUrl,
+                        DoctorTitle = s.Doctor.DoctorTitle.Title,
+                        AppointmentDay = s.AppointmentSchedule.Day.ToShortDateString(),
+                        AppointmentStartTime = s.AppointmentStartTime,
+                        AppointmentEndTime = s.AppointmentEndTime,
+                        AppointmentComment = s.AppointmentComment
+                    })
+                }).ToListAsync(cancellationToken);
         }
 
-        public async Task<IEnumerable<object>> GetAllPatientAppointmentStatistics()
+        public async Task<IEnumerable<object>> GetAllPatientAppointmentStatistics(CancellationToken cancellationToken)
         {
             var statistics = await _context.AppointmentStatistics
+                .AsNoTracking()
                 .Include(s => s.Patient)
                 .Include(s => s.Doctor)
                 .Include(s => s.AppointmentSchedule)
-                .AsNoTracking()
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             var groupedByDoctor = statistics
                 .GroupBy(s => s.DoctorId)
@@ -139,7 +156,6 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Statistics.Appointments
                         Patients = patientsGroupedByDoctor
                     };
                 }).ToArray();
-
 
             return groupedByDoctor;
         }

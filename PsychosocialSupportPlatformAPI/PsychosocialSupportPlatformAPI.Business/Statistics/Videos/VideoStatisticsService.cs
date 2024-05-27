@@ -39,9 +39,9 @@ namespace PsychosocialSupportPlatformAPI.Business.Statistics.Videos
             await _videoStatisticsRepository.DeleteVideoStatistics(statisticsID);
         }
 
-        public async Task<IEnumerable<object>> GetAllVideoStatistics()
+        public async Task<IEnumerable<object>> GetAllVideoStatistics(CancellationToken cancellationToken)
         {
-            return await _videoStatisticsRepository.GetAllVideoStatistics();
+            return await _videoStatisticsRepository.GetAllVideoStatistics(cancellationToken);
         }
 
         public async Task<IEnumerable<object>> GetAllVideoStatisticsByPatientId(string patientId)
@@ -49,9 +49,9 @@ namespace PsychosocialSupportPlatformAPI.Business.Statistics.Videos
             return await _videoStatisticsRepository.GetAllVideoStatisticsByPatientId(patientId);
         }
 
-        public async Task<IEnumerable<object>> GetAllVideoStatisticsByPatientUserName(string patientUserName)
+        public async Task<IEnumerable<object>> GetAllVideoStatisticsByPatientUserName(string patientUserName, CancellationToken cancellationToken)
         {
-            return await _videoStatisticsRepository.GetAllVideoStatisticsByPatientUserName(patientUserName);
+            return await _videoStatisticsRepository.GetAllVideoStatisticsByPatientUserName(patientUserName, cancellationToken);
         }
 
         public async Task<IEnumerable<object>> GetAllVideoStatisticsByPatientUserName(string patientUserName, string doctorId)

@@ -44,9 +44,9 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        public async Task<IActionResult> GetAllDoctorTitles()
+        public async Task<IActionResult> GetAllDoctorTitles(CancellationToken cancellationToken)
         {
-            IEnumerable<GetDoctorTitleDTO> doctorTitles = await _userService.GetAllDoctorTitles();
+            IEnumerable<GetDoctorTitleDTO> doctorTitles = await _userService.GetAllDoctorTitles(cancellationToken);
             if (!doctorTitles.Any()) return NotFound();
             return Ok(doctorTitles);
         }
@@ -66,13 +66,13 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> GetCurrentUser()
+        public async Task<IActionResult> GetCurrentUser(CancellationToken cancellationToken)
         {
             var currentUserID = User.Identity?.Name;
 
             if (currentUserID != null)
             {
-                var user = await _userService.GetUserByID(currentUserID);
+                var user = await _userService.GetUserByID(currentUserID, cancellationToken);
 
                 if (user != null)
                 {
@@ -83,11 +83,11 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetUserById([FromQuery] string userID)
+        public async Task<IActionResult> GetUserById([FromQuery] string userID, CancellationToken cancellationToken)
         {
             if (userID != null)
             {
-                var user = await _userService.GetUserByID(userID);
+                var user = await _userService.GetUserByID(userID, cancellationToken);
 
                 if (user != null)
                 {
@@ -99,11 +99,11 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> GetUserBySlug([FromQuery] string userSlug)
+        public async Task<IActionResult> GetUserBySlug([FromQuery] string userSlug, CancellationToken cancellationToken)
         {
             if (userSlug != null)
             {
-                var user = await _userService.GetUserBySlug(userSlug);
+                var user = await _userService.GetUserBySlug(userSlug, cancellationToken);
 
                 if (user != null)
                 {
@@ -116,13 +116,13 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
 
         [HttpDelete]
         [Authorize(Roles = "Doctor,Patient")]
-        public async Task<IActionResult> DeleteCurrentUser()
+        public async Task<IActionResult> DeleteCurrentUser(CancellationToken cancellationToken)
         {
             var currentUserID = User.Identity?.Name;
 
             if (currentUserID != null)
             {
-                var result = await _userService.DeleteUser(currentUserID);
+                var result = await _userService.DeleteUser(currentUserID, cancellationToken);
                 if (result.Succeeded)
                 {
                     return Ok();
@@ -135,12 +135,12 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
 
         [HttpPut]
         [Authorize(Roles = "Doctor")]
-        public async Task<IActionResult> UpdateDoctor([FromBody] UpdateDoctorDTO updateDoctorDTO)
+        public async Task<IActionResult> UpdateDoctor([FromBody] UpdateDoctorDTO updateDoctorDTO, CancellationToken cancellationToken)
         {
             var currentUserID = User.Identity?.Name;
             if (currentUserID == null) return Unauthorized();
 
-            IdentityResult result = await _userService.UpdateDoctor(currentUserID, updateDoctorDTO);
+            IdentityResult result = await _userService.UpdateDoctor(currentUserID, updateDoctorDTO, cancellationToken);
             if (result.Succeeded)
             {
                 return Ok();

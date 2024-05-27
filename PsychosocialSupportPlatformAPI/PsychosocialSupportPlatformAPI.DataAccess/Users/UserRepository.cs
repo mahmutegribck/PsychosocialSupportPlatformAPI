@@ -12,9 +12,9 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Users
         private readonly UserManager<Patient> _patientManager;
 
         public UserRepository(
-            UserManager<ApplicationUser> userManager, 
-            PsychosocialSupportPlatformDBContext context, 
-            UserManager<Doctor> doctorManager, 
+            UserManager<ApplicationUser> userManager,
+            PsychosocialSupportPlatformDBContext context,
+            UserManager<Doctor> doctorManager,
             UserManager<Patient> patientManager)
         {
             _userManager = userManager;
@@ -24,36 +24,36 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Users
         }
 
 
-        public async Task AddDoctorTitle(DoctorTitle doctorTitle)
+        public async Task AddDoctorTitle(DoctorTitle doctorTitle, CancellationToken cancellationToken)
         {
-            await _context.DoctorTitles.AddAsync(doctorTitle);
-            await _context.SaveChangesAsync();
+            await _context.DoctorTitles.AddAsync(doctorTitle, cancellationToken);
+            await _context.SaveChangesAsync(cancellationToken);
         }
 
 
-        public async Task DeleteDoctorTitle(DoctorTitle doctorTitle)
+        public async Task DeleteDoctorTitle(DoctorTitle doctorTitle, CancellationToken cancellationToken)
         {
             _context.DoctorTitles.Remove(doctorTitle);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
         }
 
 
-        public async Task<bool> CheckDoctorTitle(string doctorTitle)
+        public async Task<bool> CheckDoctorTitle(string doctorTitle, CancellationToken cancellationTokenc)
         {
-            return await _context.DoctorTitles.AnyAsync(t => t.Title == doctorTitle);
+            return await _context.DoctorTitles.AnyAsync(t => t.Title == doctorTitle, cancellationTokenc);
 
         }
 
 
-        public async Task<DoctorTitle?> GetDoctorTitleById(int doctorTitleId)
+        public async Task<DoctorTitle?> GetDoctorTitleById(int doctorTitleId, CancellationToken cancellationToken)
         {
-            return await _context.DoctorTitles.AsNoTracking().FirstOrDefaultAsync(t => t.Id == doctorTitleId);
+            return await _context.DoctorTitles.AsNoTracking().FirstOrDefaultAsync(t => t.Id == doctorTitleId, cancellationToken);
         }
 
 
-        public async Task<IdentityResult> DeleteUser(string id)
+        public async Task<IdentityResult> DeleteUser(string id, CancellationToken cancellationToken)
         {
-            var deletUser = await GetUser(id);
+            var deletUser = await GetUser(id, cancellationToken);
             if (deletUser == null)
             {
                 return IdentityResult.Failed(new IdentityError { Description = "User not found" });
@@ -62,13 +62,13 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Users
             var userMessages = await _context.Messages
                 .AsNoTracking()
                 .Where(m => m.SenderId == id || m.ReceiverId == id)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             _context.Messages.RemoveRange(userMessages);
 
 
             IdentityResult result = await _userManager.DeleteAsync(deletUser);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
             return result;
         }
 
@@ -84,18 +84,21 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Users
         }
 
 
-        public async Task<ApplicationUser> GetUser(string id)
+        public async Task<ApplicationUser?> GetUser(string id, CancellationToken cancellationToken)
         {
-            return await _userManager.FindByIdAsync(id);
+            return await _context.Users
+                .AsNoTracking()
+                .Where(a => a.Id == id)
+                .FirstOrDefaultAsync(cancellationToken);
         }
 
 
-        public async Task<ApplicationUser?> GetUserBySlug(string userSlug)
+        public async Task<ApplicationUser?> GetUserBySlug(string userSlug, CancellationToken cancellationToken)
         {
             return await _context.Users
                 .AsNoTracking()
                 .Where(a => a.UserName == userSlug)
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync(cancellationToken);
         }
 
 
@@ -105,6 +108,20 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Users
                 .AsNoTracking()
                 .Where(a => a.UserName == patientSlug)
                 .FirstOrDefaultAsync();
+        }
+
+        public async Task<IEnumerable<Patient>> GetAllPatients(CancellationToken cancellationToken)
+        {
+            return await _context.Patients
+                .AsNoTracking()
+                .ToListAsync(cancellationToken);
+        }
+
+        public async Task<IEnumerable<Doctor>> GetAllDoctors(CancellationToken cancellationToken)
+        {
+            return await _context.Doctors
+                .AsNoTracking()
+                .ToListAsync(cancellationToken);
         }
 
 
@@ -139,26 +156,26 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Users
         }
 
 
-        public async Task<IEnumerable<DoctorTitle>> GetAllDoctorTitles()
+        public async Task<IEnumerable<DoctorTitle>> GetAllDoctorTitles(CancellationToken cancellationToken)
         {
-            return await _context.DoctorTitles.AsNoTracking().ToListAsync();
+            return await _context.DoctorTitles.AsNoTracking().ToListAsync(cancellationToken);
         }
 
 
-        public async Task<IEnumerable<Doctor>> GetAllUnConfirmedDoctor()
+        public async Task<IEnumerable<Doctor>> GetAllUnConfirmedDoctor(CancellationToken cancellationToken)
         {
             return await _context.Doctors
                 .AsNoTracking()
                 .Where(d => d.Confirmed == false)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
         }
 
 
-        public async Task ConfirmDoctor(Doctor doctor)
+        public async Task ConfirmDoctor(Doctor doctor, CancellationToken cancellationToken)
         {
             doctor.Confirmed = true;
             _context.Doctors.Update(doctor);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
         }
     }
 }

@@ -54,9 +54,9 @@ namespace PsychosocialSupportPlatformAPI.Business.Statistics.Appointments
             await _appointmentStatisticsRepository.DeleteAppointmentStatistics(appointmentStatistics);
         }
 
-        public async Task<IEnumerable<object>> GetAllPatientAppointmentStatisticsByDoctorUserName(string doctorUserName)
+        public async Task<IEnumerable<object>> GetAllPatientAppointmentStatisticsByDoctorUserName(string doctorUserName, CancellationToken cancellationToken)
         {
-            return await _appointmentStatisticsRepository.GetAllPatientAppointmentStatisticsByDoctorUserName(doctorUserName);
+            return await _appointmentStatisticsRepository.GetAllPatientAppointmentStatisticsByDoctorUserName(doctorUserName, cancellationToken);
         }
 
         public async Task<IEnumerable<object>> GetAllPatientAppointmentStatisticsByPatientUserName(string patientUserName, string doctorId)
@@ -64,14 +64,14 @@ namespace PsychosocialSupportPlatformAPI.Business.Statistics.Appointments
             return await _appointmentStatisticsRepository.GetAllPatientAppointmentStatisticsByPatientUserName(patientUserName, doctorId);
         }
 
-        public async Task<IEnumerable<object>> GetAllPatientAppointmentStatisticsByPatientUserName(string patientUserName)
+        public async Task<IEnumerable<object>> GetAllPatientAppointmentStatisticsByPatientUserName(string patientUserName, CancellationToken cancellationToken)
         {
-            return await _appointmentStatisticsRepository.GetAllPatientAppointmentStatisticsByPatientUserName(patientUserName);
+            return await _appointmentStatisticsRepository.GetAllPatientAppointmentStatisticsByPatientUserName(patientUserName, cancellationToken);
         }
 
-        public async Task<IEnumerable<object>> GetAllPatientAppointmentStatistics()
+        public async Task<IEnumerable<object>> GetAllPatientAppointmentStatistics(CancellationToken cancellationToken)
         {
-            return await _appointmentStatisticsRepository.GetAllPatientAppointmentStatistics();
+            return await _appointmentStatisticsRepository.GetAllPatientAppointmentStatistics(cancellationToken);
         }
     }
 }

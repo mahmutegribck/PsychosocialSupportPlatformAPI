@@ -12,16 +12,20 @@ namespace PsychosocialSupportPlatformAPI.Business.Videos
         private readonly IConfiguration _configuration;
         private readonly IVideoRepository _videoRepository;
         private readonly IMapper _mapper;
-        public VideoService(IConfiguration configuration, IVideoRepository videoRepository, IMapper mapper)
+
+        public VideoService(
+            IConfiguration configuration, 
+            IVideoRepository videoRepository, 
+            IMapper mapper)
         {
             _configuration = configuration;
             _videoRepository = videoRepository;
             _mapper = mapper;
         }
 
-        public async Task DeleteVideo(int videoID)
+        public async Task DeleteVideo(int videoID, CancellationToken cancellationToken)
         {
-            await _videoRepository.DeleteVideo(videoID);
+            await _videoRepository.DeleteVideo(videoID, cancellationToken);
         }
 
         public async Task<List<GetVideoDTO>> GetAllVideos()
@@ -34,14 +38,15 @@ namespace PsychosocialSupportPlatformAPI.Business.Videos
             return _mapper.Map<GetVideoDTO?>(await _videoRepository.GetVideoByVideoSlug(videoSlug));
         }
 
-        public async Task UpdateVideo(UpdateVideoDTO updateVideoDTO)
+        public async Task UpdateVideo(UpdateVideoDTO updateVideoDTO, CancellationToken cancellationToken)
         {
-            await _videoRepository.UpdateVideo(_mapper.Map<Video>(updateVideoDTO));
+            await _videoRepository.UpdateVideo(_mapper.Map<Video>(updateVideoDTO), cancellationToken);
         }
 
-        public async Task UploadVideo(UploadVideoDTO uploadVideoDTO, string rootPath)
+        public async Task UploadVideo(UploadVideoDTO uploadVideoDTO, string rootPath, CancellationToken cancellationToken)
         {
             string basePath = rootPath + "\\Videos\\";
+
             if (!System.IO.Directory.Exists(basePath))
             {
                 System.IO.Directory.CreateDirectory(basePath);
@@ -60,8 +65,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Videos
             string videoUrl = $"{_configuration["Urls:DevBaseUrl"]}/Videos/{newVideoName}";
 
             using (var stream = new FileStream(videoPath, FileMode.Create))
-                await uploadVideoDTO.File.CopyToAsync(stream);
-
+                await uploadVideoDTO.File.CopyToAsync(stream, cancellationToken);
 
             char[] turkishChars = { 'ı', 'ğ', 'İ', 'Ğ', 'ç', 'Ç', 'ş', 'Ş', 'ö', 'Ö', 'ü', 'Ü' };
             char[] englishChars = { 'i', 'g', 'I', 'G', 'c', 'C', 's', 'S', 'o', 'O', 'u', 'U' };
@@ -72,7 +76,6 @@ namespace PsychosocialSupportPlatformAPI.Business.Videos
 
             videoSlug = Regex.Replace(uploadVideoDTO.Title, @"[^a-zA-Z0-9]", "-").Trim();
 
-
             await _videoRepository.AddVideo(new Video
             {
                 Url = videoUrl,
@@ -81,7 +84,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Videos
                 Title = uploadVideoDTO.Title.Trim(),
                 VideoSlug = videoSlug.ToLower() + "-" + new Random().Next(1000, 1000000)
 
-            });
+            }, cancellationToken);
         }
     }
 }

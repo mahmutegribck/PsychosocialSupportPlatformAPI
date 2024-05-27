@@ -5,19 +5,21 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Users
 {
     public interface IUserRepository
     {
-        Task<ApplicationUser> GetUser(string id);
-        Task<ApplicationUser?> GetUserBySlug(string userSlug);
+        Task<ApplicationUser?> GetUser(string id, CancellationToken cancellationToken);
+        Task<ApplicationUser?> GetUserBySlug(string userSlug, CancellationToken cancellationToken);
         Task<Patient?> GetPatientBySlug(string patientSlug);
-        Task<IdentityResult> DeleteUser(string id);
+        Task<IEnumerable<Patient>> GetAllPatients(CancellationToken cancellationToken);
+        Task<IEnumerable<Doctor>> GetAllDoctors(CancellationToken cancellationToken);
+        Task<IdentityResult> DeleteUser(string id, CancellationToken cancellationToken);
         Task<IdentityResult> UpdateDoctor(string currentUserID, Doctor doctor);
         Task<IdentityResult> UpdatePatient(string currentUserID, Patient patient);
         Task<IEnumerable<Patient>> GetAllPatientsByDoctorId(string doctorId);
-        Task AddDoctorTitle(DoctorTitle doctorTitle);
-        Task DeleteDoctorTitle(DoctorTitle doctorTitle);
-        Task<bool> CheckDoctorTitle(string doctorTitle);
-        Task<DoctorTitle?> GetDoctorTitleById(int doctorTitleId);
-        Task<IEnumerable<DoctorTitle>> GetAllDoctorTitles();
-        Task<IEnumerable<Doctor>> GetAllUnConfirmedDoctor();
-        Task ConfirmDoctor(Doctor doctor);
+        Task AddDoctorTitle(DoctorTitle doctorTitle, CancellationToken cancellationToken);
+        Task DeleteDoctorTitle(DoctorTitle doctorTitle, CancellationToken cancellationToken);
+        Task<bool> CheckDoctorTitle(string doctorTitle, CancellationToken cancellationToken);
+        Task<DoctorTitle?> GetDoctorTitleById(int doctorTitleId, CancellationToken cancellationToken);
+        Task<IEnumerable<DoctorTitle>> GetAllDoctorTitles(CancellationToken cancellationToken);
+        Task<IEnumerable<Doctor>> GetAllUnConfirmedDoctor(CancellationToken cancellationToken);
+        Task ConfirmDoctor(Doctor doctor, CancellationToken cancellationToken);
     }
 }

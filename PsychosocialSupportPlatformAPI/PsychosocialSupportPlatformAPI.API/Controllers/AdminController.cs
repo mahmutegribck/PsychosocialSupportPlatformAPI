@@ -25,9 +25,6 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
     {
         private readonly IDoctorScheduleService _doctorScheduleService;
         private readonly IUserService _userService;
-        private readonly UserManager<Patient> _patientManager;
-        private readonly UserManager<Doctor> _doctorManager;
-        private readonly IMapper _mapper;
         private readonly IVideoService _videoService;
         private readonly IVideoStatisticsService _videoStatisticsService;
         private readonly IAppointmentStatisticsService _appointmentStatisticsService;
@@ -39,9 +36,6 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
         public AdminController(
             IDoctorScheduleService doctorScheduleService,
             IUserService userService,
-            UserManager<Patient> patientManager,
-            UserManager<Doctor> doctorManager,
-            IMapper mapper,
             IVideoService videoService,
             IVideoStatisticsService videoStatisticsService,
             IAppointmentStatisticsService appointmentStatisticsService,
@@ -51,9 +45,6 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
         {
             _doctorScheduleService = doctorScheduleService;
             _userService = userService;
-            _patientManager = patientManager;
-            _doctorManager = doctorManager;
-            _mapper = mapper;
             _videoService = videoService;
             _videoStatisticsService = videoStatisticsService;
             _appointmentStatisticsService = appointmentStatisticsService;
@@ -64,54 +55,54 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> GetAllUnConfirmedDoctor()
+        public async Task<IActionResult> GetAllUnConfirmedDoctor(CancellationToken cancellationToken)
         {
-            IEnumerable<GetDoctorDto> unConfirmedDoctors = await _userService.GetAllUnConfirmedDoctor();
+            IEnumerable<GetDoctorDto> unConfirmedDoctors = await _userService.GetAllUnConfirmedDoctor(cancellationToken);
             if (!unConfirmedDoctors.Any()) return NotFound();
             return Ok(unConfirmedDoctors);
         }
 
 
         [HttpPatch]
-        public async Task<IActionResult> ConfirmDoctor([FromQuery] string doctorUserName)
+        public async Task<IActionResult> ConfirmDoctor([FromQuery] string doctorUserName, CancellationToken cancellationToken)
         {
-            await _userService.ConfirmDoctor(doctorUserName);
+            await _userService.ConfirmDoctor(doctorUserName, cancellationToken);
             return Ok();
         }
 
 
         [HttpPost]
-        public async Task<IActionResult> AddDoctorTitle([FromBody] AddDoctorTitleDTO addDoctorTitleDTO)
+        public async Task<IActionResult> AddDoctorTitle([FromBody] AddDoctorTitleDTO addDoctorTitleDTO, CancellationToken cancellationToken)
         {
-            await _userService.AddDoctorTitle(addDoctorTitleDTO);
+            await _userService.AddDoctorTitle(addDoctorTitleDTO, cancellationToken);
             return Ok();
         }
 
 
         [HttpDelete]
-        public async Task<IActionResult> DeleteDoctorTitle([FromQuery] int doctorTitleId)
+        public async Task<IActionResult> DeleteDoctorTitle([FromQuery] int doctorTitleId, CancellationToken cancellationToken)
         {
-            await _userService.DeleteDoctorTitle(doctorTitleId);
+            await _userService.DeleteDoctorTitle(doctorTitleId, cancellationToken);
             return Ok();
         }
 
 
         [HttpGet]
-        public async Task<IActionResult> GetAllDoctorSchedulesByDate([FromQuery] string day)
+        public async Task<IActionResult> GetAllDoctorSchedulesByDate([FromQuery] string day, CancellationToken cancellationToken)
         {
-            IEnumerable<object> allDoctorSchedules = await _doctorScheduleService.GetAllDoctorSchedulesByDate(DateTime.Parse(day));
+            IEnumerable<object> allDoctorSchedules = await _doctorScheduleService.GetAllDoctorSchedulesByDate(DateTime.Parse(day), cancellationToken);
             if (!allDoctorSchedules.Any()) return NotFound();
             return Ok(allDoctorSchedules);
         }
 
 
         [HttpGet]
-        public async Task<IActionResult> GetDoctorAppointmentByDateAndTimeRange([FromQuery] string date, [FromQuery] TimeRange timeRange)
+        public async Task<IActionResult> GetDoctorAppointmentByDateAndTimeRange([FromQuery] string doctorUserName, [FromQuery] string date, [FromQuery] TimeRange timeRange, CancellationToken cancellationToken)
         {
             string? currentUserID = User.Identity?.Name;
             if (currentUserID == null) return Unauthorized();
 
-            GetDoctorAppointmentDTO? allDoctorAppointments = await _appointmentScheduleService.GetDoctorAppointmentByDateAndTimeRange(DateTime.Parse(date), timeRange, currentUserID);
+            GetDoctorAppointmentDTO? allDoctorAppointments = await _appointmentScheduleService.GetDoctorAppointmentByDateAndTimeRange(DateTime.Parse(date), timeRange, doctorUserName, cancellationToken);
 
             if (allDoctorAppointments == null) return NotFound();
 
@@ -120,11 +111,11 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
 
 
         [HttpDelete]
-        public async Task<IActionResult> DeleteUser([FromBody] string id)
+        public async Task<IActionResult> DeleteUser([FromBody] string id, CancellationToken cancellationToken)
         {
             if (id != null)
             {
-                IdentityResult result = await _userService.DeleteUser(id);
+                IdentityResult result = await _userService.DeleteUser(id, cancellationToken);
                 if (result.Succeeded)
                 {
                     return Ok();
@@ -136,10 +127,11 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> GetAllPatients()
+        public async Task<IActionResult> GetAllPatients(CancellationToken cancellationToken)
         {
-            var patients = _mapper.Map<List<GetPatientDto>>(await _patientManager.Users.AsNoTracking().ToListAsync());
-            if (patients.Count != 0)
+            IEnumerable<GetPatientDto> patients = await _userService.GetAllPatients(cancellationToken);
+
+            if (patients.Any())
             {
                 return Ok(patients);
             }
@@ -148,10 +140,10 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> GetAllDoctors()
+        public async Task<IActionResult> GetAllDoctors(CancellationToken cancellationToken)
         {
-            var doctors = _mapper.Map<List<GetDoctorDto>>(await _doctorManager.Users.AsNoTracking().ToListAsync());
-            if (doctors.Count != 0)
+            IEnumerable<GetDoctorDto> doctors = await _userService.GetAllDoctors(cancellationToken);
+            if (doctors.Any())
             {
                 return Ok(doctors);
             }
@@ -160,55 +152,55 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> GetAllVideoStatistics()
+        public async Task<IActionResult> GetAllVideoStatistics(CancellationToken cancellationToken)
         {
-            var allVideoStatistics = await _videoStatisticsService.GetAllVideoStatistics();
+            var allVideoStatistics = await _videoStatisticsService.GetAllVideoStatistics(cancellationToken);
             if (!allVideoStatistics.Any()) return NotFound();
             return Ok(allVideoStatistics);
         }
 
 
         [HttpGet]
-        public async Task<IActionResult> GetAllVideoStatisticsByPatientUserName([FromQuery] string patientUserName)
+        public async Task<IActionResult> GetAllVideoStatisticsByPatientUserName([FromQuery] string patientUserName, CancellationToken cancellationToken)
         {
-            var allVideoStatisticsByPatientID = await _videoStatisticsService.GetAllVideoStatisticsByPatientUserName(patientUserName);
+            var allVideoStatisticsByPatientID = await _videoStatisticsService.GetAllVideoStatisticsByPatientUserName(patientUserName, cancellationToken);
             if (!allVideoStatisticsByPatientID.Any()) return NotFound();
             return Ok(allVideoStatisticsByPatientID);
         }
 
 
         [HttpGet]
-        public async Task<IActionResult> GetAllPatientAppointmentStatistics()
+        public async Task<IActionResult> GetAllPatientAppointmentStatistics(CancellationToken cancellationToken)
         {
-            var allPatientAppointmentStatistics = await _appointmentStatisticsService.GetAllPatientAppointmentStatistics();
+            var allPatientAppointmentStatistics = await _appointmentStatisticsService.GetAllPatientAppointmentStatistics(cancellationToken);
             if (!allPatientAppointmentStatistics.Any()) return NotFound();
             return Ok(allPatientAppointmentStatistics);
         }
 
 
         [HttpGet]
-        public async Task<IActionResult> GetAllPatientAppointmentStatisticsByDoctorUserName([FromQuery] string doctorUserName)
+        public async Task<IActionResult> GetAllPatientAppointmentStatisticsByDoctorUserName([FromQuery] string doctorUserName, CancellationToken cancellationToken)
         {
-            var allPatientAppointmentStatistics = await _appointmentStatisticsService.GetAllPatientAppointmentStatisticsByDoctorUserName(doctorUserName);
+            var allPatientAppointmentStatistics = await _appointmentStatisticsService.GetAllPatientAppointmentStatisticsByDoctorUserName(doctorUserName, cancellationToken);
             if (!allPatientAppointmentStatistics.Any()) return NotFound();
             return Ok(allPatientAppointmentStatistics);
         }
 
 
         [HttpGet]
-        public async Task<IActionResult> GetAllPatientAppointmentStatisticsByPatientUserName([FromQuery] string patientUserName)
+        public async Task<IActionResult> GetAllPatientAppointmentStatisticsByPatientUserName([FromQuery] string patientUserName, CancellationToken cancellationToken)
         {
             string? currentUserID = User.Identity?.Name;
             if (currentUserID == null) return Unauthorized();
 
-            var allPatientAppointmentStatistics = await _appointmentStatisticsService.GetAllPatientAppointmentStatisticsByPatientUserName(patientUserName);
+            var allPatientAppointmentStatistics = await _appointmentStatisticsService.GetAllPatientAppointmentStatisticsByPatientUserName(patientUserName, cancellationToken);
             if (!allPatientAppointmentStatistics.Any()) return NotFound();
             return Ok(allPatientAppointmentStatistics);
         }
 
 
         [HttpPost, DisableRequestSizeLimit]
-        public async Task<IActionResult> UploadVideo([FromForm] UploadVideoDTO uploadVideoDTO)
+        public async Task<IActionResult> UploadVideo([FromForm] UploadVideoDTO uploadVideoDTO, CancellationToken cancellationToken)
         {
             try
             {
@@ -216,7 +208,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
                 {
                     return BadRequest("Video Bulunamadı.");
                 }
-                await _videoService.UploadVideo(uploadVideoDTO, _webHostEnvironment.WebRootPath);
+                await _videoService.UploadVideo(uploadVideoDTO, _webHostEnvironment.WebRootPath, cancellationToken);
                 return Ok();
 
             }
@@ -228,17 +220,17 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
 
 
         [HttpDelete]
-        public async Task<IActionResult> DeleteVideo([FromQuery] int videoID)
+        public async Task<IActionResult> DeleteVideo([FromQuery] int videoID, CancellationToken cancellationToken)
         {
-            await _videoService.DeleteVideo(videoID);
+            await _videoService.DeleteVideo(videoID, cancellationToken);
             return Ok("Video Başarıyla Silindi");
         }
 
 
         [HttpPut]
-        public async Task<IActionResult> UpdateVideo([FromBody] UpdateVideoDTO updateVideoDTO)
+        public async Task<IActionResult> UpdateVideo([FromBody] UpdateVideoDTO updateVideoDTO, CancellationToken cancellationToken)
         {
-            await _videoService.UpdateVideo(updateVideoDTO);
+            await _videoService.UpdateVideo(updateVideoDTO, cancellationToken);
             return Ok();
         }
     }

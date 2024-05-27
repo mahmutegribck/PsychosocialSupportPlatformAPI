@@ -10,6 +10,6 @@ namespace PsychosocialSupportPlatformAPI.Business.DoctorSchedules
         Task<GetDoctorScheduleDTO?> GetDoctorScheduleByDay(string doctorId, DateTime day);
         Task<GetDoctorScheduleDTO?> GetDoctorScheduleById(string doctorId, int scheduleId);
         Task<IEnumerable<GetDoctorScheduleDTO?>> GetAllDoctorScheduleById(string doctorId);
-        Task<IEnumerable<object>> GetAllDoctorSchedulesByDate(DateTime day);
+        Task<IEnumerable<object>> GetAllDoctorSchedulesByDate(DateTime day,CancellationToken cancellationToken);
     }
 }

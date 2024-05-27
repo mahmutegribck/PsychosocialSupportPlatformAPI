@@ -58,7 +58,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
         }
 
 
-        public async Task<RegisterResponse> RegisterForDoctor(RegisterDoctorDto model)
+        public async Task<RegisterResponse> RegisterForDoctor(RegisterDoctorDto model, CancellationToken cancellationToken)
         {
             try
             {
@@ -67,7 +67,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
                     throw new ArgumentNullException(nameof(model), "Model boş olamaz.");
                 }
 
-                if (await _userService.GetDoctorTitleById(model.DoctorTitleId) == null) throw new Exception("Ünvan Bulunamadı");
+                if (await _userService.GetDoctorTitleById(model.DoctorTitleId, cancellationToken) == null) throw new Exception("Ünvan Bulunamadı");
 
                 if (model.Password != model.ConfirmPassword)
                     return new RegisterResponse

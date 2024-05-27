@@ -8,7 +8,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
 {
     public interface IAuthService
     {
-        Task<RegisterResponse> RegisterForDoctor(RegisterDoctorDto model);
+        Task<RegisterResponse> RegisterForDoctor(RegisterDoctorDto model, CancellationToken cancellationToken);
         Task<RegisterResponse> RegisterForPatient(RegisterPatientDto model);
         Task<LoginResponse> LoginUserAsync(LoginDto model);
         Task<JwtTokenDTO?> LoginWithRefreshToken(string refreshToken);
