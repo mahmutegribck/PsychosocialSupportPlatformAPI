@@ -80,6 +80,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Mapper
                 .ForMember(dest => dest.Day, opt => opt.MapFrom(src => src.Day.ToShortDateString()))
                 .ReverseMap();
 
+            CreateMap<AppointmentSchedule, CreateAppointmentForPatientDTO>().ReverseMap();
             CreateMap<AppointmentSchedule, GetAppointmentScheduleDTO>().ReverseMap();
             CreateMap<AppointmentSchedule, CancelPatientAppointmentDTO>().ReverseMap();
             CreateMap<AppointmentSchedule, CancelDoctorAppointmentDTO>().ReverseMap();

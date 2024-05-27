@@ -3,10 +3,13 @@ using Microsoft.Extensions.Configuration;
 using PsychosocialSupportPlatformAPI.Business.Appointments.DTOs;
 using PsychosocialSupportPlatformAPI.Business.AppointmentSchedules.DTOs;
 using PsychosocialSupportPlatformAPI.Business.Mails;
+using PsychosocialSupportPlatformAPI.Business.Users;
 using PsychosocialSupportPlatformAPI.Business.Users.DTOs;
 using PsychosocialSupportPlatformAPI.DataAccess.Appointments;
 using PsychosocialSupportPlatformAPI.DataAccess.AppointmentSchedules;
+using PsychosocialSupportPlatformAPI.DataAccess.Users;
 using PsychosocialSupportPlatformAPI.Entity.Entities.Appointments;
+using PsychosocialSupportPlatformAPI.Entity.Entities.Users;
 using System.Text;
 using System.Text.Json;
 
@@ -19,20 +22,22 @@ namespace PsychosocialSupportPlatformAPI.Business.Appointments
         private readonly IMapper _mapper;
         private readonly IConfiguration _configuration;
         private readonly IMailService _mailService;
-
+        private readonly IUserRepository _userRepository;
 
         public AppointmentService(
             IAppointmentRepository appointmentRepository,
             IAppointmentScheduleRepository appointmentScheduleRepository,
             IMapper mapper,
             IConfiguration configuration,
-            IMailService mailService)
+            IMailService mailService,
+            IUserRepository userRepository)
         {
             _appointmentRepository = appointmentRepository;
             _appointmentScheduleRepository = appointmentScheduleRepository;
             _mapper = mapper;
             _configuration = configuration;
             _mailService = mailService;
+            _userRepository = userRepository;
         }
 
 
@@ -61,6 +66,32 @@ namespace PsychosocialSupportPlatformAPI.Business.Appointments
             await _appointmentRepository.CancelPatientAppointment(cancelAppointmentSchedule);
         }
 
+        public async Task CreateAppointmentForPatient(string doctorId, CreateAppointmentForPatientDTO createAppointmentForPatientDTO)
+        {
+            AppointmentSchedule? appoitment = _mapper.Map<AppointmentSchedule>(createAppointmentForPatientDTO);
+            appoitment.DoctorId = doctorId;
+
+            AppointmentSchedule? doctorAppoitment = await _appointmentScheduleRepository.GetAppointmentScheduleByDayAndTimeRange(doctorId, DateTime.Parse(createAppointmentForPatientDTO.Day), createAppointmentForPatientDTO.TimeRange);
+
+            if (doctorAppoitment == null)
+            {
+                await _appointmentScheduleRepository.AddAppointmentSchedule(appoitment);
+
+                doctorAppoitment = appoitment;
+            }
+            if (doctorAppoitment!.Status == true)
+                throw new Exception("Başka Randevu Kaydınız Bulunmaktadır");
+
+            Patient? patient = await _userRepository.GetPatientBySlug(createAppointmentForPatientDTO.PatientUserName) ?? throw new Exception("Hasta Kullanıcı Bulunamadı");
+
+            doctorAppoitment.PatientId = patient.Id;
+            doctorAppoitment.Status = true;
+
+            doctorAppoitment.URL = "await GenerateZoomMeetingUrl()";
+
+            await _appointmentScheduleRepository.UpdateAppointmentSchedule(doctorAppoitment);
+
+        }
 
         public async Task<GetPatientAppointmentDTO?> GetPatientAppointmentById(int patientAppointmentId, string patientId)
         {
@@ -89,19 +120,19 @@ namespace PsychosocialSupportPlatformAPI.Business.Appointments
                 if (Math.Abs((DateTime.Parse(makeAppointmentDTO.Day) - patientLastAppointment.Day).Days) < 14)
                     throw new Exception("Son 14 Gün İçerisinde Alınmış Randevunuz Bulunmaktadır.");
 
-                if (patientLastAppointment.DoctorId != makeAppointmentDTO.DoctorId) 
+                if (patientLastAppointment.DoctorId != makeAppointmentDTO.DoctorId)
                     throw new Exception("Sadece Doktorunuzdan Randevu Alabilirsiniz.");
             }
 
             AppointmentSchedule? appointmentSchedule = await _appointmentScheduleRepository.GetAppointmentScheduleByDayAndTimeRange(makeAppointmentDTO.DoctorId, DateTime.Parse(makeAppointmentDTO.Day), makeAppointmentDTO.TimeRange);
 
-            if (appointmentSchedule == null)
+            if (appointmentSchedule == null || appointmentSchedule.Status == true)
                 return false;
 
             appointmentSchedule.PatientId = patientId;
             appointmentSchedule.Status = true;
 
-            appointmentSchedule.URL = await GenerateZoomMeetingUrl();
+            appointmentSchedule.URL = "await GenerateZoomMeetingUrl()";
 
             await _appointmentScheduleRepository.UpdateAppointmentSchedule(appointmentSchedule);
 

@@ -32,10 +32,10 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllDoctorAppointments()
         {
-            string? currentUserID = User.Identity?.Name;
-            if (currentUserID == null) return Unauthorized();
+            string? currentUserId = User.Identity?.Name;
+            if (currentUserId == null) return Unauthorized();
 
-            var allDoctorAppointments = await _appointmentScheduleService.AllDoctorAppointments(currentUserID);
+            var allDoctorAppointments = await _appointmentScheduleService.AllDoctorAppointments(currentUserId);
 
             if (!allDoctorAppointments.Any()) return NotFound();
             return Ok(allDoctorAppointments);
@@ -44,10 +44,10 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllDoctorAppointmentsByPatientId([FromQuery] string patientId)
         {
-            string? currentUserID = User.Identity?.Name;
-            if (currentUserID == null) return Unauthorized();
+            string? currentUserId = User.Identity?.Name;
+            if (currentUserId == null) return Unauthorized();
 
-            var allDoctorAppointments = await _appointmentScheduleService.GetAllDoctorAppointmentsByPatientId(patientId, currentUserID);
+            var allDoctorAppointments = await _appointmentScheduleService.GetAllDoctorAppointmentsByPatientId(patientId, currentUserId);
 
             if (!allDoctorAppointments.Any()) return NotFound();
             return Ok(allDoctorAppointments);
@@ -56,10 +56,10 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllPastDoctorAppointmentsByPatientSlug([FromQuery] string patientSlug)
         {
-            string? currentUserID = User.Identity?.Name;
-            if (currentUserID == null) return Unauthorized();
+            string? currentUserId = User.Identity?.Name;
+            if (currentUserId == null) return Unauthorized();
 
-            var allDoctorAppointments = await _appointmentScheduleService.GetAllPastDoctorAppointmentsByPatientSlug(patientSlug, currentUserID);
+            var allDoctorAppointments = await _appointmentScheduleService.GetAllPastDoctorAppointmentsByPatientSlug(patientSlug, currentUserId);
 
             if (!allDoctorAppointments.Any()) return NotFound();
             return Ok(allDoctorAppointments);
@@ -68,10 +68,10 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllDoctorAppointmentsByDate([FromQuery] string date)
         {
-            string? currentUserID = User.Identity?.Name;
-            if (currentUserID == null) return Unauthorized();
+            string? currentUserId = User.Identity?.Name;
+            if (currentUserId == null) return Unauthorized();
 
-            IEnumerable<GetDoctorAppointmentDTO> allDoctorAppointments = await _appointmentScheduleService.GetAllDoctorAppointmentsByDate(DateTime.Parse(date), currentUserID);
+            IEnumerable<GetDoctorAppointmentDTO> allDoctorAppointments = await _appointmentScheduleService.GetAllDoctorAppointmentsByDate(DateTime.Parse(date), currentUserId);
 
             if (!allDoctorAppointments.Any()) return NotFound();
             return Ok(allDoctorAppointments);
@@ -80,26 +80,38 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllPatients()
         {
-            string? currentUserID = User.Identity?.Name;
-            if (currentUserID == null) return Unauthorized();
+            string? currentUserId = User.Identity?.Name;
+            if (currentUserId == null) return Unauthorized();
 
-            IEnumerable<GetPatientDto> allPatients = await _userService.GetAllPatientsByDoctorId(currentUserID);
+            IEnumerable<GetPatientDto> allPatients = await _userService.GetAllPatientsByDoctorId(currentUserId);
             if (!allPatients.Any()) return NotFound();
 
             return Ok(allPatients);
         }
 
+        [HttpPatch]
         public async Task<IActionResult> CreateAppointmentForPatient([FromBody] CreateAppointmentForPatientDTO createAppointmentForPatientDTO)
+        {
+            string? currentUserId = User.Identity?.Name;
+            if (currentUserId == null) return Unauthorized();
+
+            if (createAppointmentForPatientDTO == null) return BadRequest();
+
+            await _appointmentService.CreateAppointmentForPatient(currentUserId, createAppointmentForPatientDTO);
+            return Ok();
+
+
+        }
 
         [HttpPatch]
         public async Task<IActionResult> CancelDoctorAppointment([FromBody] CancelDoctorAppointmentDTO cancelDoctorAppointmentDTO)
         {
-            string? currentUserID = User.Identity?.Name;
-            if (currentUserID == null) return Unauthorized();
+            string? currentUserId = User.Identity?.Name;
+            if (currentUserId == null) return Unauthorized();
 
             if (cancelDoctorAppointmentDTO == null) return BadRequest();
 
-            await _appointmentService.CancelDoctorAppointment(cancelDoctorAppointmentDTO, currentUserID);
+            await _appointmentService.CancelDoctorAppointment(cancelDoctorAppointmentDTO, currentUserId);
 
             return Ok();
 

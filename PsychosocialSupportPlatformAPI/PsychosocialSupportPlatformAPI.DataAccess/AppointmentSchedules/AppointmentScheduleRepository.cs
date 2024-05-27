@@ -20,6 +20,13 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.AppointmentSchedules
         }
 
 
+        public async Task AddAppointmentSchedule(AppointmentSchedule appointmentSchedule)
+        {
+            await _context.AppointmentSchedules.AddAsync(appointmentSchedule);
+            await _context.SaveChangesAsync();
+        }
+
+
         public async Task DeleteAppointmentScheduleList(IEnumerable<AppointmentSchedule> appointmentSchedules)
         {
             _context.AppointmentSchedules.RemoveRange(appointmentSchedules);
@@ -96,6 +103,7 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.AppointmentSchedules
             return groupedSchedules;
         }
 
+
         public async Task<IEnumerable<AppointmentSchedule>> GetAppointmentScheduleByDay(string doctorId, DateTime day)
         {
             return await _context.AppointmentSchedules
@@ -106,6 +114,7 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.AppointmentSchedules
                 .ToListAsync();
         }
 
+
         public async Task<AppointmentSchedule?> GetAppointmentScheduleById(int appointmentScheduleId)
         {
             return await _context.AppointmentSchedules
@@ -114,11 +123,13 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.AppointmentSchedules
                 .FirstOrDefaultAsync();
         }
 
+
         public async Task UpdateAppointmentSchedule(AppointmentSchedule appointmentSchedule)
         {
             _context.AppointmentSchedules.Update(appointmentSchedule);
             await _context.SaveChangesAsync();
         }
+
 
         public async Task<AppointmentSchedule?> GetAppointmentScheduleByDayAndTimeRange(string doctorId, DateTime day, TimeRange timeRange)
         {
@@ -127,10 +138,10 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.AppointmentSchedules
                 .Where(a => 
                     a.DoctorId == doctorId && 
                     a.Day == day && 
-                    a.TimeRange == timeRange && 
-                    a.Status == false)
+                    a.TimeRange == timeRange)
                 .FirstOrDefaultAsync();
         }
+
 
         public async Task<IEnumerable<AppointmentSchedule>> AllDoctorAppointments(string doctorId)
         {
@@ -143,6 +154,7 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.AppointmentSchedules
                 .ToListAsync();
         }
 
+
         public async Task<IEnumerable<AppointmentSchedule>> GetAllDoctorAppointmentsByPatientId(string patientId, string doctorId)
         {
             return await _context.AppointmentSchedules
@@ -153,6 +165,7 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.AppointmentSchedules
                     a.PatientId == patientId)
                 .ToListAsync();
         }
+
 
         public async Task<IEnumerable<AppointmentSchedule>> GetAllPastDoctorAppointmentsByPatientSlug(string patientSlug, string doctorId)
         {
@@ -168,6 +181,7 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.AppointmentSchedules
                 .ToListAsync();
         }
 
+
         public async Task<IEnumerable<AppointmentSchedule>> GetAllDoctorAppointmentsByDate(DateTime day, string doctorId)
         {
             return await _context.AppointmentSchedules
@@ -179,6 +193,7 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.AppointmentSchedules
                     a.PatientId != null)
                 .ToListAsync();
         }
+
 
         public async Task<AppointmentSchedule?> GetDoctorAppointmentByDateAndTimeRange(DateTime day, TimeRange timeRange, string doctorId)
         {

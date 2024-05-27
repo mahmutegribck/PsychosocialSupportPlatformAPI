@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using PsychosocialSupportPlatformAPI.Entity.Entities.Users;
-using System.Numerics;
 
 namespace PsychosocialSupportPlatformAPI.DataAccess.Users
 {
@@ -8,6 +7,7 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Users
     {
         Task<ApplicationUser> GetUser(string id);
         Task<ApplicationUser?> GetUserBySlug(string userSlug);
+        Task<Patient?> GetPatientBySlug(string patientSlug);
         Task<IdentityResult> DeleteUser(string id);
         Task<IdentityResult> UpdateDoctor(string currentUserID, Doctor doctor);
         Task<IdentityResult> UpdatePatient(string currentUserID, Patient patient);

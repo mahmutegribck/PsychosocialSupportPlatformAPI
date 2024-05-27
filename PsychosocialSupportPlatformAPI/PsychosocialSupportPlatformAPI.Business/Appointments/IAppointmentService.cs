@@ -11,6 +11,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Appointments
         Task<GetPatientAppointmentDTO?> GetPatientAppointmentById(int patientAppointmentId, string patientId);
         Task CancelPatientAppointment(CancelPatientAppointmentDTO cancelPatientAppointmentDTO, string patientId);
         Task<bool> MakeAppointment(string patientId, MakeAppointmentDTO makeAppointmentDTO);
+        Task CreateAppointmentForPatient(string doctorId, CreateAppointmentForPatientDTO createAppointmentForPatientDTO);
         Task CancelDoctorAppointment(CancelDoctorAppointmentDTO cancelDoctorAppointmentDTO, string doctorId);
 
     }

@@ -11,7 +11,11 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Users
         private readonly UserManager<Doctor> _doctorManager;
         private readonly UserManager<Patient> _patientManager;
 
-        public UserRepository(UserManager<ApplicationUser> userManager, PsychosocialSupportPlatformDBContext context, UserManager<Doctor> doctorManager, UserManager<Patient> patientManager)
+        public UserRepository(
+            UserManager<ApplicationUser> userManager, 
+            PsychosocialSupportPlatformDBContext context, 
+            UserManager<Doctor> doctorManager, 
+            UserManager<Patient> patientManager)
         {
             _userManager = userManager;
             _context = context;
@@ -19,11 +23,13 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Users
             _patientManager = patientManager;
         }
 
+
         public async Task AddDoctorTitle(DoctorTitle doctorTitle)
         {
             await _context.DoctorTitles.AddAsync(doctorTitle);
             await _context.SaveChangesAsync();
         }
+
 
         public async Task DeleteDoctorTitle(DoctorTitle doctorTitle)
         {
@@ -31,11 +37,13 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Users
             await _context.SaveChangesAsync();
         }
 
+
         public async Task<bool> CheckDoctorTitle(string doctorTitle)
         {
             return await _context.DoctorTitles.AnyAsync(t => t.Title == doctorTitle);
 
         }
+
 
         public async Task<DoctorTitle?> GetDoctorTitleById(int doctorTitleId)
         {
@@ -51,7 +59,11 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Users
                 return IdentityResult.Failed(new IdentityError { Description = "User not found" });
             }
 
-            var userMessages = await _context.Messages.Where(m => m.SenderId == id || m.ReceiverId == id).ToListAsync();
+            var userMessages = await _context.Messages
+                .AsNoTracking()
+                .Where(m => m.SenderId == id || m.ReceiverId == id)
+                .ToListAsync();
+
             _context.Messages.RemoveRange(userMessages);
 
 
@@ -60,20 +72,41 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Users
             return result;
         }
 
+
         public async Task<IEnumerable<Patient>> GetAllPatientsByDoctorId(string doctorId)
         {
-            return await _context.Patients.Where(p => p.AppointmentSchedules.Any(a => a.DoctorId == doctorId)).Distinct().AsNoTracking().ToListAsync();
+            return await _context.Patients
+                .AsNoTracking()
+                .Where(p => p.AppointmentSchedules
+                .Any(a => a.DoctorId == doctorId))
+                .Distinct()
+                .ToListAsync();
         }
+
 
         public async Task<ApplicationUser> GetUser(string id)
         {
             return await _userManager.FindByIdAsync(id);
         }
 
+
         public async Task<ApplicationUser?> GetUserBySlug(string userSlug)
         {
-            return await _context.Users.Where(a => a.UserName == userSlug).AsNoTracking().FirstOrDefaultAsync();
+            return await _context.Users
+                .AsNoTracking()
+                .Where(a => a.UserName == userSlug)
+                .FirstOrDefaultAsync();
         }
+
+
+        public async Task<Patient?> GetPatientBySlug(string patientSlug)
+        {
+            return await _context.Patients
+                .AsNoTracking()
+                .Where(a => a.UserName == patientSlug)
+                .FirstOrDefaultAsync();
+        }
+
 
         public async Task<IdentityResult> UpdateDoctor(string currentUserID, Doctor doctor)
         {
@@ -114,8 +147,12 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Users
 
         public async Task<IEnumerable<Doctor>> GetAllUnConfirmedDoctor()
         {
-            return await _context.Doctors.Where(d => d.Confirmed == false).ToListAsync();
+            return await _context.Doctors
+                .AsNoTracking()
+                .Where(d => d.Confirmed == false)
+                .ToListAsync();
         }
+
 
         public async Task ConfirmDoctor(Doctor doctor)
         {

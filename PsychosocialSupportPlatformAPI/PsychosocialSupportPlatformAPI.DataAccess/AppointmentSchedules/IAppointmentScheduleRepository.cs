@@ -6,6 +6,7 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.AppointmentSchedules
     public interface IAppointmentScheduleRepository
     {
         Task AddAppointmentScheduleList(List<AppointmentSchedule> appointmentSchedules);
+        Task AddAppointmentSchedule(AppointmentSchedule appointmentSchedule);
         Task DeleteAppointmentScheduleList(IEnumerable<AppointmentSchedule> appointmentSchedules);
         Task<IEnumerable<object>> GetAllAppointmentSchedules(DateTime day, string patientId);
         Task<IEnumerable<AppointmentSchedule>> GetAppointmentScheduleByDay(string doctorId, DateTime day);
