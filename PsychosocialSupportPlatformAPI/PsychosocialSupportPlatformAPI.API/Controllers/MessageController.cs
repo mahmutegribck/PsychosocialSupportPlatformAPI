@@ -53,6 +53,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
 
 
         [HttpGet]
+        [Authorize(Roles = "Doctor")]
         public async Task<IActionResult> GetPatientAllMessageEmotions(string patientUserName)
         {
             GetMessageEmotionDTO? messageEmotion = await _messageService.GetPatientAllMessageEmotions(patientUserName);
@@ -63,6 +64,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
 
 
         [HttpGet]
+        [Authorize(Roles = "Doctor")]
         public async Task<IActionResult> GetPatientLastMonthMessageEmotions(string patientUserName)
         {
             GetMessageEmotionDTO? messageEmotion = await _messageService.GetPatientLastMonthMessageEmotions(patientUserName);
@@ -73,6 +75,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
 
 
         [HttpGet]
+        [Authorize(Roles = "Doctor")]
         public async Task<IActionResult> GetPatientLastDayMessageEmotions(string patientUserName)
         {
             GetMessageEmotionDTO? messageEmotion = await _messageService.GetPatientLastDayMessageEmotions(patientUserName);
