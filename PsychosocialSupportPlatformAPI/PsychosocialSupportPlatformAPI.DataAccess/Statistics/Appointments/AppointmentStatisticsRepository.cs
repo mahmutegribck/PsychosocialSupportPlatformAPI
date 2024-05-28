@@ -12,27 +12,34 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Statistics.Appointments
             _context = context;
         }
 
-        public async Task AddAppointmentStatistics(AppointmentStatistics appointmentStatistics)
+        public async Task AddAppointmentStatistics(AppointmentStatistics appointmentStatistics, CancellationToken cancellationToken)
         {
-            await _context.AppointmentStatistics.AddAsync(appointmentStatistics);
-            await _context.SaveChangesAsync();
+            await _context.AppointmentStatistics.AddAsync(appointmentStatistics, cancellationToken);
+            await _context.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task UpdateAppointmentStatistics(AppointmentStatistics appointmentStatistics)
+        public async Task UpdateAppointmentStatistics(AppointmentStatistics appointmentStatistics, CancellationToken cancellationToken)
         {
             _context.AppointmentStatistics.Update(appointmentStatistics);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task DeleteAppointmentStatistics(AppointmentStatistics appointmentStatistics)
+        public async Task DeleteAppointmentStatistics(AppointmentStatistics appointmentStatistics, CancellationToken cancellationToken)
         {
             _context.AppointmentStatistics.Remove(appointmentStatistics);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task<AppointmentStatistics?> GetAppointmentStatisticsById(int appointmentStatisticsId, string patientId, int appointmentScheduleId, string doctorId)
+        public async Task<AppointmentStatistics?> GetAppointmentStatisticsById(int appointmentStatisticsId, string patientId, int appointmentScheduleId, string doctorId, CancellationToken cancellationToken)
         {
-            return await _context.AppointmentStatistics.AsNoTracking().Where(s => s.Id == appointmentStatisticsId && s.PatientId == patientId && s.DoctorId == doctorId && s.AppointmentScheduleId == appointmentScheduleId).FirstOrDefaultAsync();
+            return await _context.AppointmentStatistics
+                .AsNoTracking()
+                .Where(s =>
+                    s.Id == appointmentStatisticsId &&
+                    s.PatientId == patientId &&
+                    s.DoctorId == doctorId &&
+                    s.AppointmentScheduleId == appointmentScheduleId)
+                .FirstOrDefaultAsync(cancellationToken);
         }
 
         public async Task<IEnumerable<object>> GetAllPatientAppointmentStatisticsByDoctorUserName(string doctorUserName, CancellationToken cancellationToken)
@@ -70,22 +77,28 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Statistics.Appointments
             return groupedStatistics;
         }
 
-        public async Task<IEnumerable<object>> GetAllPatientAppointmentStatisticsByPatientUserName(string patientUserName, string doctorId)
+        public async Task<IEnumerable<object>> GetAllPatientAppointmentStatisticsByPatientUserName(string patientUserName, string doctorId, CancellationToken cancellationToken)
         {
-            return await _context.AppointmentStatistics.Include(s => s.Patient).Include(s => s.AppointmentSchedule).Where(s => s.DoctorId == doctorId && s.Patient.UserName == patientUserName).GroupBy(s => s.Patient).Select(group => new
-            {
-                PatientName = group.Key.Name,
-                PatientSurname = group.Key.Surname,
-                PatientProfileImageUrl = group.Key.ProfileImageUrl,
-
-                AppointmentStatistics = group.Select(s => new
+            return await _context.AppointmentStatistics
+                .AsNoTracking()
+                .Include(s => s.Patient)
+                .Include(s => s.AppointmentSchedule)
+                .Where(s => s.DoctorId == doctorId && s.Patient.UserName == patientUserName)
+                .GroupBy(s => s.Patient)
+                .Select(group => new
                 {
-                    AppointmentStartTime = s.AppointmentStartTime,
-                    AppointmentEndTime = s.AppointmentEndTime,
-                    AppointmentComment = s.AppointmentComment,
-                    AppointmentDay = s.AppointmentSchedule.Day.ToShortDateString()
-                })
-            }).AsNoTracking().ToListAsync();
+                    PatientName = group.Key.Name,
+                    PatientSurname = group.Key.Surname,
+                    PatientProfileImageUrl = group.Key.ProfileImageUrl,
+
+                    AppointmentStatistics = group.Select(s => new
+                    {
+                        AppointmentStartTime = s.AppointmentStartTime,
+                        AppointmentEndTime = s.AppointmentEndTime,
+                        AppointmentComment = s.AppointmentComment,
+                        AppointmentDay = s.AppointmentSchedule.Day.ToShortDateString()
+                    })
+                }).ToListAsync(cancellationToken);
         }
 
         public async Task<IEnumerable<object>> GetAllPatientAppointmentStatisticsByPatientUserName(string patienUserName, CancellationToken cancellationToken)
@@ -160,9 +173,9 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Statistics.Appointments
             return groupedByDoctor;
         }
 
-        public async Task<bool> CheckPatientAppointmentStatistics(int appointmentScheduleId)
+        public async Task<bool> CheckPatientAppointmentStatistics(int appointmentScheduleId, CancellationToken cancellationToken)
         {
-            return await _context.AppointmentStatistics.AnyAsync(s => s.AppointmentScheduleId == appointmentScheduleId);
+            return await _context.AppointmentStatistics.AnyAsync(s => s.AppointmentScheduleId == appointmentScheduleId, cancellationToken);
         }
     }
 }

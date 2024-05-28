@@ -92,9 +92,13 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Appointments
             return await _context.AppointmentSchedules.AsNoTracking().Include(a => a.Doctor).Where(a => a.Id == patientAppointmentId && a.PatientId == patientId).FirstAsync();
         }
 
-        public async Task<bool> CheckPatientAppointment(int appointmentScheduleId, string patientId, string doctorId)
+        public async Task<bool> CheckPatientAppointment(int appointmentScheduleId, string patientId, string doctorId, CancellationToken cancellationToken)
         {
-            return await _context.AppointmentSchedules.AnyAsync(a => a.Id == appointmentScheduleId && a.PatientId == patientId && a.DoctorId == doctorId);
+            return await _context.AppointmentSchedules
+                .AnyAsync(a =>
+                    a.Id == appointmentScheduleId &&
+                    a.PatientId == patientId &&
+                    a.DoctorId == doctorId, cancellationToken);
         }
 
         public async Task<AppointmentSchedule?> GetPatientLastAppointment(string patientId)

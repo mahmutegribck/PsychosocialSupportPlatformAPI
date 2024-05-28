@@ -126,9 +126,9 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Users
         }
 
 
-        public async Task<IdentityResult> UpdateDoctor(string currentUserID, Doctor doctor)
+        public async Task<IdentityResult> UpdateDoctor(string currentUserId, Doctor doctor)
         {
-            Doctor updatedDoctor = await _doctorManager.FindByIdAsync(currentUserID);
+            Doctor updatedDoctor = await _doctorManager.FindByIdAsync(currentUserId);
             if (updatedDoctor == null) { return IdentityResult.Failed(); }
 
             updatedDoctor.Name = doctor.Name;
@@ -142,9 +142,9 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Users
         }
 
 
-        public async Task<IdentityResult> UpdatePatient(string currentUserID, Patient patient)
+        public async Task<IdentityResult> UpdatePatient(string currentUserId, Patient patient, CancellationToken cancellationToken)
         {
-            Patient updatedPatient = await _patientManager.FindByIdAsync(currentUserID);
+            Patient updatedPatient = await _context.Patients.Where(p => p.Id == currentUserId).FirstAsync(cancellationToken);
             if (updatedPatient == null) { return IdentityResult.Failed(); }
 
             updatedPatient.Name = patient.Name;
@@ -152,7 +152,7 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Users
             updatedPatient.PhoneNumber = patient.PhoneNumber;
 
             IdentityResult result = await _patientManager.UpdateAsync(updatedPatient);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
             return result;
         }
 

@@ -24,9 +24,9 @@ namespace PsychosocialSupportPlatformAPI.Business.DoctorSchedules
         }
 
 
-        public async Task AddDoctorSchedule(List<CreateDoctorScheduleDTO> createDoctorScheduleDTOs, string currentUserID)
+        public async Task AddDoctorSchedule(List<CreateDoctorScheduleDTO> createDoctorScheduleDTOs, string currentUserId)
         {
-            if (!createDoctorScheduleDTOs.Any() || currentUserID == null) throw new Exception();
+            if (!createDoctorScheduleDTOs.Any() || currentUserId == null) throw new Exception();
 
             foreach (var createDoctorScheduleDTO in createDoctorScheduleDTOs)
             {
@@ -37,9 +37,9 @@ namespace PsychosocialSupportPlatformAPI.Business.DoctorSchedules
                     throw new Exception();
 
                 DoctorSchedule doctorSchedule = _mapper.Map<DoctorSchedule>(createDoctorScheduleDTO);
-                doctorSchedule.DoctorId = currentUserID;
+                doctorSchedule.DoctorId = currentUserId;
 
-                DoctorSchedule? existingSchedule = await _doctorScheduleRepository.GetDoctorScheduleByDay(currentUserID, doctorSchedule.Day);
+                DoctorSchedule? existingSchedule = await _doctorScheduleRepository.GetDoctorScheduleByDay(currentUserId, doctorSchedule.Day);
 
                 foreach (var timeRange in createDoctorScheduleDTO.TimeRanges)
                 {
@@ -93,18 +93,18 @@ namespace PsychosocialSupportPlatformAPI.Business.DoctorSchedules
         }
 
 
-        public async Task UpdateDoctorSchedule(UpdateDoctorScheduleDTO updateDoctorScheduleDTO, string currentUserID)
+        public async Task UpdateDoctorSchedule(UpdateDoctorScheduleDTO updateDoctorScheduleDTO, string currentUserId)
         {
-            if (updateDoctorScheduleDTO == null || currentUserID == null) throw new ArgumentNullException();
+            if (updateDoctorScheduleDTO == null || currentUserId == null) throw new ArgumentNullException();
 
             DateTime day = DateTime.Parse(updateDoctorScheduleDTO.Day);
             if (day < DateTime.Now.Date || day > DateTime.Now.Date.AddDays(14)) throw new Exception();
 
-            DoctorSchedule? existingSchedule = await _doctorScheduleRepository.GetDoctorScheduleByDay(currentUserID, day);
+            DoctorSchedule? existingSchedule = await _doctorScheduleRepository.GetDoctorScheduleByDay(currentUserId, day);
             if (existingSchedule == null) throw new Exception("Girilen Gune Ait Takvim Kaydi Mevcut Degil.");
 
             DoctorSchedule doctorSchedule = _mapper.Map<DoctorSchedule>(updateDoctorScheduleDTO);
-            doctorSchedule.DoctorId = currentUserID;
+            doctorSchedule.DoctorId = currentUserId;
 
             await _doctorScheduleRepository.UpdateDoctorSchedule(doctorSchedule);
             await _appointmentScheduleService.UpdateAppointmentSchedule(doctorSchedule);

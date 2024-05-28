@@ -10,18 +10,14 @@ namespace PsychosocialSupportPlatformAPI.API.Chat
     public class ChatHub : Hub
     {
         private readonly IMessageService _messageService;
-        private readonly IMLModelService _mlModelService;
 
         public static List<string> BagliKullaniciIdler { get; } = new List<string>();
 
-        public ChatHub(
-            IMessageService messageService,
-            IMLModelService mLModelService
-            )
+        public ChatHub(IMessageService messageService)
         {
             _messageService = messageService;
-            _mlModelService = mLModelService;
         }
+
         public async Task SendMessageToUser(string senderID, string receiverID, string message)
         {
             SendMessageDto messageDto = new()

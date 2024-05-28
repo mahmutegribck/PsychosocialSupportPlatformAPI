@@ -105,12 +105,12 @@ namespace PsychosocialSupportPlatformAPI.Business.Messages
 
             return new()
             {
-                ScaredMessageRatio = (double)scaredMessages / totalMessageEmotions,
-                BoredMessageRatio = (double)boredMessages / totalMessageEmotions,
-                HappyMessageRatio = (double)happyMessages / totalMessageEmotions,
-                AngryMessageRatio = (double)angryMessages / totalMessageEmotions,
-                SadMessageRatio = (double)sadMessages / totalMessageEmotions,
-                EmergencyMessageRatio = (double)emergencyMessages / totalMessageEmotions
+                ScaredMessageRatio = Math.Round((double)scaredMessages / totalMessageEmotions, 2),
+                BoredMessageRatio = Math.Round((double)boredMessages / totalMessageEmotions, 2),
+                HappyMessageRatio = Math.Round((double)happyMessages / totalMessageEmotions, 2),
+                AngryMessageRatio = Math.Round((double)angryMessages / totalMessageEmotions, 2),
+                SadMessageRatio = Math.Round((double)sadMessages / totalMessageEmotions, 2),
+                EmergencyMessageRatio = Math.Round((double)emergencyMessages / totalMessageEmotions, 2)
             };
         }
 
@@ -136,12 +136,12 @@ namespace PsychosocialSupportPlatformAPI.Business.Messages
 
             return new()
             {
-                ScaredMessageRatio = (double)scaredMessages / totalMessageEmotions,
-                BoredMessageRatio = (double)boredMessages / totalMessageEmotions,
-                HappyMessageRatio = (double)happyMessages / totalMessageEmotions,
-                AngryMessageRatio = (double)angryMessages / totalMessageEmotions,
-                SadMessageRatio = (double)sadMessages / totalMessageEmotions,
-                EmergencyMessageRatio = (double)emergencyMessages / totalMessageEmotions
+                ScaredMessageRatio = Math.Round((double)scaredMessages / totalMessageEmotions, 2),
+                BoredMessageRatio = Math.Round((double)boredMessages / totalMessageEmotions, 2),
+                HappyMessageRatio = Math.Round((double)happyMessages / totalMessageEmotions, 2),
+                AngryMessageRatio = Math.Round((double)angryMessages / totalMessageEmotions, 2),
+                SadMessageRatio = Math.Round((double)sadMessages / totalMessageEmotions, 2),
+                EmergencyMessageRatio = Math.Round((double)emergencyMessages / totalMessageEmotions, 2)
             };
         }
 
@@ -167,13 +167,15 @@ namespace PsychosocialSupportPlatformAPI.Business.Messages
 
             return new()
             {
-                ScaredMessageRatio = (double)scaredMessages / totalMessageEmotions,
-                BoredMessageRatio = (double)boredMessages / totalMessageEmotions,
-                HappyMessageRatio = (double)happyMessages / totalMessageEmotions,
-                AngryMessageRatio = (double)angryMessages / totalMessageEmotions,
-                SadMessageRatio = (double)sadMessages / totalMessageEmotions,
-                EmergencyMessageRatio = (double)emergencyMessages / totalMessageEmotions
+                ScaredMessageRatio = Math.Round((double)scaredMessages / totalMessageEmotions, 2),
+                BoredMessageRatio = Math.Round((double)boredMessages / totalMessageEmotions, 2),
+                HappyMessageRatio = Math.Round((double)happyMessages / totalMessageEmotions, 2),
+                AngryMessageRatio = Math.Round((double)angryMessages / totalMessageEmotions, 2),
+                SadMessageRatio = Math.Round((double)sadMessages / totalMessageEmotions, 2),
+                EmergencyMessageRatio = Math.Round((double)emergencyMessages / totalMessageEmotions, 2)
             };
+
+
         }
     }
 }

@@ -14,12 +14,12 @@ namespace PsychosocialSupportPlatformAPI.Business.Users
         Task<IEnumerable<GetPatientDto>> GetAllPatients(CancellationToken cancellationToken);
         Task<IEnumerable<GetDoctorDto>> GetAllDoctors(CancellationToken cancellationToken);
         Task<IdentityResult> DeleteUser(string id, CancellationToken cancellationToken);
-        Task<IdentityResult> UpdateDoctor(string currentUserID, UpdateDoctorDTO updateDoctorDTO, CancellationToken cancellationToken);
-        Task<IdentityResult> UpdatePatient(string currentUserID, UpdatePatientDTO updatePatientDTO);
+        Task<IdentityResult> UpdateDoctor(string currentUserId, UpdateDoctorDTO updateDoctorDTO, CancellationToken cancellationToken);
+        Task<IdentityResult> UpdatePatient(string currentUserId, UpdatePatientDTO updatePatientDTO, CancellationToken cancellationToken);
         Task<IEnumerable<GetPatientDto>> GetAllPatientsByDoctorId(string doctorId);
-        Task UploadProfileImage(IFormFile formFile, string userId, string path);
-        Task DeleteProfileImage(string userId);
-        Task ChangePassword(ChangePasswordDTO changePasswordDTO, string currentUserId);
+        Task UploadProfileImage(IFormFile formFile, string userId, CancellationToken cancellationToken);
+        Task DeleteProfileImage(string userId, CancellationToken cancellationToken);
+        Task ChangePassword(ChangePasswordDTO changePasswordDTO, string currentUserId, CancellationToken cancellationToken);
         Task AddDoctorTitle(AddDoctorTitleDTO AddDoctorTitleDTO, CancellationToken cancellationToken);
         Task DeleteDoctorTitle(int doctorTitleId, CancellationToken cancellationToken);
         Task<GetDoctorTitleDTO?> GetDoctorTitleById(int doctorTitleId, CancellationToken cancellationToken);

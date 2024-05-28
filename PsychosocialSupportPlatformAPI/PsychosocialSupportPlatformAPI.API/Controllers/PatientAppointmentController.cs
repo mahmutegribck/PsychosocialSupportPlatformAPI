@@ -23,10 +23,10 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetPatientDoctors()
         {
-            string? currentUserID = User.Identity?.Name;
-            if (currentUserID == null) return Unauthorized();
+            string? currentUserId = User.Identity?.Name;
+            if (currentUserId == null) return Unauthorized();
 
-            IEnumerable<GetPatientDoctorDto> patientDoctors = await _appointmentService.GetPatientDoctorsByPatientId(currentUserID);
+            IEnumerable<GetPatientDoctorDto> patientDoctors = await _appointmentService.GetPatientDoctorsByPatientId(currentUserId);
 
             if (!patientDoctors.Any()) return NotFound();
 
@@ -36,10 +36,10 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetPatientAppointments()
         {
-            string? currentUserID = User.Identity?.Name;
-            if (currentUserID == null) return Unauthorized();
+            string? currentUserId = User.Identity?.Name;
+            if (currentUserId == null) return Unauthorized();
 
-            var patientAppointments = await _appointmentService.GetPatientAppointmentsByPatientId(currentUserID);
+            var patientAppointments = await _appointmentService.GetPatientAppointmentsByPatientId(currentUserId);
 
             if (patientAppointments == null) return NotFound();
 
@@ -49,10 +49,10 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetPatientAppointmentById([FromQuery] int patientAppointmentID)
         {
-            string? currentUserID = User.Identity?.Name;
-            if (currentUserID == null) return Unauthorized();
+            string? currentUserId = User.Identity?.Name;
+            if (currentUserId == null) return Unauthorized();
 
-            GetPatientAppointmentDTO? patientAppointments = await _appointmentService.GetPatientAppointmentById(patientAppointmentID, currentUserID);
+            GetPatientAppointmentDTO? patientAppointments = await _appointmentService.GetPatientAppointmentById(patientAppointmentID, currentUserId);
 
             if (patientAppointments == null) return NotFound();
 
@@ -62,10 +62,10 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
         [HttpPatch]
         public async Task<IActionResult> MakeAppointment([FromBody] MakeAppointmentDTO makeAppointmentDTO)
         {
-            string? currentUserID = User.Identity?.Name;
-            if (currentUserID == null) return Unauthorized();
+            string? currentUserId = User.Identity?.Name;
+            if (currentUserId == null) return Unauthorized();
 
-            if (await _appointmentService.MakeAppointment(currentUserID, makeAppointmentDTO))
+            if (await _appointmentService.MakeAppointment(currentUserId, makeAppointmentDTO))
             {
                 return Ok("Randevu Oluşturuldu.");
             }
@@ -75,12 +75,12 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
         [HttpPatch]
         public async Task<IActionResult> CancelPatientAppointment([FromBody] CancelPatientAppointmentDTO cancelPatientAppointmentDTO)
         {
-            string? currentUserID = User.Identity?.Name;
-            if (currentUserID == null) return Unauthorized();
+            string? currentUserId = User.Identity?.Name;
+            if (currentUserId == null) return Unauthorized();
 
             if (cancelPatientAppointmentDTO == null) return BadRequest();
 
-            await _appointmentService.CancelPatientAppointment(cancelPatientAppointmentDTO, currentUserID);
+            await _appointmentService.CancelPatientAppointment(cancelPatientAppointmentDTO, currentUserId);
 
             return Ok();
 

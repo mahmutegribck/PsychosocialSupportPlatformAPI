@@ -102,7 +102,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Mails
                 Subject = "Şifremi Unuttum",
                 IsBodyHtml = true,
                 Body = $"<h3>Sayın {user.Name} {user.Surname} Şifrenizi Güncellemek İçin Bağlantıya Tıklayın:</h3><br>" +
-                $"{_configuration["Urls:DevBaseUrl"]}/api/Authentication/ResetPassword?token={HttpUtility.UrlEncode(token)}?mail={user.Email}",
+                $"{_configuration["Urls:BaseUrl"]}/api/Authentication/ResetPassword?token={HttpUtility.UrlEncode(token)}?mail={user.Email}",
             };
             mail.To.Add(new MailAddress(user.Email));
 

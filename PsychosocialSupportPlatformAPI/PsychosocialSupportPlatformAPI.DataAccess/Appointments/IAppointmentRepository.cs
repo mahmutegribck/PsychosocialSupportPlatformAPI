@@ -13,7 +13,7 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Appointments
         Task<AppointmentSchedule?> GetPatientLastAppointment(string patientId);
         Task CancelPatientAppointment(AppointmentSchedule appointmentSchedule);
         Task CancelDoctorAppointment(AppointmentSchedule appointmentSchedule);
-        Task<bool> CheckPatientAppointment(int appointmentScheduleId, string patientId, string doctorId);
+        Task<bool> CheckPatientAppointment(int appointmentScheduleId, string patientId, string doctorId, CancellationToken cancellationToken);
 
     }
 }

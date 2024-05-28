@@ -19,6 +19,7 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Videos
         public async Task DeleteVideo(int videoID, CancellationToken cancellationToken)
         {
             var deletedVideo = await _context.Videos
+                .AsNoTracking()
                 .Where(v => v.Id == videoID)
                 .FirstOrDefaultAsync(cancellationToken) ?? throw new Exception("Video Bulunamadı");
 
@@ -27,19 +28,19 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Videos
             await _context.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task<List<Video>> GetAllVideos()
+        public async Task<IEnumerable<Video>> GetAllVideos(CancellationToken cancellationToken)
         {
-            return await _context.Videos.ToListAsync();
+            return await _context.Videos.AsNoTracking().ToListAsync(cancellationToken);
         }
 
-        public async Task<Video?> GetVideoByVideoSlug(string videoSlug)
+        public async Task<Video?> GetVideoByVideoSlug(string videoSlug, CancellationToken cancellationToken)
         {
-            return await _context.Videos.Where(v => v.VideoSlug == videoSlug).FirstOrDefaultAsync();
+            return await _context.Videos.AsNoTracking().Where(v => v.VideoSlug == videoSlug).FirstOrDefaultAsync(cancellationToken);
         }
 
         public async Task UpdateVideo(Video video, CancellationToken cancellationToken)
         {
-            var updatedVideo = await _context.Videos.Where(v => v.Id == video.Id).FirstOrDefaultAsync(cancellationToken);
+            var updatedVideo = await _context.Videos.AsNoTracking().Where(v => v.Id == video.Id).FirstOrDefaultAsync(cancellationToken);
             if (updatedVideo != null)
             {
                 updatedVideo.Title = video.Title;

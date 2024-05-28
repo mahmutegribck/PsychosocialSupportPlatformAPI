@@ -41,7 +41,6 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
         }
 
 
-
         [HttpGet]
         [AllowAnonymous]
         public async Task<IActionResult> GetAllDoctorTitles(CancellationToken cancellationToken)
@@ -53,26 +52,13 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
 
 
         [HttpGet]
-        [Authorize(Roles = "Doctor")]
-        public async Task<IActionResult> GetAllPatients()
-        {
-            var patients = _mapper.Map<List<GetPatientDto>>(await _patientManager.Users.ToListAsync());
-            if (patients.Count != 0)
-            {
-                return Ok(patients);
-            }
-            return NotFound("Kullanici Bulunamadi");
-        }
-
-
-        [HttpGet]
         public async Task<IActionResult> GetCurrentUser(CancellationToken cancellationToken)
         {
-            var currentUserID = User.Identity?.Name;
+            var currentUserId = User.Identity?.Name;
 
-            if (currentUserID != null)
+            if (currentUserId != null)
             {
-                var user = await _userService.GetUserByID(currentUserID, cancellationToken);
+                var user = await _userService.GetUserByID(currentUserId, cancellationToken);
 
                 if (user != null)
                 {
@@ -81,6 +67,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
             }
             return NotFound();
         }
+
 
         [HttpGet]
         public async Task<IActionResult> GetUserById([FromQuery] string userID, CancellationToken cancellationToken)
@@ -118,11 +105,11 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
         [Authorize(Roles = "Doctor,Patient")]
         public async Task<IActionResult> DeleteCurrentUser(CancellationToken cancellationToken)
         {
-            var currentUserID = User.Identity?.Name;
+            var currentUserId = User.Identity?.Name;
 
-            if (currentUserID != null)
+            if (currentUserId != null)
             {
-                var result = await _userService.DeleteUser(currentUserID, cancellationToken);
+                var result = await _userService.DeleteUser(currentUserId, cancellationToken);
                 if (result.Succeeded)
                 {
                     return Ok();
@@ -137,10 +124,10 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
         [Authorize(Roles = "Doctor")]
         public async Task<IActionResult> UpdateDoctor([FromBody] UpdateDoctorDTO updateDoctorDTO, CancellationToken cancellationToken)
         {
-            var currentUserID = User.Identity?.Name;
-            if (currentUserID == null) return Unauthorized();
+            var currentUserId = User.Identity?.Name;
+            if (currentUserId == null) return Unauthorized();
 
-            IdentityResult result = await _userService.UpdateDoctor(currentUserID, updateDoctorDTO, cancellationToken);
+            IdentityResult result = await _userService.UpdateDoctor(currentUserId, updateDoctorDTO, cancellationToken);
             if (result.Succeeded)
             {
                 return Ok();
@@ -151,12 +138,12 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
 
         [HttpPut]
         [Authorize(Roles = "Patient")]
-        public async Task<IActionResult> UpdatePatient([FromBody] UpdatePatientDTO updatePatientDTO)
+        public async Task<IActionResult> UpdatePatient([FromBody] UpdatePatientDTO updatePatientDTO, CancellationToken cancellationToken)
         {
-            var currentUserID = User.Identity?.Name;
-            if (currentUserID == null) return Unauthorized();
+            var currentUserId = User.Identity?.Name;
+            if (currentUserId == null) return Unauthorized();
 
-            IdentityResult result = await _userService.UpdatePatient(currentUserID, updatePatientDTO);
+            IdentityResult result = await _userService.UpdatePatient(currentUserId, updatePatientDTO, cancellationToken);
 
             if (result.Succeeded)
             {
@@ -167,34 +154,34 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
 
 
         [HttpPatch]
-        public async Task<IActionResult> UploadProfileImage([FromForm] UserProfileImageUploadDTO userProfileImageUploadDTO)
+        public async Task<IActionResult> UploadProfileImage([FromForm] UserProfileImageUploadDTO userProfileImageUploadDTO, CancellationToken cancellationToken)
         {
-            var currentUserID = User.Identity?.Name;
-            if (currentUserID == null) return Unauthorized();
+            var currentUserId = User.Identity?.Name;
+            if (currentUserId == null) return Unauthorized();
 
-            await _userService.UploadProfileImage(userProfileImageUploadDTO.File, currentUserID, _webHostEnvironment.WebRootPath);
+            await _userService.UploadProfileImage(userProfileImageUploadDTO.File, currentUserId, cancellationToken);
             return Ok();
         }
 
 
         [HttpPatch]
-        public async Task<IActionResult> DeleteProfileImage()
+        public async Task<IActionResult> DeleteProfileImage(CancellationToken cancellationToken)
         {
-            var currentUserID = User.Identity?.Name;
-            if (currentUserID == null) return Unauthorized();
+            var currentUserId = User.Identity?.Name;
+            if (currentUserId == null) return Unauthorized();
 
-            await _userService.DeleteProfileImage(currentUserID);
+            await _userService.DeleteProfileImage(currentUserId, cancellationToken);
             return Ok();
         }
 
 
         [HttpPatch]
-        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDTO changePasswordDTO)
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDTO changePasswordDTO, CancellationToken cancellationToken)
         {
-            var currentUserID = User.Identity?.Name;
-            if (currentUserID == null) return Unauthorized();
+            var currentUserId = User.Identity?.Name;
+            if (currentUserId == null) return Unauthorized();
 
-            await _userService.ChangePassword(changePasswordDTO, currentUserID);
+            await _userService.ChangePassword(changePasswordDTO, currentUserId, cancellationToken);
             return Ok();
         }
     }

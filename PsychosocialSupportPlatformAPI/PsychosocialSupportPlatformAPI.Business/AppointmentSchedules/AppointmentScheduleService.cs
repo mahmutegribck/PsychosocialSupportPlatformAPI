@@ -342,9 +342,9 @@ namespace PsychosocialSupportPlatformAPI.Business.AppointmentSchedules
         }
 
 
-        public async Task<IEnumerable<object>> GetAllAppointmentSchedules(DateTime day, string patientId)
+        public async Task<IEnumerable<object>> GetAllAppointmentSchedules(DateTime day, string patientId, CancellationToken cancellationToken)
         {
-            return await _appointmentScheduleRepository.GetAllAppointmentSchedules(day, patientId);
+            return await _appointmentScheduleRepository.GetAllAppointmentSchedules(day, patientId, cancellationToken);
         }
 
         public async Task<IEnumerable<object>> AllDoctorAppointments(string doctorId)

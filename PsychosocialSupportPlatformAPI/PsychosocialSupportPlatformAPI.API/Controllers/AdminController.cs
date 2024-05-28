@@ -1,8 +1,6 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using PsychosocialSupportPlatformAPI.Business.Appointments.DTOs.Doctor;
 using PsychosocialSupportPlatformAPI.Business.AppointmentSchedules;
 using PsychosocialSupportPlatformAPI.Business.DoctorSchedules;
@@ -15,8 +13,7 @@ using PsychosocialSupportPlatformAPI.Business.Users.DTOs;
 using PsychosocialSupportPlatformAPI.Business.Users.DTOs.DoctorTitle;
 using PsychosocialSupportPlatformAPI.Business.Videos;
 using PsychosocialSupportPlatformAPI.Business.Videos.DTOs;
-using PsychosocialSupportPlatformAPI.Entity.Entities.Users;
-using PsychosocialSupportPlatformAPI.Entity.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace PsychosocialSupportPlatformAPI.API.Controllers
 {
@@ -59,9 +56,9 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> CreateAIModel([FromForm] UploadDataSetDTO uploadDataSetDTO)
+        public async Task<IActionResult> CreateAIModel([FromForm] UploadDataSetDTO uploadDataSetDTO, CancellationToken cancellationToken)
         {
-            await _modelBuilderService.CreateAIModel(uploadDataSetDTO);
+            await _modelBuilderService.CreateAIModel(uploadDataSetDTO, cancellationToken);
             return Ok();
         }
 
@@ -111,8 +108,8 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetDoctorAppointmentByDateAndTimeRange(GetDoctorAppointmentByDateAndTimeRangeDTO getDoctorAppointmentByDateAndTimeRangeDTO, CancellationToken cancellationToken)
         {
-            string? currentUserID = User.Identity?.Name;
-            if (currentUserID == null) return Unauthorized();
+            string? currentUserId = User.Identity?.Name;
+            if (currentUserId == null) return Unauthorized();
 
             GetDoctorAppointmentDTO? allDoctorAppointments = await _appointmentScheduleService.GetDoctorAppointmentByDateAndTimeRange(getDoctorAppointmentByDateAndTimeRangeDTO, cancellationToken);
 
@@ -173,7 +170,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> GetAllVideoStatisticsByPatientUserName([FromQuery] string patientUserName, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetAllVideoStatisticsByPatientUserName([FromQuery, Required] string patientUserName, CancellationToken cancellationToken)
         {
             var allVideoStatisticsByPatientID = await _videoStatisticsService.GetAllVideoStatisticsByPatientUserName(patientUserName, cancellationToken);
             if (!allVideoStatisticsByPatientID.Any()) return NotFound();
@@ -191,7 +188,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> GetAllPatientAppointmentStatisticsByDoctorUserName([FromQuery] string doctorUserName, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetAllPatientAppointmentStatisticsByDoctorUserName([FromQuery, Required] string doctorUserName, CancellationToken cancellationToken)
         {
             var allPatientAppointmentStatistics = await _appointmentStatisticsService.GetAllPatientAppointmentStatisticsByDoctorUserName(doctorUserName, cancellationToken);
             if (!allPatientAppointmentStatistics.Any()) return NotFound();
@@ -200,10 +197,10 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> GetAllPatientAppointmentStatisticsByPatientUserName([FromQuery] string patientUserName, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetAllPatientAppointmentStatisticsByPatientUserName([FromQuery, Required] string patientUserName, CancellationToken cancellationToken)
         {
-            string? currentUserID = User.Identity?.Name;
-            if (currentUserID == null) return Unauthorized();
+            string? currentUserId = User.Identity?.Name;
+            if (currentUserId == null) return Unauthorized();
 
             var allPatientAppointmentStatistics = await _appointmentStatisticsService.GetAllPatientAppointmentStatisticsByPatientUserName(patientUserName, cancellationToken);
             if (!allPatientAppointmentStatistics.Any()) return NotFound();
@@ -232,7 +229,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
 
 
         [HttpDelete]
-        public async Task<IActionResult> DeleteVideo([FromQuery] int videoID, CancellationToken cancellationToken)
+        public async Task<IActionResult> DeleteVideo([FromQuery, Required] int videoID, CancellationToken cancellationToken)
         {
             await _videoService.DeleteVideo(videoID, cancellationToken);
             return Ok("Video Başarıyla Silindi");

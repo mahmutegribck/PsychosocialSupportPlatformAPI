@@ -9,7 +9,7 @@ namespace PsychosocialSupportPlatformAPI.Business.AppointmentSchedules
         Task AddAppointmentSchedule(DoctorSchedule doctorSchedule);
         Task UpdateAppointmentSchedule(DoctorSchedule doctorSchedule);
         Task DeleteAppointmentSchedule(string doctorId, DateTime day);
-        Task<IEnumerable<object>> GetAllAppointmentSchedules(DateTime day, string patientId);
+        Task<IEnumerable<object>> GetAllAppointmentSchedules(DateTime day, string patientId, CancellationToken cancellationToken);
         Task<IEnumerable<object>> AllDoctorAppointments(string doctorId);
         Task<IEnumerable<object>> GetAllDoctorAppointmentsByPatientId(string patientId, string doctorId);
         Task<IEnumerable<object>> GetAllPastDoctorAppointmentsByPatientSlug(string patientSlug, string doctorId);

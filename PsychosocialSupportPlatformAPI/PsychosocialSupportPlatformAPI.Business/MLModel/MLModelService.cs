@@ -5,7 +5,7 @@ namespace PsychosocialSupportPlatformAPI.Business.MLModel
 {
     public class MLModelService : IMLModelService
     {
-        public async Task CreateAIModel(UploadDataSetDTO uploadDataSetDTO)
+        public async Task CreateAIModel(UploadDataSetDTO uploadDataSetDTO, CancellationToken cancellationToken)
         {
             string? rootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
 
@@ -35,7 +35,7 @@ namespace PsychosocialSupportPlatformAPI.Business.MLModel
 
             using (var stream = new FileStream(filePath, FileMode.Create))
             {
-                await uploadDataSetDTO.DataSetFile.CopyToAsync(stream);
+                await uploadDataSetDTO.DataSetFile.CopyToAsync(stream, cancellationToken);
             }
 
             var mlContext = new MLContext();
@@ -62,20 +62,15 @@ namespace PsychosocialSupportPlatformAPI.Business.MLModel
 
             var trainedModel = trainingPipeline.Fit(trainSet);
 
-            var predictions = trainedModel.Transform(testSet);
-
-            var metrics = mlContext.MulticlassClassification.Evaluate(predictions, "Label");
-
-            Console.WriteLine($"Macro accuracy: {metrics.MacroAccuracy:P2}");
-            Console.WriteLine($"Micro accuracy: {metrics.MicroAccuracy:P2}");
-            Console.WriteLine($"Log loss: {metrics.LogLoss:P2}");
-
             var modelPath = rootPath + "\\MLDataSet\\DataSet.zip";
 
             if (System.IO.File.Exists(modelPath))
             {
                 File.Delete(modelPath);
             }
+            if (cancellationToken.IsCancellationRequested)
+                throw new Exception("İşlem Sonlandırıldı");
+
             mlContext.Model.Save(trainedModel, dataView.Schema, modelPath);
 
         }

@@ -6,8 +6,8 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Videos
     {
         Task AddVideo(Video video, CancellationToken cancellationToken);
         Task DeleteVideo(int videoID, CancellationToken cancellationToken);
-        Task<Video?> GetVideoByVideoSlug(string videoSlug);
-        Task<List<Video>> GetAllVideos();
+        Task<Video?> GetVideoByVideoSlug(string videoSlug, CancellationToken cancellationToken);
+        Task<IEnumerable<Video>> GetAllVideos(CancellationToken cancellationToken);
         Task UpdateVideo(Video video, CancellationToken cancellationToken);
 
     }

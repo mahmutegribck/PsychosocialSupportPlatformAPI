@@ -68,7 +68,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.JwtToken
             string refreshtoken = Convert.ToBase64String(randomnumber);
 
             user.RefreshToken = refreshtoken;
-            user.RefreshTokenEndDate = accessTokenTime.AddHours(2);
+            user.RefreshTokenEndDate = accessTokenTime.AddMinutes(30);
             await _userManager.UpdateAsync(user);
 
             return refreshtoken;

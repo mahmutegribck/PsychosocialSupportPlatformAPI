@@ -17,10 +17,10 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllVideos()
+        public async Task<IActionResult> GetAllVideos(CancellationToken cancellationToken)
         {
-            var videos = await _videoService.GetAllVideos();
-            if (videos == null || videos.Count == 0)
+            var videos = await _videoService.GetAllVideos(cancellationToken);
+            if (!videos.Any())
             {
                 return NotFound("Video Bulunamdı");
             }
@@ -28,9 +28,9 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetVideoByVideoSlug([FromQuery] string videoSlug)
+        public async Task<IActionResult> GetVideoByVideoSlug([FromQuery] string videoSlug, CancellationToken cancellationToken)
         {
-            GetVideoDTO? video = await _videoService.GetVideoByVideoSlug(videoSlug);
+            GetVideoDTO? video = await _videoService.GetVideoByVideoSlug(videoSlug, cancellationToken);
             if (video == null)
             {
                 return NotFound("Video Bulunamdı");

@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.ML.Transforms.Text;
 using PsychosocialSupportPlatformAPI.Business.Mails;
 using PsychosocialSupportPlatformAPI.Business.Users.DTOs;
 using PsychosocialSupportPlatformAPI.Business.Users.DTOs.Admin;
@@ -36,9 +38,9 @@ namespace PsychosocialSupportPlatformAPI.Business.Users
             _mailService = mailService;
         }
 
-        public async Task ChangePassword(ChangePasswordDTO changePasswordDTO, string currentUserId)
+        public async Task ChangePassword(ChangePasswordDTO changePasswordDTO, string currentUserId, CancellationToken cancellationToken)
         {
-            var user = await _userManager.FindByIdAsync(currentUserId) ?? throw new Exception("Kullanıcı Bulunamadı.");
+            var user = await _userManager.Users.Where(u => u.Id == currentUserId).FirstAsync(cancellationToken) ?? throw new Exception("Kullanıcı Bulunamadı.");
 
             if (!await _userManager.CheckPasswordAsync(user, changePasswordDTO.OldPassword))
             {
@@ -99,21 +101,26 @@ namespace PsychosocialSupportPlatformAPI.Business.Users
             return _mapper.Map<GetAdminDto>(user);
         }
 
-        public async Task<IdentityResult> UpdateDoctor(string currentUserID, UpdateDoctorDTO updateDoctorDTO, CancellationToken cancellationToken)
+        public async Task<IdentityResult> UpdateDoctor(string currentUserId, UpdateDoctorDTO updateDoctorDTO, CancellationToken cancellationToken)
         {
             if (await _userRepository.GetDoctorTitleById(updateDoctorDTO.DoctorTitleId, cancellationToken) == null) throw new Exception("Ünvan Bulunamadı");
 
-            return await _userRepository.UpdateDoctor(currentUserID, _mapper.Map<Doctor>(updateDoctorDTO));
+            return await _userRepository.UpdateDoctor(currentUserId, _mapper.Map<Doctor>(updateDoctorDTO));
         }
 
-        public async Task<IdentityResult> UpdatePatient(string currentUserID, UpdatePatientDTO updatePatientDTO)
+        public async Task<IdentityResult> UpdatePatient(string currentUserId, UpdatePatientDTO updatePatientDTO, CancellationToken cancellationToken)
         {
-            return await _userRepository.UpdatePatient(currentUserID, _mapper.Map<Patient>(updatePatientDTO));
+            return await _userRepository.UpdatePatient(currentUserId, _mapper.Map<Patient>(updatePatientDTO), cancellationToken);
         }
 
-        public async Task UploadProfileImage(IFormFile formFile, string userId, string rootPath)
+        public async Task UploadProfileImage(IFormFile formFile, string userId, CancellationToken cancellationToken)
         {
-            ApplicationUser user = await _userManager.FindByIdAsync(userId) ?? throw new Exception("Kullanıcı Bulunamadı");
+            string rootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+
+            ApplicationUser user = await _userManager.Users
+                .Where(u => u.Id == userId)
+                .FirstAsync(cancellationToken) ?? throw new Exception("Kullanıcı Bulunamadı");
+
             if (user.ProfileImagePath != null)
             {
                 File.Delete(user.ProfileImagePath);
@@ -133,10 +140,10 @@ namespace PsychosocialSupportPlatformAPI.Business.Users
             string newFileName = Path.ChangeExtension(Path.GetRandomFileName(), extension);
 
             string imagePath = string.Concat($"{basePath}", newFileName);
-            string imageUrl = $"{_config["Urls:DevBaseUrl"]}/Images/UserProfileImages/{newFileName}";
+            string imageUrl = $"{_config["Urls:BaseUrl"]}/Images/UserProfileImages/{newFileName}";
 
             using (var stream = new FileStream(imagePath, FileMode.Create))
-                await formFile.CopyToAsync(stream);
+                await formFile.CopyToAsync(stream, cancellationToken);
 
             user.ProfileImageUrl = imageUrl;
             user.ProfileImagePath = imagePath;
@@ -144,9 +151,9 @@ namespace PsychosocialSupportPlatformAPI.Business.Users
             await _userManager.UpdateAsync(user);
         }
 
-        public async Task DeleteProfileImage(string userId)
+        public async Task DeleteProfileImage(string userId, CancellationToken cancellationToken)
         {
-            ApplicationUser user = await _userManager.FindByIdAsync(userId) ?? throw new Exception("Kullanıcı Bulunamadı");
+            ApplicationUser user = await _userManager.Users.Where(u => u.Id == userId).FirstAsync(cancellationToken) ?? throw new Exception("Kullanıcı Bulunamadı");
             if (user.ProfileImagePath != null)
             {
                 File.Delete(user.ProfileImagePath);

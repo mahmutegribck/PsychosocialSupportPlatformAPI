@@ -14,8 +14,8 @@ namespace PsychosocialSupportPlatformAPI.Business.Videos
         private readonly IMapper _mapper;
 
         public VideoService(
-            IConfiguration configuration, 
-            IVideoRepository videoRepository, 
+            IConfiguration configuration,
+            IVideoRepository videoRepository,
             IMapper mapper)
         {
             _configuration = configuration;
@@ -28,14 +28,14 @@ namespace PsychosocialSupportPlatformAPI.Business.Videos
             await _videoRepository.DeleteVideo(videoID, cancellationToken);
         }
 
-        public async Task<List<GetVideoDTO>> GetAllVideos()
+        public async Task<IEnumerable<GetVideoDTO>> GetAllVideos(CancellationToken cancellationToken)
         {
-            return _mapper.Map<List<GetVideoDTO>>(await _videoRepository.GetAllVideos());
+            return _mapper.Map<IEnumerable<GetVideoDTO>>(await _videoRepository.GetAllVideos(cancellationToken));
         }
 
-        public async Task<GetVideoDTO?> GetVideoByVideoSlug(string videoSlug)
+        public async Task<GetVideoDTO?> GetVideoByVideoSlug(string videoSlug, CancellationToken cancellationToken)
         {
-            return _mapper.Map<GetVideoDTO?>(await _videoRepository.GetVideoByVideoSlug(videoSlug));
+            return _mapper.Map<GetVideoDTO?>(await _videoRepository.GetVideoByVideoSlug(videoSlug, cancellationToken));
         }
 
         public async Task UpdateVideo(UpdateVideoDTO updateVideoDTO, CancellationToken cancellationToken)
@@ -62,7 +62,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Videos
             string newVideoName = Path.ChangeExtension(Path.GetRandomFileName(), extension);
 
             string videoPath = string.Concat($"{basePath}", newVideoName);
-            string videoUrl = $"{_configuration["Urls:DevBaseUrl"]}/Videos/{newVideoName}";
+            string videoUrl = $"{_configuration["Urls:BaseUrl"]}/Videos/{newVideoName}";
 
             using (var stream = new FileStream(videoPath, FileMode.Create))
                 await uploadVideoDTO.File.CopyToAsync(stream, cancellationToken);
@@ -74,7 +74,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Videos
             for (int i = 0; i < turkishChars.Length; i++)
                 videoSlug = uploadVideoDTO.Title.Replace(turkishChars[i], englishChars[i]);
 
-            videoSlug = Regex.Replace(uploadVideoDTO.Title, @"[^a-zA-Z0-9]", "-").Trim();
+            videoSlug = Regex.Replace(uploadVideoDTO.Title, @"[^a-zA-Z0-9-/?]", "-").Trim();
 
             await _videoRepository.AddVideo(new Video
             {
