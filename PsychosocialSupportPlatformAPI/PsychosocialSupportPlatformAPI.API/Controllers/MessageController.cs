@@ -16,7 +16,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
             _messageService = messageService;
         }
 
-        
+
         [HttpPost]
         public async Task<IActionResult> GetMessages([FromBody] GetUserMessageDto getUserMessageDto)
         {
@@ -29,6 +29,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
             return BadRequest();
         }
 
+
         [HttpPatch]
         public async Task<IActionResult> MessageChangeStatus([FromBody] SetUserMessages setUserMessages)
         {
@@ -40,6 +41,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
             return BadRequest();
         }
 
+
         [HttpGet]
         public async Task<IActionResult> GetMessagedUsers(string userId)
         {
@@ -47,6 +49,36 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
             if (messagedUsers == null) return NotFound();
 
             return Ok(messagedUsers);
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> GetPatientAllMessageEmotions(string patientUserName)
+        {
+            GetMessageEmotionDTO? messageEmotion = await _messageService.GetPatientAllMessageEmotions(patientUserName);
+            if (messageEmotion == null) return NotFound();
+
+            return Ok(messageEmotion);
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> GetPatientLastMonthMessageEmotions(string patientUserName)
+        {
+            GetMessageEmotionDTO? messageEmotion = await _messageService.GetPatientLastMonthMessageEmotions(patientUserName);
+            if (messageEmotion == null) return NotFound();
+
+            return Ok(messageEmotion);
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> GetPatientLastDayMessageEmotions(string patientUserName)
+        {
+            GetMessageEmotionDTO? messageEmotion = await _messageService.GetPatientLastDayMessageEmotions(patientUserName);
+            if (messageEmotion == null) return NotFound();
+
+            return Ok(messageEmotion);
         }
     }
 }

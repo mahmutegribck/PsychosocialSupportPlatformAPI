@@ -11,11 +11,13 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Messages
             _context = context;
         }
 
+
         public async Task AddMessage(Message message)
         {
             await _context.Messages.AddAsync(message);
             await _context.SaveChangesAsync();
         }
+
 
         public async Task<List<object>> GetMessagedUsers(string userId)
         {
@@ -48,11 +50,13 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Messages
             return messagingUsers.Cast<object>().ToList();
         }
 
+
         public async Task<List<Message>> GetMessages(string senderId, string receiverId)
         {
             var deneme = await _context.Messages.Include(m => m.Sender).Include(m => m.Receiver).Where(m => (m.SenderId == senderId && m.ReceiverId == receiverId) || (m.SenderId == receiverId && m.ReceiverId == senderId)).OrderBy(m => m.SendedTime).AsNoTracking().ToListAsync();
             return deneme;
         }
+
 
         public async Task<bool> MessageChangeStatus(string senderId, string receiverId)
         {
@@ -66,6 +70,38 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Messages
             }
             await _context.SaveChangesAsync();
             return true;
+        }
+
+
+        public async Task<IEnumerable<string?>> GetPatientAllMessageEmotions(string patientUserName)
+        {
+            return await _context.Messages
+                .AsNoTracking()
+                .Include(m => m.Sender)
+                .Where(m => m.Sender.Id == patientUserName)
+                .Select(m => m.Emotion)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<string?>> GetPatientLastMonthMessageEmotions(string patientUserName)
+        {
+            return await _context.Messages
+                .AsNoTracking()
+                .Include(m => m.Sender)
+                .Where(m => m.Sender.Id == patientUserName && m.SendedTime.Month == DateTime.Now.Month)
+                .Select(m => m.Emotion)
+                .ToListAsync();
+        }
+
+
+        public async Task<IEnumerable<string?>> GetPatientLastDayMessageEmotions(string patientUserName)
+        {
+            return await _context.Messages
+                .AsNoTracking()
+                .Include(m => m.Sender)
+                .Where(m => m.Sender.Id == patientUserName && m.SendedTime.DayOfYear == DateTime.Now.DayOfYear)
+                .Select(m => m.Emotion)
+                .ToListAsync();
         }
     }
 }

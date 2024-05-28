@@ -37,8 +37,9 @@ namespace PsychosocialSupportPlatformAPI.Business.Messages
             _userManager = userManager;
             _configuration = configuration;
             _mailService = mailService;
-
         }
+
+
         public async Task AddMessage(SendMessageDto messageDto, string? currentUserId)
         {
             if (currentUserId == null) throw new Exception("Mevcut Kullanıcı Bulunamadı");
@@ -57,10 +58,12 @@ namespace PsychosocialSupportPlatformAPI.Business.Messages
             await _messageRepository.AddMessage(_mapper.Map<Message>(messageDto));
         }
 
+
         public async Task<List<object>> GetMessagedUsers(string userId)
         {
             return await _messageRepository.GetMessagedUsers(userId);
         }
+
 
         public async Task<List<GetMessageDto>> GetMessages(GetUserMessageDto getUserMessageDto)
         {
@@ -77,9 +80,103 @@ namespace PsychosocialSupportPlatformAPI.Business.Messages
             }
         }
 
+
         public async Task<bool> MessageChangeStatus(SetUserMessages setUserMessages)
         {
             return await _messageRepository.MessageChangeStatus(setUserMessages.SenderId, setUserMessages.ReceiverId);
+        }
+
+
+        public async Task<GetMessageEmotionDTO> GetPatientAllMessageEmotions(string patientUserName)
+        {
+            IEnumerable<string?> messageEmotions = await _messageRepository.GetPatientAllMessageEmotions(patientUserName);
+            if (!messageEmotions.Any()) throw new Exception();
+
+            int totalMessageEmotions = messageEmotions.Count();
+
+            int scaredMessages = messageEmotions.Count(emotion => emotion?.Equals("Korkmuş", StringComparison.OrdinalIgnoreCase) == true);
+
+            int boredMessages = messageEmotions.Count(emotion => emotion?.Equals("Bıkkın", StringComparison.OrdinalIgnoreCase) == true);
+
+            int happyMessages = messageEmotions.Count(emotion => emotion?.Equals("Mutlu", StringComparison.OrdinalIgnoreCase) == true);
+
+            int angryMessages = messageEmotions.Count(emotion => emotion?.Equals("Kızgın", StringComparison.OrdinalIgnoreCase) == true);
+
+            int sadMessages = messageEmotions.Count(emotion => emotion?.Equals("Üzgün", StringComparison.OrdinalIgnoreCase) == true);
+
+            int emergencyMessages = messageEmotions.Count(emotion => emotion?.Equals("Acil Durum", StringComparison.OrdinalIgnoreCase) == true);
+
+            return new()
+            {
+                ScaredMessageRatio = (double)scaredMessages / totalMessageEmotions,
+                BoredMessageRatio = (double)boredMessages / totalMessageEmotions,
+                HappyMessageRatio = (double)happyMessages / totalMessageEmotions,
+                AngryMessageRatio = (double)angryMessages / totalMessageEmotions,
+                SadMessageRatio = (double)sadMessages / totalMessageEmotions,
+                EmergencyMessageRatio = (double)emergencyMessages / totalMessageEmotions
+            };
+        }
+
+
+        public async Task<GetMessageEmotionDTO> GetPatientLastMonthMessageEmotions(string patientUserName)
+        {
+            IEnumerable<string?> messageEmotions = await _messageRepository.GetPatientLastMonthMessageEmotions(patientUserName);
+            if (!messageEmotions.Any()) throw new Exception();
+
+            int totalMessageEmotions = messageEmotions.Count();
+
+            int scaredMessages = messageEmotions.Count(emotion => emotion?.Equals("Korkmuş", StringComparison.OrdinalIgnoreCase) == true);
+
+            int boredMessages = messageEmotions.Count(emotion => emotion?.Equals("Bıkkın", StringComparison.OrdinalIgnoreCase) == true);
+
+            int happyMessages = messageEmotions.Count(emotion => emotion?.Equals("Mutlu", StringComparison.OrdinalIgnoreCase) == true);
+
+            int angryMessages = messageEmotions.Count(emotion => emotion?.Equals("Kızgın", StringComparison.OrdinalIgnoreCase) == true);
+
+            int sadMessages = messageEmotions.Count(emotion => emotion?.Equals("Üzgün", StringComparison.OrdinalIgnoreCase) == true);
+
+            int emergencyMessages = messageEmotions.Count(emotion => emotion?.Equals("Acil Durum", StringComparison.OrdinalIgnoreCase) == true);
+
+            return new()
+            {
+                ScaredMessageRatio = (double)scaredMessages / totalMessageEmotions,
+                BoredMessageRatio = (double)boredMessages / totalMessageEmotions,
+                HappyMessageRatio = (double)happyMessages / totalMessageEmotions,
+                AngryMessageRatio = (double)angryMessages / totalMessageEmotions,
+                SadMessageRatio = (double)sadMessages / totalMessageEmotions,
+                EmergencyMessageRatio = (double)emergencyMessages / totalMessageEmotions
+            };
+        }
+
+
+        public async Task<GetMessageEmotionDTO> GetPatientLastDayMessageEmotions(string patientUserName)
+        {
+            IEnumerable<string?> messageEmotions = await _messageRepository.GetPatientLastDayMessageEmotions(patientUserName);
+            if (!messageEmotions.Any()) throw new Exception();
+
+            int totalMessageEmotions = messageEmotions.Count();
+
+            int scaredMessages = messageEmotions.Count(emotion => emotion?.Equals("Korkmuş", StringComparison.OrdinalIgnoreCase) == true);
+
+            int boredMessages = messageEmotions.Count(emotion => emotion?.Equals("Bıkkın", StringComparison.OrdinalIgnoreCase) == true);
+
+            int happyMessages = messageEmotions.Count(emotion => emotion?.Equals("Mutlu", StringComparison.OrdinalIgnoreCase) == true);
+
+            int angryMessages = messageEmotions.Count(emotion => emotion?.Equals("Kızgın", StringComparison.OrdinalIgnoreCase) == true);
+
+            int sadMessages = messageEmotions.Count(emotion => emotion?.Equals("Üzgün", StringComparison.OrdinalIgnoreCase) == true);
+
+            int emergencyMessages = messageEmotions.Count(emotion => emotion?.Equals("Acil Durum", StringComparison.OrdinalIgnoreCase) == true);
+
+            return new()
+            {
+                ScaredMessageRatio = (double)scaredMessages / totalMessageEmotions,
+                BoredMessageRatio = (double)boredMessages / totalMessageEmotions,
+                HappyMessageRatio = (double)happyMessages / totalMessageEmotions,
+                AngryMessageRatio = (double)angryMessages / totalMessageEmotions,
+                SadMessageRatio = (double)sadMessages / totalMessageEmotions,
+                EmergencyMessageRatio = (double)emergencyMessages / totalMessageEmotions
+            };
         }
     }
 }

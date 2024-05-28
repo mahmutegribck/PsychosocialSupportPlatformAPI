@@ -8,5 +8,9 @@ namespace PsychosocialSupportPlatformAPI.Business.Messages
         Task<List<GetMessageDto>> GetMessages(GetUserMessageDto getUserMessageDto);
         Task<bool> MessageChangeStatus(SetUserMessages setUserMessages);
         Task<List<object>> GetMessagedUsers(string userId);
+        Task<GetMessageEmotionDTO> GetPatientAllMessageEmotions(string patientUserName);
+        Task<GetMessageEmotionDTO> GetPatientLastMonthMessageEmotions(string patientUserName);
+        Task<GetMessageEmotionDTO> GetPatientLastDayMessageEmotions(string patientUserName);
+
     }
 }
