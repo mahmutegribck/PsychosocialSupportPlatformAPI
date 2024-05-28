@@ -30,13 +30,12 @@ namespace PsychosocialSupportPlatformAPI.API.Chat
                 ReceiverId = receiverID,
                 SenderId = senderID,
                 Text = message,
-                Emotion = await _mlModelService.GetMessagePrediction(message)
             };
             if (BagliKullaniciIdler.Contains(receiverID))
             {
                 await Clients.Group(receiverID).SendAsync("messageToUserReceived", senderID, receiverID, message);
             }
-            await _messageService.AddMessage(messageDto);
+            await _messageService.AddMessage(messageDto, Context.User?.Identity?.Name);
         }
 
         public override async Task OnConnectedAsync()
