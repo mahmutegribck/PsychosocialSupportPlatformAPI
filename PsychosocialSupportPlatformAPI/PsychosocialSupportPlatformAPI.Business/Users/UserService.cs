@@ -125,7 +125,11 @@ namespace PsychosocialSupportPlatformAPI.Business.Users
                 System.IO.Directory.CreateDirectory(basePath);
             }
 
-            string extension = Path.GetExtension(formFile.FileName);
+            string extension = Path.GetExtension(formFile.FileName).ToLower();
+            if (extension != ".jpg" && extension != ".jpeg" && extension != ".png")
+            {
+                throw new ArgumentException("Yalnızca JPG, JPEG ve PNG Dosyaları Desteklenmektedir");
+            }
             string newFileName = Path.ChangeExtension(Path.GetRandomFileName(), extension);
 
             string imagePath = string.Concat($"{basePath}", newFileName);

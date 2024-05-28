@@ -59,9 +59,9 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> CreateMLModel([FromForm] UploadDataSetDTO uploadDataSetDTO)
+        public async Task<IActionResult> CreateAIModel([FromForm] UploadDataSetDTO uploadDataSetDTO)
         {
-            await _modelBuilderService.CreateMLModel(uploadDataSetDTO);
+            await _modelBuilderService.CreateAIModel(uploadDataSetDTO);
             return Ok();
         }
 

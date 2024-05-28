@@ -29,6 +29,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
             _appointmentService = appointmentService;
         }
 
+
         [HttpGet]
         public async Task<IActionResult> GetAllDoctorAppointments()
         {
@@ -40,6 +41,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
             if (!allDoctorAppointments.Any()) return NotFound();
             return Ok(allDoctorAppointments);
         }
+
 
         [HttpGet]
         public async Task<IActionResult> GetAllDoctorAppointmentsByPatientId([FromQuery] string patientId)
@@ -53,6 +55,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
             return Ok(allDoctorAppointments);
         }
 
+
         [HttpGet]
         public async Task<IActionResult> GetAllPastDoctorAppointmentsByPatientSlug([FromQuery] string patientSlug)
         {
@@ -64,6 +67,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
             if (!allDoctorAppointments.Any()) return NotFound();
             return Ok(allDoctorAppointments);
         }
+
 
         [HttpGet]
         public async Task<IActionResult> GetAllDoctorAppointmentsByDate([FromQuery] string date)
@@ -77,6 +81,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
             return Ok(allDoctorAppointments);
         }
 
+
         [HttpGet]
         public async Task<IActionResult> GetAllPatients()
         {
@@ -89,6 +94,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
             return Ok(allPatients);
         }
 
+
         [HttpPatch]
         public async Task<IActionResult> CreateAppointmentForPatient([FromBody] CreateAppointmentForPatientDTO createAppointmentForPatientDTO)
         {
@@ -99,9 +105,8 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
 
             await _appointmentService.CreateAppointmentForPatient(currentUserId, createAppointmentForPatientDTO);
             return Ok();
-
-
         }
+
 
         [HttpPatch]
         public async Task<IActionResult> CancelDoctorAppointment([FromBody] CancelDoctorAppointmentDTO cancelDoctorAppointmentDTO)
@@ -112,9 +117,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
             if (cancelDoctorAppointmentDTO == null) return BadRequest();
 
             await _appointmentService.CancelDoctorAppointment(cancelDoctorAppointmentDTO, currentUserId);
-
             return Ok();
-
         }
     }
 }

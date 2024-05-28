@@ -127,7 +127,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Mails
                 From = new MailAddress(_configuration["Mailing:Sender"]!),
                 Subject = "Acil Durum Bildirimi",
                 IsBodyHtml = true,
-                Body = $"<h3>Sayın {doctor.DoctorTitle.Title} {doctor.Name} {doctor.Surname} Danışanınız {patient.Name} {patient.Surname} Acil Durum İçeren Mesaj Gönderdi.</h4><br><br>" +
+                Body = $"<h4>Sayın {doctor.DoctorTitle.Title} {doctor.Name} {doctor.Surname} Danışanınız {patient.Name} {patient.Surname} Acil Durum İçeren Mesaj Gönderdi.</h4><br>" +
                 $"Gönderilen Mesaj: {message}",
             };
             mail.To.Add(new MailAddress(doctor.Email));

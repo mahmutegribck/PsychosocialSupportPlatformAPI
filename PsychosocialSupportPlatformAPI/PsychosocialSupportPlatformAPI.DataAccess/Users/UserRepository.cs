@@ -121,6 +121,7 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Users
         {
             return await _context.Doctors
                 .AsNoTracking()
+                .Where(d => d.Confirmed == true)
                 .ToListAsync(cancellationToken);
         }
 

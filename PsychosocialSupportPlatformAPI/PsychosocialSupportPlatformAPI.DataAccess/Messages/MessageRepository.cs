@@ -78,7 +78,7 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Messages
             return await _context.Messages
                 .AsNoTracking()
                 .Include(m => m.Sender)
-                .Where(m => m.Sender.Id == patientUserName)
+                .Where(m => m.Sender.UserName == patientUserName)
                 .Select(m => m.Emotion)
                 .ToListAsync();
         }
@@ -88,7 +88,7 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Messages
             return await _context.Messages
                 .AsNoTracking()
                 .Include(m => m.Sender)
-                .Where(m => m.Sender.Id == patientUserName && m.SendedTime.Month == DateTime.Now.Month)
+                .Where(m => m.Sender.UserName == patientUserName && m.SendedTime.Month == DateTime.Now.Month)
                 .Select(m => m.Emotion)
                 .ToListAsync();
         }
@@ -99,7 +99,7 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Messages
             return await _context.Messages
                 .AsNoTracking()
                 .Include(m => m.Sender)
-                .Where(m => m.Sender.Id == patientUserName && m.SendedTime.DayOfYear == DateTime.Now.DayOfYear)
+                .Where(m => m.Sender.UserName == patientUserName && m.SendedTime.DayOfYear == DateTime.Now.DayOfYear)
                 .Select(m => m.Emotion)
                 .ToListAsync();
         }

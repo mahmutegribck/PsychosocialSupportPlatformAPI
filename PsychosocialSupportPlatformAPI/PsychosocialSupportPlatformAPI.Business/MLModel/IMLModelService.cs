@@ -4,7 +4,7 @@ namespace PsychosocialSupportPlatformAPI.Business.MLModel
 {
     public interface IMLModelService
     {
-        Task CreateMLModel(UploadDataSetDTO uploadDataSetDTO);
+        Task CreateAIModel(UploadDataSetDTO uploadDataSetDTO);
 
         Task<string?> GetMessagePrediction(string message);
     }

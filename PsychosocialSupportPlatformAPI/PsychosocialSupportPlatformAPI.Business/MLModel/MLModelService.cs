@@ -5,9 +5,9 @@ namespace PsychosocialSupportPlatformAPI.Business.MLModel
 {
     public class MLModelService : IMLModelService
     {
-        public async Task CreateMLModel(UploadDataSetDTO uploadDataSetDTO)
+        public async Task CreateAIModel(UploadDataSetDTO uploadDataSetDTO)
         {
-            string? rootPath = Directory.GetCurrentDirectory();
+            string? rootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
 
             if (rootPath == null || uploadDataSetDTO.DataSetFile == null || uploadDataSetDTO.DataSetFile.Length == 0)
             {
@@ -41,7 +41,6 @@ namespace PsychosocialSupportPlatformAPI.Business.MLModel
             var mlContext = new MLContext();
             var dataView = mlContext.Data.LoadFromTextFile<SentimentData>(
               filePath, separatorChar: ',', hasHeader: false);
-
 
             var trainTestSplit = mlContext.Data.TrainTestSplit(dataView, testFraction: 0.2);
             var trainSet = trainTestSplit.TrainSet;
@@ -95,7 +94,7 @@ namespace PsychosocialSupportPlatformAPI.Business.MLModel
 
             var predictionResult = predEngine.Predict(new SentimentData { SentimentText = message });
 
-            return await Task.FromResult(predictionResult.Prediction);
+            return await Task.FromResult(predictionResult.Prediction.ToLower());
         }
     }
 }

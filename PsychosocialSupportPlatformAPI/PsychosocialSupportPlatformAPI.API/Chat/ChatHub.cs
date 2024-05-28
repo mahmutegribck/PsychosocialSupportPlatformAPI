@@ -35,7 +35,7 @@ namespace PsychosocialSupportPlatformAPI.API.Chat
             {
                 await Clients.Group(receiverID).SendAsync("messageToUserReceived", senderID, receiverID, message);
             }
-            await _messageService.AddMessage(messageDto, Context.User?.Identity?.Name);
+            await _messageService.AddMessage(messageDto);
         }
 
         public override async Task OnConnectedAsync()

@@ -40,21 +40,18 @@ namespace PsychosocialSupportPlatformAPI.Business.Messages
         }
 
 
-        public async Task AddMessage(SendMessageDto messageDto, string? currentUserId)
+        public async Task AddMessage(SendMessageDto messageDto)
         {
-            if (currentUserId == null) throw new Exception("Mevcut Kullanıcı Bulunamadı");
+            ApplicationUser user = await _userManager.Users.AsNoTracking().Where(u => u.Id == messageDto.SenderId).FirstAsync();
 
-            ApplicationUser user = await _userManager.Users.AsNoTracking().Where(u => u.Id == currentUserId).FirstAsync();
-
-            if (await _userManager.IsInRoleAsync(user, _configuration["Roles:Doctor"]))
+            if (await _userManager.IsInRoleAsync(user, _configuration["Roles:Patient"]))
             {
                 messageDto.Emotion = await _mlModelService.GetMessagePrediction(messageDto.Text);
-                if (messageDto.Emotion == "Acil Durum")
+                if (messageDto.Emotion == "acil durum")
                 {
                     await _mailService.SendEmailToDoctorForEmergency(messageDto.ReceiverId, messageDto.SenderId, messageDto.Text);
                 }
             }
-
             await _messageRepository.AddMessage(_mapper.Map<Message>(messageDto));
         }
 
