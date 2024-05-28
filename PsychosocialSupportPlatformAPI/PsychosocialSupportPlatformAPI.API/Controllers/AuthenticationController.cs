@@ -40,11 +40,11 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> RegisterForPatient([FromBody] RegisterPatientDto model)
+        public async Task<IActionResult> RegisterForPatient([FromBody] RegisterPatientDto model, CancellationToken cancellationToken)
         {
             if (ModelState.IsValid)
             {
-                RegisterResponse result = await _authService.RegisterForPatient(model);
+                RegisterResponse result = await _authService.RegisterForPatient(model, cancellationToken);
                 if (result.IsSuccess)
                 {
                     return Ok(result);
@@ -56,17 +56,16 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> LoginAsync([FromBody] LoginDto model)
+        public async Task<IActionResult> LoginAsync([FromBody] LoginDto model, CancellationToken cancellationToken)
         {
             if (ModelState.IsValid)
             {
-                LoginResponse result = await _authService.LoginUserAsync(model);
+                LoginResponse result = await _authService.LoginUserAsync(model, cancellationToken);
 
                 if (result.IsSuccess)
                 {
                     return Ok(result);
                 }
-
                 return BadRequest(result);
             }
             return BadRequest();
@@ -87,28 +86,28 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        public async Task<IActionResult> ResetPassword([FromQuery] string token, [FromBody] ResetPasswordDto model)
+        public async Task<IActionResult> ResetPassword([FromQuery, Required] string token, [FromBody] ResetPasswordDto model, CancellationToken cancellationToken)
         {
-            await _authService.ResetPassword(token, model);
+            await _authService.ResetPassword(token, model, cancellationToken);
             return Ok("Şifre Değiştirildi");
         }
 
 
         [HttpPost]
         [AllowAnonymous]
-        public async Task<IActionResult> ForgotPassword([Required] string email)
+        public async Task<IActionResult> ForgotPassword([FromQuery, Required] string email, CancellationToken cancellationToken)
         {
-            await _authService.ForgotPassword(email);
+            await _authService.ForgotPassword(email, cancellationToken);
             return Ok("Şifre Değiştirme Bağlantısı Mail Adresinize Gönderildi");
         }
 
 
         [HttpPost]
-        public async Task<IActionResult> LoginViaGoogle([FromBody] string token)
+        public async Task<IActionResult> LoginViaGoogle([FromBody] string token, CancellationToken cancellationToken)
         {
             if (token != null)
             {
-                LoginResponse result = await _authService.LoginUserViaGoogle(token);
+                LoginResponse result = await _authService.LoginUserViaGoogle(token, cancellationToken);
 
                 if (result.IsSuccess)
                 {
@@ -121,11 +120,11 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> LoginViaFacebook([FromBody] string token)
+        public async Task<IActionResult> LoginViaFacebook([FromBody] string token, CancellationToken cancellationToken)
         {
             if (token != null)
             {
-                LoginResponse result = await _authService.LoginUserViaFacebook(token);
+                LoginResponse result = await _authService.LoginUserViaFacebook(token, cancellationToken);
 
                 if (result.IsSuccess)
                 {

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Google.Apis.Auth;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using PsychosocialSupportPlatformAPI.Business.Auth.AuthService.DTOs;
@@ -15,6 +16,7 @@ using PsychosocialSupportPlatformAPI.Business.Users;
 using PsychosocialSupportPlatformAPI.Entity.Entities.Users;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Web;
 using static Google.Apis.Auth.GoogleJsonWebSignature;
 
@@ -90,6 +92,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
                 newUser.UserName = Regex.Replace(newUser.UserName, @"[^a-zA-Z0-9]", "-");
                 newUser.UserName += "-" + new Random().Next(1000, 1000000);
 
+                cancellationToken.ThrowIfCancellationRequested();
 
                 var result = await _userManager.CreateAsync(newUser, model.Password);
 
@@ -122,6 +125,14 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
 
                 };
             }
+            catch (OperationCanceledException)
+            {
+                return new RegisterResponse
+                {
+                    Message = "İşlem İptal Edildi",
+                    IsSuccess = false,
+                };
+            }
             catch (ArgumentNullException ex)
             {
                 return new RegisterResponse
@@ -149,7 +160,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
         }
 
 
-        public async Task<RegisterResponse> RegisterForPatient(RegisterPatientDto model)
+        public async Task<RegisterResponse> RegisterForPatient(RegisterPatientDto model, CancellationToken cancellationToken)
         {
             try
             {
@@ -178,6 +189,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
                 newUser.UserName = Regex.Replace(newUser.UserName, @"[^a-zA-Z0-9]", "-");
                 newUser.UserName += "-" + new Random().Next(1000, 1000000);
 
+                cancellationToken.ThrowIfCancellationRequested();
                 var result = await _userManager.CreateAsync(newUser, model.Password);
 
                 if (result.Succeeded)
@@ -187,9 +199,11 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
                     bool roleExists = await _roleManager.RoleExistsAsync(role);
                     if (!roleExists)
                     {
-                        ApplicationRole newRole = new ApplicationRole();
-                        newRole.Id = Guid.NewGuid().ToString();
-                        newRole.Name = role;
+                        ApplicationRole newRole = new()
+                        {
+                            Id = Guid.NewGuid().ToString(),
+                            Name = role
+                        };
 
                         await _roleManager.CreateAsync(newRole);
                     }
@@ -204,6 +218,14 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
                 return new RegisterResponse
                 {
                     Message = string.Format("Kullanıcı oluşturulurken bir hata oluştu: {0}", result.Errors.FirstOrDefault()?.Description),
+                    IsSuccess = false,
+                };
+            }
+            catch (OperationCanceledException)
+            {
+                return new RegisterResponse
+                {
+                    Message = "İşlem İptal Edildi",
                     IsSuccess = false,
                 };
             }
@@ -234,11 +256,11 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
         }
 
 
-        public async Task<LoginResponse> LoginUserAsync(LoginDto model)
+        public async Task<LoginResponse> LoginUserAsync(LoginDto model, CancellationToken cancellationToken)
         {
             try
             {
-                ApplicationUser? user = await _userManager.FindByEmailAsync(model.Email);
+                ApplicationUser? user = await _userManager.Users.Where(u => u.Email == model.Email).FirstAsync(cancellationToken);
                 if (user == null)
                 {
                     return new LoginResponse
@@ -267,12 +289,15 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
 
                 var result = await _userManager.CheckPasswordAsync(user, model.Password);
                 if (!result)
+                {
                     return new LoginResponse
                     {
                         Message = "Kullanıcı Şifresi Hatalı",
                         IsSuccess = false,
                     };
+                }
 
+                cancellationToken.ThrowIfCancellationRequested();
                 JwtTokenDTO? token = await _jwtService.CreateJwtToken(user);
 
                 if (token == null)
@@ -291,9 +316,21 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
                     IsSuccess = true,
                 };
             }
+            catch (OperationCanceledException)
+            {
+                return new LoginResponse
+                {
+                    Message = "İşlem İptal Edildi",
+                    IsSuccess = false,
+                };
+            }
             catch (Exception)
             {
-                throw;
+                return new LoginResponse
+                {
+                    Message = "İşlem İptal Edildi",
+                    IsSuccess = false,
+                };
             }
         }
 
@@ -304,15 +341,15 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
         }
 
 
-        public async Task ResetPassword(string token, ResetPasswordDto model)
+        public async Task ResetPassword(string token, ResetPasswordDto model, CancellationToken cancellationToken)
         {
             try
             {
-                var user = await _userManager.FindByEmailAsync(model.Email) ?? throw new Exception($"{model.Email} Adresine Ait Hesap Bulunamadı");
+                ApplicationUser? user = await _userManager.Users.Where(u => u.Email == model.Email).FirstAsync(cancellationToken) ?? throw new Exception($"{model.Email} Adresine Ait Hesap Bulunamadı");
 
                 if (model.NewPassword != model.ConfirmPassword) throw new Exception("Şifreler Eşleşemedi");
 
-                var result = await _userManager.ResetPasswordAsync(user, token, model.NewPassword);
+                IdentityResult? result = await _userManager.ResetPasswordAsync(user, token, model.NewPassword);
 
                 if (!result.Succeeded) throw new Exception("Şifre Değişirilemedi");
 
@@ -323,9 +360,9 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
             }
         }
 
-        public async Task ForgotPassword(string email)
+        public async Task ForgotPassword(string email, CancellationToken cancellationToken)
         {
-            ApplicationUser? user = await _userManager.FindByEmailAsync(email);
+            ApplicationUser? user = await _userManager.Users.Where(u => u.Email == email).FirstAsync(cancellationToken);
 
             if (user != null)
             {
@@ -338,162 +375,208 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
             }
         }
 
-        public async Task<LoginResponse> LoginUserViaGoogle(string token)
+        public async Task<LoginResponse> LoginUserViaGoogle(string token, CancellationToken cancellationToken)
         {
-            ValidationSettings? settings = new GoogleJsonWebSignature.ValidationSettings()
+            try
             {
-                Audience = new List<string>() { _config["ExternalLogin:Google-Client-Id"]! }
-            };
+                ValidationSettings? settings = new()
+                {
+                    Audience = new List<string>() { _config["ExternalLogin:Google-Client-Id"]! }
+                };
 
-            Payload payload = await GoogleJsonWebSignature.ValidateAsync(token, settings);
+                Payload payload = await ValidateAsync(token, settings);
 
-            UserLoginInfo userLoginInfo = new("google", payload.Subject, "GOOGLE");
+                UserLoginInfo userLoginInfo = new("google", payload.Subject, "GOOGLE");
 
-            Patient user = await _patientManager.FindByLoginAsync(userLoginInfo.LoginProvider, userLoginInfo.ProviderKey);
+                Patient user = await _patientManager.FindByLoginAsync(userLoginInfo.LoginProvider, userLoginInfo.ProviderKey);
 
-            bool result = user != null;
-
-            if (user == null)
-            {
-                user = await _patientManager.FindByEmailAsync(payload.Email);
-                var doctor = await _doctorManager.FindByEmailAsync(payload.Email);
-                if (doctor != null) throw new Exception("Lütfen Giriş Yap Ekranından Giriş Yapınız.");
+                bool result = user != null;
 
                 if (user == null)
                 {
-                    user = new()
+                    user = await _patientManager.Users.Where(p => p.Email == payload.Email).FirstAsync(cancellationToken);
+                    var doctor = await _doctorManager.Users.Where(d => d.Email == payload.Email).FirstAsync(cancellationToken);
+
+                    if (doctor != null) throw new Exception("Lütfen Giriş Yap Ekranından Giriş Yapınız.");
+
+                    if (user == null)
                     {
-                        Id = Guid.NewGuid().ToString(),
-                        Email = payload.Email,
-                        Name = payload.GivenName,
-                        Surname = payload.FamilyName,
-                        ProfileImageUrl = payload.Picture,
-                        EmailConfirmed = payload.EmailVerified
-                    };
-                    user.UserName = user.Name.ToLower() + "-" + user.Surname.ToLower();
+                        user = new()
+                        {
+                            Id = Guid.NewGuid().ToString(),
+                            Email = payload.Email,
+                            Name = payload.GivenName,
+                            Surname = payload.FamilyName,
+                            ProfileImageUrl = payload.Picture,
+                            EmailConfirmed = payload.EmailVerified
+                        };
+                        user.UserName = user.Name.ToLower() + "-" + user.Surname.ToLower();
 
-                    char[] turkishChars = { 'ı', 'ğ', 'İ', 'Ğ', 'ç', 'Ç', 'ş', 'Ş', 'ö', 'Ö', 'ü', 'Ü' };
-                    char[] englishChars = { 'i', 'g', 'I', 'G', 'c', 'C', 's', 'S', 'o', 'O', 'u', 'U' };
+                        char[] turkishChars = { 'ı', 'ğ', 'İ', 'Ğ', 'ç', 'Ç', 'ş', 'Ş', 'ö', 'Ö', 'ü', 'Ü' };
+                        char[] englishChars = { 'i', 'g', 'I', 'G', 'c', 'C', 's', 'S', 'o', 'O', 'u', 'U' };
 
-                    for (int i = 0; i < turkishChars.Length; i++)
-                        user.UserName = user.UserName.Replace(turkishChars[i], englishChars[i]);
+                        for (int i = 0; i < turkishChars.Length; i++)
+                            user.UserName = user.UserName.Replace(turkishChars[i], englishChars[i]);
 
-                    user.UserName = Regex.Replace(user.UserName, @"[^a-zA-Z0-9]", "-");
-                    user.UserName += "-" + new Random().Next(1000, 1000000);
+                        user.UserName = Regex.Replace(user.UserName, @"[^a-zA-Z0-9]", "-");
+                        user.UserName += "-" + new Random().Next(1000, 1000000);
 
-                    IdentityResult createResult = await _patientManager.CreateAsync(user);
-                    result = createResult.Succeeded;
+                        cancellationToken.ThrowIfCancellationRequested();
+
+                        IdentityResult createResult = await _patientManager.CreateAsync(user);
+                        result = createResult.Succeeded;
+                    }
                 }
-            }
 
-            if (result)
-            {
-                await _userManager.AddLoginAsync(user, userLoginInfo);
-                string role = _config["Roles:Patient"] ?? throw new InvalidOperationException("Hasta rolü tanımlanmamış.");
-
-                bool roleExists = await _roleManager.RoleExistsAsync(role);
-                if (!roleExists)
+                if (result)
                 {
-                    ApplicationRole newRole = new ApplicationRole();
-                    newRole.Id = Guid.NewGuid().ToString();
-                    newRole.Name = role;
+                    await _userManager.AddLoginAsync(user, userLoginInfo);
+                    string role = _config["Roles:Patient"] ?? throw new InvalidOperationException("Hasta rolü tanımlanmamış.");
 
-                    await _roleManager.CreateAsync(newRole);
+                    bool roleExists = await _roleManager.RoleExistsAsync(role);
+                    if (!roleExists)
+                    {
+                        ApplicationRole newRole = new()
+                        {
+                            Id = Guid.NewGuid().ToString(),
+                            Name = role
+                        };
+
+                        await _roleManager.CreateAsync(newRole);
+                    }
+                    await _userManager.AddToRoleAsync(user, role);
                 }
-                await _userManager.AddToRoleAsync(user, role);
+                else
+                {
+                    throw new Exception("Invalid external authentication.");
+                }
+
+                return new LoginResponse
+                {
+                    JwtTokenDTO = await _jwtService.CreateJwtToken(user),
+                    Message = "",
+                    IsSuccess = true,
+
+                };
             }
-            else
-            {
-                throw new Exception("Invalid external authentication.");
-            }
-
-            return new LoginResponse
-            {
-                JwtTokenDTO = await _jwtService.CreateJwtToken(user),
-                Message = "",
-                IsSuccess = true,
-
-            };
-        }
-
-        public async Task<LoginResponse> LoginUserViaFacebook(string token)
-        {
-            HttpResponseMessage httpResponseMessage = await _httpClient.GetAsync("https://graph.facebook.com/debug_token?input_token=" + token + $"&access_token={_config["ExternalLogin:Facebook-AppId"]}|{_config["ExternalLogin:Facebook-Secret"]}");
-
-            var stringData = await httpResponseMessage.Content.ReadAsStringAsync();
-            var userFB = JsonConvert.DeserializeObject<FacebookUserDto>(stringData);
-
-            if (userFB == null || userFB.Data.IsValid == false)
+            catch (OperationCanceledException)
             {
                 return new LoginResponse
                 {
-                    Message = "",
+                    Message = "İşlem İptal Edildi",
                     IsSuccess = false,
                 };
             }
-            HttpResponseMessage userResponse = await _httpClient.GetAsync($"https://graph.facebook.com/me?fields=first_name,last_name,email&access_token={token}");
-
-            byte[] userContentBytes = await userResponse.Content.ReadAsByteArrayAsync();
-            string userContent = Encoding.UTF8.GetString(userContentBytes);
-
-            var userData = JsonConvert.DeserializeObject<FacebookUserDataDto>(userContent);
-
-            UserLoginInfo userLoginInfo = new("facebook", userFB.Data.UserId, "FACEBOOK");
-
-            Patient user = await _patientManager.FindByLoginAsync(userLoginInfo.LoginProvider, userLoginInfo.ProviderKey);
-
-            bool result = user != null;
-
-            if (user == null)
+            catch (Exception)
             {
-                user = await _patientManager.FindByEmailAsync(userData.Email);
-                if (user == null)
+                return new LoginResponse
                 {
-                    user = new()
-                    {
-                        Id = Guid.NewGuid().ToString(),
-                        Email = userData.Email,
-                        Name = userData.FirstName,
-                        Surname = userData.LastName,
-                        UserName = userData.Email
-                    };
-
-                    IdentityResult createResult = await _patientManager.CreateAsync(user);
-                    result = createResult.Succeeded;
-                }
+                    Message = "İşlem İptal Edildi",
+                    IsSuccess = false,
+                };
             }
-
-            if (result)
-            {
-                await _userManager.AddLoginAsync(user, userLoginInfo);
-                string role = _config["Roles:Patient"] ?? throw new InvalidOperationException("Hasta rolü tanımlanmamış.");
-
-                bool roleExists = await _roleManager.RoleExistsAsync(role);
-                if (!roleExists)
-                {
-                    ApplicationRole newRole = new ApplicationRole();
-                    newRole.Id = Guid.NewGuid().ToString();
-                    newRole.Name = role;
-
-                    await _roleManager.CreateAsync(newRole);
-                }
-                await _userManager.AddToRoleAsync(user, role);
-            }
-            else
-            {
-                throw new Exception("Invalid external authentication.");
-            }
-
-            return new LoginResponse
-            {
-                JwtTokenDTO = await _jwtService.CreateJwtToken(user),
-                Message = "",
-                IsSuccess = true,
-
-            };
 
         }
 
+        public async Task<LoginResponse> LoginUserViaFacebook(string token, CancellationToken cancellationToken)
+        {
+            try
+            {
+                HttpResponseMessage httpResponseMessage = await _httpClient.GetAsync("https://graph.facebook.com/debug_token?input_token=" + token + $"&access_token={_config["ExternalLogin:Facebook-AppId"]}|{_config["ExternalLogin:Facebook-Secret"]}", cancellationToken);
 
+                var stringData = await httpResponseMessage.Content.ReadAsStringAsync(cancellationToken);
+                var userFB = JsonConvert.DeserializeObject<FacebookUserDto>(stringData);
+
+                if (userFB == null || userFB.Data.IsValid == false)
+                {
+                    return new LoginResponse
+                    {
+                        Message = "",
+                        IsSuccess = false,
+                    };
+                }
+                HttpResponseMessage userResponse = await _httpClient.GetAsync($"https://graph.facebook.com/me?fields=first_name,last_name,email&access_token={token}", cancellationToken);
+
+                byte[] userContentBytes = await userResponse.Content.ReadAsByteArrayAsync(cancellationToken);
+                string userContent = Encoding.UTF8.GetString(userContentBytes);
+
+                var userData = JsonConvert.DeserializeObject<FacebookUserDataDto>(userContent) ?? throw new Exception();
+
+                UserLoginInfo userLoginInfo = new("facebook", userFB.Data.UserId, "FACEBOOK");
+
+                Patient user = await _patientManager.FindByLoginAsync(userLoginInfo.LoginProvider, userLoginInfo.ProviderKey);
+
+                bool result = user != null;
+
+                if (user == null)
+                {
+                    user = await _patientManager.Users.Where(p => p.Email == userData.Email).FirstAsync(cancellationToken);
+                    if (user == null)
+                    {
+                        user = new()
+                        {
+                            Id = Guid.NewGuid().ToString(),
+                            Email = userData.Email,
+                            Name = userData.FirstName,
+                            Surname = userData.LastName,
+                            UserName = userData.Email
+                        };
+
+                        cancellationToken.ThrowIfCancellationRequested();
+
+                        IdentityResult createResult = await _patientManager.CreateAsync(user);
+                        result = createResult.Succeeded;
+                    }
+                }
+
+                if (result)
+                {
+                    await _userManager.AddLoginAsync(user, userLoginInfo);
+                    string role = _config["Roles:Patient"] ?? throw new InvalidOperationException("Hasta rolü tanımlanmamış.");
+
+                    bool roleExists = await _roleManager.RoleExistsAsync(role);
+                    if (!roleExists)
+                    {
+                        ApplicationRole newRole = new()
+                        {
+                            Id = Guid.NewGuid().ToString(),
+                            Name = role
+                        };
+
+                        await _roleManager.CreateAsync(newRole);
+                    }
+                    await _userManager.AddToRoleAsync(user, role);
+                }
+                else
+                {
+                    throw new Exception("Invalid external authentication.");
+                }
+
+                return new LoginResponse
+                {
+                    JwtTokenDTO = await _jwtService.CreateJwtToken(user),
+                    Message = "",
+                    IsSuccess = true,
+                };
+            }
+            catch (OperationCanceledException)
+            {
+                return new LoginResponse
+                {
+                    JwtTokenDTO = null,
+                    Message = "İşlem İptal Edildi",
+                    IsSuccess = false,
+                };
+            }
+            catch (Exception)
+            {
+                return new LoginResponse
+                {
+                    JwtTokenDTO = null,
+                    Message = "İşlem İptal Edildi",
+                    IsSuccess = false,
+                };
+            }
+        }
     }
 }

@@ -9,12 +9,12 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
     public interface IAuthService
     {
         Task<RegisterResponse> RegisterForDoctor(RegisterDoctorDto model, CancellationToken cancellationToken);
-        Task<RegisterResponse> RegisterForPatient(RegisterPatientDto model);
-        Task<LoginResponse> LoginUserAsync(LoginDto model);
+        Task<RegisterResponse> RegisterForPatient(RegisterPatientDto model, CancellationToken cancellationToken);
+        Task<LoginResponse> LoginUserAsync(LoginDto model, CancellationToken cancellationToken);
         Task<JwtTokenDTO?> LoginWithRefreshToken(string refreshToken);
-        Task ResetPassword(string token, ResetPasswordDto model);
-        Task ForgotPassword(string email);
-        Task<LoginResponse> LoginUserViaGoogle(string token);
-        Task<LoginResponse> LoginUserViaFacebook(string token);
+        Task ResetPassword(string token, ResetPasswordDto model, CancellationToken cancellationToken);
+        Task ForgotPassword(string email, CancellationToken cancellationToken);
+        Task<LoginResponse> LoginUserViaGoogle(string token, CancellationToken cancellationToken);
+        Task<LoginResponse> LoginUserViaFacebook(string token, CancellationToken cancellationToken);
     }
 }
