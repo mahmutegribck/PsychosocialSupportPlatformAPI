@@ -10,6 +10,7 @@ namespace PsychosocialSupportPlatformAPI.Entity.Entities.Messages
         public int Id { get; set; }
         public required string Text { get; set; }
         public DateTime SendedTime { get; set; }
+        public string? Emotion { get; set; } 
         public bool Status { get; set; } = false;
         public required string SenderId { get; set; }
 

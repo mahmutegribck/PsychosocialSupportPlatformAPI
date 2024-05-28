@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.SignalR;
 using PsychosocialSupportPlatformAPI.Business.Messages;
 using PsychosocialSupportPlatformAPI.Business.Messages.DTOs;
+using PsychosocialSupportPlatformAPI.Business.MLModel;
 
 namespace PsychosocialSupportPlatformAPI.API.Chat
 {
@@ -9,12 +10,17 @@ namespace PsychosocialSupportPlatformAPI.API.Chat
     public class ChatHub : Hub
     {
         private readonly IMessageService _messageService;
+        private readonly IMLModelService _mlModelService;
 
         public static List<string> BagliKullaniciIdler { get; } = new List<string>();
 
-        public ChatHub(IMessageService messageService)
+        public ChatHub(
+            IMessageService messageService,
+            IMLModelService mLModelService
+            )
         {
             _messageService = messageService;
+            _mlModelService = mLModelService;
         }
         public async Task SendMessageToUser(string senderID, string receiverID, string message)
         {
@@ -23,7 +29,8 @@ namespace PsychosocialSupportPlatformAPI.API.Chat
                 SendedTime = DateTime.Now,
                 ReceiverId = receiverID,
                 SenderId = senderID,
-                Text = message
+                Text = message,
+                Emotion = await _mlModelService.GetMessagePrediction(message)
             };
             if (BagliKullaniciIdler.Contains(receiverID))
             {

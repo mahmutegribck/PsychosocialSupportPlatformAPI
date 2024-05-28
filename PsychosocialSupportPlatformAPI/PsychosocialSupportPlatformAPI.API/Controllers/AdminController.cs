@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore;
 using PsychosocialSupportPlatformAPI.Business.Appointments.DTOs.Doctor;
 using PsychosocialSupportPlatformAPI.Business.AppointmentSchedules;
 using PsychosocialSupportPlatformAPI.Business.DoctorSchedules;
+using PsychosocialSupportPlatformAPI.Business.MLModel;
+using PsychosocialSupportPlatformAPI.Business.MLModel.DTOs;
 using PsychosocialSupportPlatformAPI.Business.Statistics.Appointments;
 using PsychosocialSupportPlatformAPI.Business.Statistics.Videos;
 using PsychosocialSupportPlatformAPI.Business.Users;
@@ -30,6 +32,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
         private readonly IAppointmentStatisticsService _appointmentStatisticsService;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly IAppointmentScheduleService _appointmentScheduleService;
+        private readonly IMLModelService _modelBuilderService;
 
 
 
@@ -40,7 +43,8 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
             IVideoStatisticsService videoStatisticsService,
             IAppointmentStatisticsService appointmentStatisticsService,
             IWebHostEnvironment webHostEnvironment,
-            IAppointmentScheduleService appointmentScheduleService
+            IAppointmentScheduleService appointmentScheduleService,
+            IMLModelService modelBuilderService
             )
         {
             _doctorScheduleService = doctorScheduleService;
@@ -50,9 +54,16 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
             _appointmentStatisticsService = appointmentStatisticsService;
             _webHostEnvironment = webHostEnvironment;
             _appointmentScheduleService = appointmentScheduleService;
+            _modelBuilderService = modelBuilderService;
         }
 
 
+        [HttpPost]
+        public async Task<IActionResult> CreateMLModel([FromForm] UploadDataSetDTO uploadDataSetDTO)
+        {
+            await _modelBuilderService.CreateMLModel(uploadDataSetDTO);
+            return Ok();
+        }
 
         [HttpGet]
         public async Task<IActionResult> GetAllUnConfirmedDoctor(CancellationToken cancellationToken)

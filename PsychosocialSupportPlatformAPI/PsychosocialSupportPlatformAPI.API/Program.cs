@@ -11,6 +11,7 @@ using PsychosocialSupportPlatformAPI.Business.Auth.JwtToken;
 using PsychosocialSupportPlatformAPI.Business.DoctorSchedules;
 using PsychosocialSupportPlatformAPI.Business.Mails;
 using PsychosocialSupportPlatformAPI.Business.Messages;
+using PsychosocialSupportPlatformAPI.Business.MLModel;
 using PsychosocialSupportPlatformAPI.Business.Statistics.Appointments;
 using PsychosocialSupportPlatformAPI.Business.Statistics.Videos;
 using PsychosocialSupportPlatformAPI.Business.Users;
@@ -123,6 +124,7 @@ builder.Services.AddScoped<IAppointmentStatisticsService, AppointmentStatisticsS
 
 builder.Services.AddTransient<IMailService, MailService>();
 
+builder.Services.AddTransient<IMLModelService, MLModelService>();
 
 builder.Services.AddHttpClient();
 
