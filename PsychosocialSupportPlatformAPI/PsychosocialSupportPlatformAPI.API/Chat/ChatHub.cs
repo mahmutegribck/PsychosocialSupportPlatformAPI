@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.SignalR;
 using PsychosocialSupportPlatformAPI.Business.Messages;
 using PsychosocialSupportPlatformAPI.Business.Messages.DTOs;
-using PsychosocialSupportPlatformAPI.Business.MLModel;
 
 namespace PsychosocialSupportPlatformAPI.API.Chat
 {
@@ -36,13 +35,7 @@ namespace PsychosocialSupportPlatformAPI.API.Chat
 
         public override async Task OnConnectedAsync()
         {
-            var kullaniciId = Context.User?.Identity?.Name;
-
-            if (kullaniciId == null)
-                throw new Exception("Kullanıcı bulunamadı.");
-
-            if (kullaniciId == null)
-                throw new Exception("kullanici adı bulunamadı.");
+            var kullaniciId = (Context.User?.Identity?.Name) ?? throw new Exception("Kullanıcı bulunamadı.");
 
             lock (BagliKullaniciIdler)
             {
@@ -55,13 +48,9 @@ namespace PsychosocialSupportPlatformAPI.API.Chat
 
         public override async Task OnDisconnectedAsync(Exception? exception)
         {
-            var kullaniciId = Context.User?.Identity?.Name;
+            var kullaniciId = (Context.User?.Identity?.Name) 
+                ?? throw new Exception($"kullanici bulunamadı. ex.Message: {exception?.Message}");
 
-            if (kullaniciId == null)
-            {
-                var mesaj = $"kullanici bulunamadı. ex.Message: {exception?.Message}";
-                throw new Exception(mesaj);
-            }
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, kullaniciId);
 
             lock (BagliKullaniciIdler)

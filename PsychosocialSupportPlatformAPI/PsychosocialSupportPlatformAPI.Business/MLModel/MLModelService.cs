@@ -8,6 +8,7 @@ namespace PsychosocialSupportPlatformAPI.Business.MLModel
         public async Task CreateAIModel(UploadDataSetDTO uploadDataSetDTO, CancellationToken cancellationToken)
         {
             string? rootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+            string basePath = rootPath + "\\MLDataSet\\";
 
             if (rootPath == null || uploadDataSetDTO.DataSetFile == null || uploadDataSetDTO.DataSetFile.Length == 0)
             {
@@ -17,14 +18,10 @@ namespace PsychosocialSupportPlatformAPI.Business.MLModel
             {
                 throw new Exception("Lütfen .csv Uzantılı Dosya Yükleyiniz");
             }
-
-            if (System.IO.File.Exists(rootPath + "\\MLDataSet\\DataSet.csv"))
+            if (System.IO.File.Exists(basePath + "DataSet.csv"))
             {
-                File.Delete(rootPath + "\\MLDataSet\\DataSet.csv");
+                File.Delete(basePath + "DataSet.csv");
             }
-
-            string basePath = rootPath + "\\MLDataSet\\";
-
             if (!System.IO.Directory.Exists(basePath))
             {
                 System.IO.Directory.CreateDirectory(basePath);
@@ -32,19 +29,16 @@ namespace PsychosocialSupportPlatformAPI.Business.MLModel
             string newFileName = Path.ChangeExtension("DataSet", Path.GetExtension(uploadDataSetDTO.DataSetFile.FileName));
 
             string filePath = string.Concat($"{basePath}", newFileName);
-
             using (var stream = new FileStream(filePath, FileMode.Create))
             {
                 await uploadDataSetDTO.DataSetFile.CopyToAsync(stream, cancellationToken);
             }
-
             var mlContext = new MLContext();
             var dataView = mlContext.Data.LoadFromTextFile<SentimentData>(
               filePath, separatorChar: ',', hasHeader: false);
 
             var trainTestSplit = mlContext.Data.TrainTestSplit(dataView, testFraction: 0.2);
             var trainSet = trainTestSplit.TrainSet;
-            var testSet = trainTestSplit.TestSet;
 
             var dataProcessPipeline = mlContext.Transforms.Conversion.MapValueToKey("Label")
                 .Append(mlContext.Transforms.Text.FeaturizeText(
@@ -61,8 +55,7 @@ namespace PsychosocialSupportPlatformAPI.Business.MLModel
               .Append(mlContext.Transforms.Conversion.MapKeyToValue("PredictedLabel"));
 
             var trainedModel = trainingPipeline.Fit(trainSet);
-
-            var modelPath = rootPath + "\\MLDataSet\\DataSet.zip";
+            var modelPath = basePath + "DataSet.zip";
 
             if (System.IO.File.Exists(modelPath))
             {

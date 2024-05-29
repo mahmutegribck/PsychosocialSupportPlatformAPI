@@ -13,6 +13,7 @@ using PsychosocialSupportPlatformAPI.Business.Users.DTOs;
 using PsychosocialSupportPlatformAPI.Business.Users.DTOs.DoctorTitle;
 using PsychosocialSupportPlatformAPI.Business.Videos;
 using PsychosocialSupportPlatformAPI.Business.Videos.DTOs;
+using PsychosocialSupportPlatformAPI.Entity.Enums;
 using System.ComponentModel.DataAnnotations;
 
 namespace PsychosocialSupportPlatformAPI.API.Controllers
@@ -73,7 +74,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
 
 
         [HttpPatch]
-        public async Task<IActionResult> ConfirmDoctor([FromQuery] string doctorUserName, CancellationToken cancellationToken)
+        public async Task<IActionResult> ConfirmDoctor([FromQuery, Required] string doctorUserName, CancellationToken cancellationToken)
         {
             await _userService.ConfirmDoctor(doctorUserName, cancellationToken);
             return Ok();
@@ -89,7 +90,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
 
 
         [HttpDelete]
-        public async Task<IActionResult> DeleteDoctorTitle([FromQuery] int doctorTitleId, CancellationToken cancellationToken)
+        public async Task<IActionResult> DeleteDoctorTitle([FromQuery, Required] int doctorTitleId, CancellationToken cancellationToken)
         {
             await _userService.DeleteDoctorTitle(doctorTitleId, cancellationToken);
             return Ok();
@@ -97,7 +98,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> GetAllDoctorSchedulesByDate([FromQuery] string day, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetAllDoctorSchedulesByDate([FromQuery, Required] string day, CancellationToken cancellationToken)
         {
             IEnumerable<object> allDoctorSchedules = await _doctorScheduleService.GetAllDoctorSchedulesByDate(DateTime.Parse(day), cancellationToken);
             if (!allDoctorSchedules.Any()) return NotFound();
@@ -106,12 +107,12 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> GetDoctorAppointmentByDateAndTimeRange(GetDoctorAppointmentByDateAndTimeRangeDTO getDoctorAppointmentByDateAndTimeRangeDTO, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetDoctorAppointmentByDateAndTimeRange([FromQuery, Required] string doctorId, [FromQuery, Required] string day, [FromQuery, Required] TimeRange timeRange, CancellationToken cancellationToken)
         {
             string? currentUserId = User.Identity?.Name;
             if (currentUserId == null) return Unauthorized();
 
-            GetDoctorAppointmentDTO? allDoctorAppointments = await _appointmentScheduleService.GetDoctorAppointmentByDateAndTimeRange(getDoctorAppointmentByDateAndTimeRangeDTO, cancellationToken);
+            GetDoctorAppointmentDTO? allDoctorAppointments = await _appointmentScheduleService.GetDoctorAppointmentByDateAndTimeRange(new GetDoctorAppointmentByDateAndTimeRangeDTO { DoctorId = doctorId, Day = day, TimeRange = timeRange }, cancellationToken);
 
             if (allDoctorAppointments == null) return NotFound();
 

@@ -19,12 +19,9 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.DataSeeding
                 NormalizedUserName = "ADMIN",
                 SecurityStamp = Guid.NewGuid().ToString()
             };
-
             PasswordHasher<ApplicationUser> passwordHasher = new();
             applicationUser.PasswordHash = passwordHasher.HashPassword(applicationUser, "Admin*123");
-
             builder.Entity<ApplicationUser>().HasData(applicationUser);
-
             ApplicationRole applicationRole = new()
             {
                 Id = Guid.NewGuid().ToString(),
@@ -32,12 +29,9 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.DataSeeding
                 ConcurrencyStamp = "1",
                 NormalizedName = "ADMIN"
             };
-
             builder.Entity<ApplicationRole>().HasData(applicationRole);
-
-            builder.Entity<IdentityUserRole<string>>().HasData(
-                new IdentityUserRole<string>() { RoleId = applicationRole.Id, UserId = applicationUser.Id }
-                );
+            builder.Entity<IdentityUserRole<string>>()
+                .HasData(new IdentityUserRole<string>() { RoleId = applicationRole.Id, UserId = applicationUser.Id });
         }
     }
 }

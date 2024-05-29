@@ -383,11 +383,8 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
                 {
                     Audience = new List<string>() { _config["ExternalLogin:Google-Client-Id"]! }
                 };
-
                 Payload payload = await ValidateAsync(token, settings);
-
                 UserLoginInfo userLoginInfo = new("google", payload.Subject, "GOOGLE");
-
                 Patient user = await _patientManager.FindByLoginAsync(userLoginInfo.LoginProvider, userLoginInfo.ProviderKey);
 
                 bool result = user != null;
@@ -427,36 +424,29 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
                         result = createResult.Succeeded;
                     }
                 }
-
-                if (result)
-                {
-                    await _userManager.AddLoginAsync(user, userLoginInfo);
-                    string role = _config["Roles:Patient"] ?? throw new InvalidOperationException("Hasta rolü tanımlanmamış.");
-
-                    bool roleExists = await _roleManager.RoleExistsAsync(role);
-                    if (!roleExists)
-                    {
-                        ApplicationRole newRole = new()
-                        {
-                            Id = Guid.NewGuid().ToString(),
-                            Name = role
-                        };
-
-                        await _roleManager.CreateAsync(newRole);
-                    }
-                    await _userManager.AddToRoleAsync(user, role);
-                }
-                else
-                {
+                if (!result)
                     throw new Exception("Invalid external authentication.");
+
+                await _userManager.AddLoginAsync(user, userLoginInfo);
+                string role = _config["Roles:Patient"] ?? throw new InvalidOperationException("Hasta rolü tanımlanmamış.");
+
+                bool roleExists = await _roleManager.RoleExistsAsync(role);
+                if (!roleExists)
+                {
+                    ApplicationRole newRole = new()
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        Name = role
+                    };
+                    await _roleManager.CreateAsync(newRole);
                 }
+                await _userManager.AddToRoleAsync(user, role);
 
                 return new LoginResponse
                 {
                     JwtTokenDTO = await _jwtService.CreateJwtToken(user),
                     Message = "",
                     IsSuccess = true,
-
                 };
             }
             catch (OperationCanceledException)
@@ -475,7 +465,6 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
                     IsSuccess = false,
                 };
             }
-
         }
 
         public async Task<LoginResponse> LoginUserViaFacebook(string token, CancellationToken cancellationToken)
@@ -521,14 +510,12 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
                             Surname = userData.LastName,
                             UserName = userData.Email
                         };
-
                         cancellationToken.ThrowIfCancellationRequested();
 
                         IdentityResult createResult = await _patientManager.CreateAsync(user);
                         result = createResult.Succeeded;
                     }
                 }
-
                 if (result)
                 {
                     await _userManager.AddLoginAsync(user, userLoginInfo);

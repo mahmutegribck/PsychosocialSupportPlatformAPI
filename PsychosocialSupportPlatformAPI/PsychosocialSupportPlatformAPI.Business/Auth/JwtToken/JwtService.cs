@@ -27,21 +27,17 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.JwtToken
             var jwttoken = new JwtTokenDTO();
             var tokenhandler = new JwtSecurityTokenHandler();
             SymmetricSecurityKey key = new(Encoding.UTF8.GetBytes(_configuration["JWT:Key"] ?? string.Empty));
-
             jwttoken.AccessTokenTime = DateTime.UtcNow.AddHours(1);
-
             var claims = new List<Claim>
             {
                 new(ClaimTypes.Name, user.Id.ToString()),
                 new(ClaimTypes.Email, user.Email)
             };
-
             var userRoles = await _userManager.GetRolesAsync(user);
             foreach (var role in userRoles)
             {
                 claims.Add(new Claim(ClaimTypes.Role, role));
             }
-
             var tokendesc = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
@@ -50,12 +46,15 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.JwtToken
                 Expires = jwttoken.AccessTokenTime,
                 SigningCredentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature)
             };
-
             var token = tokenhandler.CreateToken(tokendesc);
             var finaltoken = tokenhandler.WriteToken(token);
 
-
-            return new JwtTokenDTO() { AccessToken = finaltoken, AccessTokenTime = jwttoken.AccessTokenTime, RefreshToken = await GenerateRefreshToken(user, jwttoken.AccessTokenTime) };
+            return new JwtTokenDTO() 
+            { 
+                AccessToken = finaltoken, 
+                AccessTokenTime = jwttoken.AccessTokenTime, 
+                RefreshToken = await GenerateRefreshToken(user, jwttoken.AccessTokenTime) 
+            };
         }
 
 

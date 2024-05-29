@@ -53,20 +53,14 @@ builder.Services.AddAuthentication(options =>
                  ValidateLifetime = true,
                  ValidateIssuerSigningKey = true,
                  ClockSkew = TimeSpan.Zero,
-
                  ValidAudience = builder.Configuration["JWT:Audience"],
-
                  ValidIssuer = builder.Configuration["JWT:Issuer"],
-
 
                  IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"] ?? string.Empty)),
                  LifetimeValidator = (notBefore, expires, securityToken, validationParameters) => expires != null ? expires > DateTime.UtcNow : false,
 
                  NameClaimType = ClaimTypes.Name //JWT üzerinde Name claimne karþýlýk gelen deðeri User.Identity.Name propertysinden elde edebiliriz.
-
              };
-
-
              options.Events = new JwtBearerEvents
              {
                  OnMessageReceived = context =>
@@ -82,7 +76,6 @@ builder.Services.AddAuthentication(options =>
              };
          });
 
-
 builder.Services.AddAuthorizationBuilder();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
@@ -91,7 +84,6 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<PsychosocialSupportPlatformDBContext>(options => options.UseSqlServer(connectionString));
 
 IdentityConfigurator.ConfigureIdentity(builder.Services);
-
 
 builder.Services.AddSignalR();
 
@@ -131,7 +123,6 @@ builder.Services.AddHttpClient();
 builder.Services.AddCors(options => options.AddDefaultPolicy(policy => policy.AllowAnyMethod().AllowAnyHeader().AllowCredentials().SetIsOriginAllowed(origin => true)));
 
 var app = builder.Build();
-
 
 app.UseSwagger();
 app.UseSwaggerUI();

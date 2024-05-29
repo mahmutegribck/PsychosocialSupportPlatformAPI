@@ -10,6 +10,5 @@ namespace PsychosocialSupportPlatformAPI.Business.Mails
         Task SendEmailToDoctorForConfirmationAccount(Doctor doctor);
         Task SendEmailForForgotPassword(ApplicationUser user, string token);
         Task SendEmailToDoctorForEmergency(string doctorId, string patientId, string message);
-
     }
 }
