@@ -14,8 +14,9 @@ namespace PsychosocialSupportPlatformAPI.Business.Users
         Task<IEnumerable<GetPatientDto>> GetAllPatients(CancellationToken cancellationToken);
         Task<IEnumerable<GetDoctorDto>> GetAllDoctors(CancellationToken cancellationToken);
         Task<IdentityResult> DeleteUser(string id, CancellationToken cancellationToken);
-        Task<IdentityResult> UpdateDoctor(string currentUserId, UpdateDoctorDTO updateDoctorDTO, CancellationToken cancellationToken);
-        Task<IdentityResult> UpdatePatient(string currentUserId, UpdatePatientDTO updatePatientDTO, CancellationToken cancellationToken);
+        Task<IdentityResult> UpdateDoctor(string doctorId, UpdateDoctorDTO updateDoctorDTO, CancellationToken cancellationToken);
+        Task<IdentityResult> UpdateDoctorTitle(string doctorId, int doctorTitleId, CancellationToken cancellationToken);
+        Task<IdentityResult> UpdatePatient(string patientId, UpdatePatientDTO updatePatientDTO, CancellationToken cancellationToken);
         Task<IEnumerable<GetPatientDto>> GetAllPatientsByDoctorId(string doctorId);
         Task UploadProfileImage(IFormFile formFile, string userId, CancellationToken cancellationToken);
         Task DeleteProfileImage(string userId, CancellationToken cancellationToken);

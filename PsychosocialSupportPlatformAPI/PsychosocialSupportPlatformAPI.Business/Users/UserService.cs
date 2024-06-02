@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Microsoft.ML.Transforms.Text;
 using PsychosocialSupportPlatformAPI.Business.Mails;
 using PsychosocialSupportPlatformAPI.Business.Users.DTOs;
 using PsychosocialSupportPlatformAPI.Business.Users.DTOs.Admin;
@@ -20,6 +19,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Users
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly UserManager<Doctor> _doctorManager;
         private readonly IConfiguration _config;
         private readonly IMailService _mailService;
 
@@ -28,12 +28,14 @@ namespace PsychosocialSupportPlatformAPI.Business.Users
             IUserRepository userRepository,
             IMapper mapper,
             UserManager<ApplicationUser> userManager,
+            UserManager<Doctor> doctorManager,
             IConfiguration config,
             IMailService mailService)
         {
             _userRepository = userRepository;
             _mapper = mapper;
             _userManager = userManager;
+            _doctorManager = doctorManager;
             _config = config;
             _mailService = mailService;
         }
@@ -101,16 +103,22 @@ namespace PsychosocialSupportPlatformAPI.Business.Users
             return _mapper.Map<GetAdminDto>(user);
         }
 
-        public async Task<IdentityResult> UpdateDoctor(string currentUserId, UpdateDoctorDTO updateDoctorDTO, CancellationToken cancellationToken)
+        public async Task<IdentityResult> UpdateDoctor(string doctorId, UpdateDoctorDTO updateDoctorDTO, CancellationToken cancellationToken)
         {
-            if (await _userRepository.GetDoctorTitleById(updateDoctorDTO.DoctorTitleId, cancellationToken) == null) throw new Exception("Ünvan Bulunamadı");
-
-            return await _userRepository.UpdateDoctor(currentUserId, _mapper.Map<Doctor>(updateDoctorDTO));
+            return await _userRepository.UpdateDoctor(doctorId, _mapper.Map<Doctor>(updateDoctorDTO));
         }
 
-        public async Task<IdentityResult> UpdatePatient(string currentUserId, UpdatePatientDTO updatePatientDTO, CancellationToken cancellationToken)
+        public async Task<IdentityResult> UpdateDoctorTitle(string doctorId, int doctorTitleId, CancellationToken cancellationToken)
         {
-            return await _userRepository.UpdatePatient(currentUserId, _mapper.Map<Patient>(updatePatientDTO), cancellationToken);
+            DoctorTitle? doctorTitle = await _userRepository.GetDoctorTitleById(doctorTitleId, cancellationToken) ?? throw new Exception("Ünvan Bulunamadı");
+            Doctor? doctor = await _doctorManager.Users.Where(d => d.Id == doctorId).FirstOrDefaultAsync(cancellationToken) ?? throw new Exception("Doktor Bulunamadı");
+
+            return await _userRepository.UpdateDoctorTitle(doctor, doctorTitle);
+        }
+
+        public async Task<IdentityResult> UpdatePatient(string patientId, UpdatePatientDTO updatePatientDTO, CancellationToken cancellationToken)
+        {
+            return await _userRepository.UpdatePatient(patientId, _mapper.Map<Patient>(updatePatientDTO), cancellationToken);
         }
 
         public async Task UploadProfileImage(IFormFile formFile, string userId, CancellationToken cancellationToken)

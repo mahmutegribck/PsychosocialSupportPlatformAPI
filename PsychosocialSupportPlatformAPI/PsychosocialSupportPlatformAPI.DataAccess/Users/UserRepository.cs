@@ -133,10 +133,17 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Users
 
             updatedDoctor.Name = doctor.Name;
             updatedDoctor.Surname = doctor.Surname;
-            updatedDoctor.DoctorTitle.Title = doctor.DoctorTitle.Title;
             updatedDoctor.PhoneNumber = doctor.PhoneNumber;
 
             IdentityResult result = await _doctorManager.UpdateAsync(updatedDoctor);
+            await _context.SaveChangesAsync();
+            return result;
+        }
+
+
+        public async Task<IdentityResult> UpdateDoctorTitle(Doctor doctor, DoctorTitle doctorTitle)
+        {
+            IdentityResult result = await _doctorManager.UpdateAsync(doctor);
             await _context.SaveChangesAsync();
             return result;
         }

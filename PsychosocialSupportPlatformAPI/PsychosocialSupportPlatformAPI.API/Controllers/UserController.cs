@@ -1,16 +1,11 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using PsychosocialSupportPlatformAPI.Business.Messages;
-using PsychosocialSupportPlatformAPI.Business.Messages.DTOs;
 using PsychosocialSupportPlatformAPI.Business.Users;
 using PsychosocialSupportPlatformAPI.Business.Users.DTOs;
 using PsychosocialSupportPlatformAPI.Business.Users.DTOs.DoctorDTOs;
 using PsychosocialSupportPlatformAPI.Business.Users.DTOs.DoctorTitle;
 using PsychosocialSupportPlatformAPI.Business.Users.DTOs.PatientDTOs;
-using PsychosocialSupportPlatformAPI.Entity.Entities.Users;
 
 namespace PsychosocialSupportPlatformAPI.API.Controllers
 {
@@ -19,25 +14,13 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
     [Authorize]
     public class UserController : ControllerBase
     {
-        private readonly UserManager<Patient> _patientManager;
-        private readonly IMapper _mapper;
         private readonly IUserService _userService;
-        private readonly IMessageService _messageService;
-        private readonly IWebHostEnvironment _webHostEnvironment;
 
         public UserController(
-            IMapper mapper,
-            UserManager<Patient> patientManager,
-            IUserService userService,
-            IMessageService messageService,
-            IWebHostEnvironment webHostEnvironment
+            IUserService userService
             )
         {
-            _mapper = mapper;
-            _patientManager = patientManager;
             _userService = userService;
-            _messageService = messageService;
-            _webHostEnvironment = webHostEnvironment;
         }
 
 
@@ -128,6 +111,22 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
             if (currentUserId == null) return Unauthorized();
 
             IdentityResult result = await _userService.UpdateDoctor(currentUserId, updateDoctorDTO, cancellationToken);
+            if (result.Succeeded)
+            {
+                return Ok();
+            }
+            return BadRequest();
+        }
+
+
+        [HttpPatch]
+        [Authorize(Roles = "Doctor")]
+        public async Task<IActionResult> UpdateDoctorTitle(int doctorTitleId, CancellationToken cancellationToken)
+        {
+            var currentUserId = User.Identity?.Name;
+            if (currentUserId == null) return Unauthorized();
+
+            IdentityResult result = await _userService.UpdateDoctorTitle(currentUserId, doctorTitleId, cancellationToken);
             if (result.Succeeded)
             {
                 return Ok();

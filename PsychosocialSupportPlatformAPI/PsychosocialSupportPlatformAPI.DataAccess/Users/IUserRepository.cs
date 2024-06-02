@@ -12,6 +12,7 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Users
         Task<IEnumerable<Doctor>> GetAllDoctors(CancellationToken cancellationToken);
         Task<IdentityResult> DeleteUser(string id, CancellationToken cancellationToken);
         Task<IdentityResult> UpdateDoctor(string currentUserId, Doctor doctor);
+        Task<IdentityResult> UpdateDoctorTitle(Doctor doctor, DoctorTitle doctorTitle);
         Task<IdentityResult> UpdatePatient(string currentUserId, Patient patient, CancellationToken cancellationToken);
         Task<IEnumerable<Patient>> GetAllPatientsByDoctorId(string doctorId);
         Task AddDoctorTitle(DoctorTitle doctorTitle, CancellationToken cancellationToken);
