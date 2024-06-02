@@ -17,7 +17,8 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.DataSeeding
                 Email = "admin@gmail.com",
                 NormalizedEmail = "ADMIN@GMAIL.COM",
                 NormalizedUserName = "ADMIN",
-                SecurityStamp = Guid.NewGuid().ToString()
+                SecurityStamp = Guid.NewGuid().ToString(),
+                EmailConfirmed = true
             };
             PasswordHasher<ApplicationUser> passwordHasher = new();
             applicationUser.PasswordHash = passwordHasher.HashPassword(applicationUser, "Admin*123");
