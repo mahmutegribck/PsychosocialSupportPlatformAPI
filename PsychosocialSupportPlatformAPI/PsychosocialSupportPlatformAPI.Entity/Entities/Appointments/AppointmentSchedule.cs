@@ -17,12 +17,10 @@ namespace PsychosocialSupportPlatformAPI.Entity.Entities.Appointments
         public TimeRange TimeRange { get; set; }
         public bool Status { get; set; } = false;
         public string? URL { get; set; }
-
         public string? PatientId { get; set; }
         public Patient? Patient { get; set; }
         public required string DoctorId { get; set; }
         public Doctor Doctor { get; set; } = null!;
-
         public ICollection<AppointmentStatistics> AppointmentStatistics { get; set; }
 
     }

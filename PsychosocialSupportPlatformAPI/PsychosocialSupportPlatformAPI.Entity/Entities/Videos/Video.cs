@@ -15,7 +15,6 @@ namespace PsychosocialSupportPlatformAPI.Entity.Entities.Videos
         public required string Url { get; set; }
         public required string Path { get; set; }
         public required string VideoSlug { get; set; }
-
         public ICollection<VideoStatistics> Statistics { get; set; }
     }
 }

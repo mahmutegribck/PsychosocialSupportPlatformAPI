@@ -17,7 +17,6 @@ namespace PsychosocialSupportPlatformAPI.Entity.Entities.Appointments
         public bool FourteenToFifteen { get; set; }
         public bool FifteenToSixteen { get; set; }
         public bool SixteenToSeventeen { get; set; }
-
         public required string DoctorId { get; set; }
         public required Doctor Doctor { get; set; }
 
