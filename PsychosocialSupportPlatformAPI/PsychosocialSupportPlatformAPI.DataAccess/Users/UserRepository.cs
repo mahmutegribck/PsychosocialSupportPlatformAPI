@@ -143,6 +143,7 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Users
 
         public async Task<IdentityResult> UpdateDoctorTitle(Doctor doctor, DoctorTitle doctorTitle)
         {
+            doctor.DoctorTitleId = doctorTitle.Id;
             IdentityResult result = await _doctorManager.UpdateAsync(doctor);
             await _context.SaveChangesAsync();
             return result;

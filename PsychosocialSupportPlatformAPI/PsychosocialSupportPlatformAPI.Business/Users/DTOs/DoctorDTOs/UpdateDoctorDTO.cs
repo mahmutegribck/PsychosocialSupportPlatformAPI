@@ -9,7 +9,6 @@ namespace PsychosocialSupportPlatformAPI.Business.Users.DTOs.DoctorDTOs
 
         [Required(ErrorMessage = "Soyisim zorunlu")]
         public required string Surname { get; set; }
-        public int DoctorTitleId { get; set; }
 
         [Required(ErrorMessage = "Telefon numarası zorunlu")]
         public required string PhoneNumber { get; set; }

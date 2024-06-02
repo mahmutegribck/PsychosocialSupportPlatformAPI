@@ -1,8 +1,10 @@
-﻿using PsychosocialSupportPlatformAPI.Business.Auth.AuthService.DTOs;
+﻿using Newtonsoft.Json.Linq;
+using PsychosocialSupportPlatformAPI.Business.Auth.AuthService.DTOs;
 using PsychosocialSupportPlatformAPI.Business.Auth.AuthService.DTOs.DoctorDTOs;
 using PsychosocialSupportPlatformAPI.Business.Auth.AuthService.DTOs.PatientDTOs;
 using PsychosocialSupportPlatformAPI.Business.Auth.AuthService.ResponseModel;
 using PsychosocialSupportPlatformAPI.Business.Auth.JwtToken.DTOs;
+using System.Threading;
 
 namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
 {
@@ -14,6 +16,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
         Task<JwtTokenDTO?> LoginWithRefreshToken(string refreshToken);
         Task ResetPassword(string token, ResetPasswordDto model, CancellationToken cancellationToken);
         Task ForgotPassword(string email, CancellationToken cancellationToken);
+        Task ConfirmEmail(string email, string token, CancellationToken cancellationToken);
         Task<LoginResponse> LoginUserViaGoogle(string token, CancellationToken cancellationToken);
         Task<LoginResponse> LoginUserViaFacebook(string token, CancellationToken cancellationToken);
     }

@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Google.Apis.Auth;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -16,8 +15,6 @@ using PsychosocialSupportPlatformAPI.Business.Users;
 using PsychosocialSupportPlatformAPI.Entity.Entities.Users;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading;
-using System.Web;
 using static Google.Apis.Auth.GoogleJsonWebSignature;
 
 namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
@@ -112,9 +109,13 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
                     }
                     await _userManager.AddToRoleAsync(newUser, role);
 
+                    string? token = await _userManager.GenerateEmailConfirmationTokenAsync(newUser) ?? throw new Exception("Token Oluşturulamadı");
+                    Console.WriteLine(token);
+                    await _mailService.SendEmailForConfirmEmail(newUser.Email, token);
+
                     return new RegisterResponse
                     {
-                        Message = "Kullanıcı başarılı şekilde oluşturuldu.",
+                        Message = "Kullanıcı başarılı şekilde oluşturuldu. Mail adresinizi onaylamak için mail adresinizi kontrol edin.",
                         IsSuccess = true,
                     };
                 }
@@ -209,9 +210,12 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
                     }
                     await _userManager.AddToRoleAsync(newUser, role);
 
+                    string? token = await _userManager.GenerateEmailConfirmationTokenAsync(newUser) ?? throw new Exception("Token Oluşturulamadı");
+                    await _mailService.SendEmailForConfirmEmail(newUser.Email, token);
+
                     return new RegisterResponse
                     {
-                        Message = "Kullanıcı başarılı şekilde oluşturuldu.",
+                        Message = "Kullanıcı başarılı şekilde oluşturuldu. Mail adresinizi onaylamak için mail adresinizi kontrol edin.",
                         IsSuccess = true,
                     };
                 }
@@ -266,6 +270,15 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
                     return new LoginResponse
                     {
                         Message = "Kullanıcı Bulunamadı",
+                        IsSuccess = false,
+                    };
+                }
+
+                if (!user.EmailConfirmed)
+                {
+                    return new LoginResponse
+                    {
+                        Message = "Kullanıcı Mail Adresi Onaylanmamış. Lütfen Mail Adresinizi Kontrol Edin.",
                         IsSuccess = false,
                     };
                 }
@@ -362,12 +375,27 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
 
         public async Task ForgotPassword(string email, CancellationToken cancellationToken)
         {
-            ApplicationUser? user = await _userManager.Users.Where(u => u.Email == email).FirstAsync(cancellationToken);
+            ApplicationUser? user = await _userManager.Users.AsNoTracking().Where(u => u.Email == email).FirstAsync(cancellationToken);
 
             if (user != null)
             {
                 string? token = await _userManager.GeneratePasswordResetTokenAsync(user) ?? throw new Exception("Token Oluşturulamadı");
                 await _mailService.SendEmailForForgotPassword(user, token);
+            }
+            else
+            {
+                throw new Exception($"{email} Adresine Ait Kullanıcı Bulunamadı");
+            }
+        }
+
+        public async Task ConfirmEmail(string email, string token, CancellationToken cancellationToken)
+        {
+            ApplicationUser? user = await _userManager.Users.Where(u => u.Email == email).FirstAsync(cancellationToken);
+
+            if (user != null)
+            {
+                IdentityResult result = await _userManager.ConfirmEmailAsync(user, token);
+                if (!result.Succeeded) throw new Exception("Hesabınız Onaylanamadı");
             }
             else
             {

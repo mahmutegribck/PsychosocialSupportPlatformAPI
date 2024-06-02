@@ -102,6 +102,15 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
         }
 
 
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> ConfirmEmail([FromQuery, Required] string email, [FromQuery, Required] string token, CancellationToken cancellationToken)
+        {
+            await _authService.ConfirmEmail(email, token, cancellationToken);
+            return Ok("Hesabınız Doğrulandı");
+        }
+
+
         [HttpPost]
         public async Task<IActionResult> LoginViaGoogle([FromBody] string token, CancellationToken cancellationToken)
         {

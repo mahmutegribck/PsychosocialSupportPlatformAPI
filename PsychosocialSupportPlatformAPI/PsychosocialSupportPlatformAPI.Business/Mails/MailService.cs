@@ -117,6 +117,29 @@ namespace PsychosocialSupportPlatformAPI.Business.Mails
             await client.SendMailAsync(mail);
         }
 
+        public async Task SendEmailForConfirmEmail(string email, string token)
+        {
+            var mail = new MailMessage()
+            {
+                From = new MailAddress(_configuration["Mailing:Sender"]!),
+                Subject = "Hesabınızı Onaylayın",
+                IsBodyHtml = true,
+                Body = $"Hesabınızı Onaylamak İçin Bağlantıya Tıklayın:</h3><br>" +
+                $"{_configuration["Urls:BaseUrl"]}/api/Authentication/ConfirmEmail?email={HttpUtility.UrlEncode(email)}&token={HttpUtility.UrlEncode(token)}",
+            };
+            mail.To.Add(new MailAddress(email));
+
+            using SmtpClient client = new();
+            client.EnableSsl = true;
+            client.UseDefaultCredentials = false;
+            client.Credentials = new NetworkCredential(_configuration["Mailing:Sender"], _configuration["Mailing:Password"]);
+            client.Host = _configuration["Mailing:Host"]!;
+            client.Port = Convert.ToInt32(_configuration["Mailing:Port"]);
+            client.DeliveryMethod = SmtpDeliveryMethod.Network;
+
+            await client.SendMailAsync(mail);
+        }
+
         public async Task SendEmailToDoctorForEmergency(string doctorId, string patientId, string message)
         {
             Patient patient = await _patientManager.Users.AsNoTracking().Where(p => p.Id == patientId).FirstAsync();
