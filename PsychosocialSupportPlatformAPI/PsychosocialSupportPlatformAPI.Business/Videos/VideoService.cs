@@ -59,7 +59,16 @@ namespace PsychosocialSupportPlatformAPI.Business.Videos
                 throw new ArgumentOutOfRangeException("Video Uzantısı Geçersiz.");
             }
 
-            string newVideoName = Path.ChangeExtension(Path.GetRandomFileName(), extension);
+            char[] turkishChars = { 'ı', 'ğ', 'İ', 'Ğ', 'ç', 'Ç', 'ş', 'Ş', 'ö', 'Ö', 'ü', 'Ü' };
+            char[] englishChars = { 'i', 'g', 'I', 'G', 'c', 'C', 's', 'S', 'o', 'O', 'u', 'U' };
+
+            string videoSlug = uploadVideoDTO.Title;
+            for (int i = 0; i < turkishChars.Length; i++)
+                videoSlug = videoSlug.Replace(turkishChars[i], englishChars[i]);
+
+            videoSlug = Regex.Replace(videoSlug, @"[^a-zA-Z0-9-/?]", "-").Trim();
+
+            string newVideoName = Path.ChangeExtension(videoSlug, extension);
 
             string videoPath = string.Concat($"{basePath}", newVideoName);
             string videoUrl = $"{_configuration["Urls:BaseUrl"]}/Videos/{newVideoName}";
@@ -67,15 +76,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Videos
             using (var stream = new FileStream(videoPath, FileMode.Create))
                 await uploadVideoDTO.File.CopyToAsync(stream, cancellationToken);
 
-            char[] turkishChars = { 'ı', 'ğ', 'İ', 'Ğ', 'ç', 'Ç', 'ş', 'Ş', 'ö', 'Ö', 'ü', 'Ü' };
-            char[] englishChars = { 'i', 'g', 'I', 'G', 'c', 'C', 's', 'S', 'o', 'O', 'u', 'U' };
-
-            string videoSlug = "";
-            for (int i = 0; i < turkishChars.Length; i++)
-                videoSlug = uploadVideoDTO.Title.Replace(turkishChars[i], englishChars[i]);
-
-            videoSlug = Regex.Replace(uploadVideoDTO.Title, @"[^a-zA-Z0-9-/?]", "-").Trim();
-
+            
             await _videoRepository.AddVideo(new Video
             {
                 Url = videoUrl,

@@ -593,5 +593,15 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
                 };
             }
         }
+
+        public async Task LogOutUser(string currentUserId, CancellationToken cancellationToken)
+        {
+            ApplicationUser? user = await _userManager.Users.Where(u => u.Id == currentUserId).FirstAsync(cancellationToken) ?? throw new Exception("Kullanıcı Bulunamadı");
+
+            user.RefreshToken = null;
+            user.RefreshTokenEndDate = null;
+            await _userManager.UpdateAsync(user);
+
+        }
     }
 }

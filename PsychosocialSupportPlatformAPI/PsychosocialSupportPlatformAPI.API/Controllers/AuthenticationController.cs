@@ -71,6 +71,16 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
             return BadRequest();
         }
 
+        [HttpPatch]
+        public async Task<IActionResult> LogOut(CancellationToken cancellationToken)
+        {
+            string? currentUserId = User.Identity?.Name;
+            if (currentUserId == null) return Unauthorized();
+
+            await _authService.LogOutUser(currentUserId, cancellationToken);
+            return Ok();
+        }
+
 
         [HttpPost]
         public async Task<IActionResult> LoginWithRefreshToken([FromBody] string refreshToken)
