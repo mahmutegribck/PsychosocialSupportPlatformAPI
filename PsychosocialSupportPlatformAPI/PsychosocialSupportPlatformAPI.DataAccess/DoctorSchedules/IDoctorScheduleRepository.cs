@@ -5,14 +5,13 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.DoctorSchedules
 {
     public interface IDoctorScheduleRepository
     {
-        Task CreateDoctorScheduleList(List<DoctorSchedule> doctorSchedules);
-        Task CreateDoctorSchedule(DoctorSchedule doctorSchedule);
-        Task UpdateDoctorSchedule(DoctorSchedule doctorSchedule);
-        Task DeleteDoctorSchedule(DoctorSchedule doctorSchedule);
-        Task<DoctorSchedule?> GetDoctorScheduleByDay(string doctorId, DateTime day);
-        Task<DoctorSchedule?> GetDoctorScheduleById(string doctorId, int scheduleId);
-        Task<DoctorSchedule?> GetDoctorScheduleByTimeRange(string doctorId, TimeRange timeRange, DateTime day);
-        Task<IEnumerable<DoctorSchedule?>> GetAllDoctorScheduleById(string doctorId);
+        Task CreateDoctorScheduleList(List<DoctorSchedule> doctorSchedules, CancellationToken cancellationToken);
+        Task CreateDoctorSchedule(DoctorSchedule doctorSchedule, CancellationToken cancellationToken);
+        Task UpdateDoctorSchedule(DoctorSchedule doctorSchedule, CancellationToken cancellationToken);
+        Task DeleteDoctorSchedule(DoctorSchedule doctorSchedule, CancellationToken cancellationToken);
+        Task<DoctorSchedule?> GetDoctorScheduleByDay(string doctorId, DateTime day, CancellationToken cancellationToken);
+        Task<DoctorSchedule?> GetDoctorScheduleById(string doctorId, int scheduleId, CancellationToken cancellationToken);
+        Task<IEnumerable<DoctorSchedule?>> GetAllDoctorScheduleById(string doctorId, CancellationToken cancellationToken);
         Task<IEnumerable<DoctorSchedule?>> GetAllDoctorSchedulesByDate(DateTime day, CancellationToken cancellationToken);
     }
 }

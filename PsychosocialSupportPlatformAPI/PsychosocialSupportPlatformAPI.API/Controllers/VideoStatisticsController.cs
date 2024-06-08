@@ -18,47 +18,47 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> AddVideoStatistics([FromBody] AddVideoStatisticsDTO addVideoStatisticsDTO)
+        public async Task<IActionResult> AddVideoStatistics([FromBody] AddVideoStatisticsDTO addVideoStatisticsDTO, CancellationToken cancellationToken)
         {
             string? currentUserId = User.Identity?.Name;
             if (currentUserId == null) return Unauthorized();
 
-            await _videoStatisticsService.AddVideoStatistics(currentUserId, addVideoStatisticsDTO);
+            await _videoStatisticsService.AddVideoStatistics(currentUserId, addVideoStatisticsDTO, cancellationToken);
             return Ok();
         }
 
 
         [HttpDelete]
-        public async Task<IActionResult> DeleteVideoStatistics([FromBody] int statisticsID)
+        public async Task<IActionResult> DeleteVideoStatistics([FromBody] int statisticsId, CancellationToken cancellationToken)
         {
             string? currentUserId = User.Identity?.Name;
             if (currentUserId == null) return Unauthorized();
 
-            await _videoStatisticsService.DeleteVideoStatistics(statisticsID);
+            await _videoStatisticsService.DeleteVideoStatistics(statisticsId, cancellationToken);
             return Ok();
         }
 
 
         [HttpGet]
         [Authorize(Roles = "Patient")]
-        public async Task<IActionResult> GetCurrentUserAllVideoStatistics()
+        public async Task<IActionResult> GetCurrentUserAllVideoStatistics(CancellationToken cancellationToken)
         {
             string? currentUserId = User.Identity?.Name;
             if (currentUserId == null) return Unauthorized();
 
-            var allVideoStatistics = await _videoStatisticsService.GetAllVideoStatisticsByPatientId(currentUserId);
+            var allVideoStatistics = await _videoStatisticsService.GetAllVideoStatisticsByPatientId(currentUserId, cancellationToken);
             if (!allVideoStatistics.Any()) return NotFound();
             return Ok(allVideoStatistics);
         }
 
 
         [HttpGet]
-        public async Task<IActionResult> GetVideoStatisticsByID([FromQuery] int statisticsID)
+        public async Task<IActionResult> GetVideoStatisticsByID([FromQuery] int statisticsId, CancellationToken cancellationToken)
         {
             string? currentUserId = User.Identity?.Name;
             if (currentUserId == null) return Unauthorized();
 
-            var videoStatisticsByID = await _videoStatisticsService.GetVideoStatisticsByID(statisticsID);
+            var videoStatisticsByID = await _videoStatisticsService.GetVideoStatisticsById(statisticsId, cancellationToken);
             if (videoStatisticsByID == null) return NotFound();
             return Ok(videoStatisticsByID);
         }
@@ -66,12 +66,12 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
 
         [HttpGet]
         [Authorize(Roles = "Doctor")]
-        public async Task<IActionResult> GetAllVideoStatisticsByPatientUserName([FromQuery] string patientUserName)
+        public async Task<IActionResult> GetAllVideoStatisticsByPatientUserName([FromQuery] string patientUserName, CancellationToken cancellationToken)
         {
             string? currentUserId = User.Identity?.Name;
             if (currentUserId == null) return Unauthorized();
 
-            var allVideoStatistics = await _videoStatisticsService.GetAllVideoStatisticsByPatientUserName(patientUserName, currentUserId);
+            var allVideoStatistics = await _videoStatisticsService.GetAllVideoStatisticsByPatientUserName(patientUserName, currentUserId, cancellationToken);
             if (!allVideoStatistics.Any()) return NotFound();
 
             return Ok(allVideoStatistics);

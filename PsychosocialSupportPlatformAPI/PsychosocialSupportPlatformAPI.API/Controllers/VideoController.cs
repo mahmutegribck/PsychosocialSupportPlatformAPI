@@ -16,6 +16,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
             _videoService = videoService;
         }
 
+
         [HttpGet]
         public async Task<IActionResult> GetAllVideos(CancellationToken cancellationToken)
         {
@@ -26,6 +27,7 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
             }
             return Ok(videos);
         }
+
 
         [HttpGet]
         public async Task<IActionResult> GetVideoByVideoSlug([FromQuery] string videoSlug, CancellationToken cancellationToken)

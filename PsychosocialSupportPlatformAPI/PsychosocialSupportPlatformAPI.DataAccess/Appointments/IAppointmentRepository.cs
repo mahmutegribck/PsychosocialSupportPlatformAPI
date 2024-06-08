@@ -5,14 +5,14 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Appointments
 {
     public interface IAppointmentRepository
     {
-        Task<AppointmentSchedule?> GetPatientAppointment(AppointmentSchedule appointmentSchedule);
-        Task<AppointmentSchedule?> GetDoctorAppointment(AppointmentSchedule appointmentSchedule);
-        Task<AppointmentSchedule?> GetPatientAppointmentById(int patientAppointmentId, string patientId);
-        Task<IEnumerable<Doctor>> GetPatientDoctorsByPatientId(string patientId);
-        Task<IEnumerable<object>> GetPatientAppointmentsByPatientId(string patientId);
-        Task<AppointmentSchedule?> GetPatientLastAppointment(string patientId);
-        Task CancelPatientAppointment(AppointmentSchedule appointmentSchedule);
-        Task CancelDoctorAppointment(AppointmentSchedule appointmentSchedule);
+        Task<AppointmentSchedule?> GetPatientAppointment(AppointmentSchedule appointmentSchedule, CancellationToken cancellationToken);
+        Task<AppointmentSchedule?> GetDoctorAppointment(AppointmentSchedule appointmentSchedule, CancellationToken cancellationToken);
+        Task<AppointmentSchedule?> GetPatientAppointmentById(int patientAppointmentId, string patientId, CancellationToken cancellationToken);
+        Task<IEnumerable<Doctor>> GetPatientDoctorsByPatientId(string patientId, CancellationToken cancellationToken);
+        Task<IEnumerable<object>> GetPatientAppointmentsByPatientId(string patientId, CancellationToken cancellationToken);
+        Task<AppointmentSchedule?> GetPatientLastAppointment(string patientId, CancellationToken cancellationToken);
+        Task CancelPatientAppointment(AppointmentSchedule appointmentSchedule, CancellationToken cancellationToken);
+        Task CancelDoctorAppointment(AppointmentSchedule appointmentSchedule, CancellationToken cancellationToken);
         Task<bool> CheckPatientAppointment(int appointmentScheduleId, string patientId, string doctorId, CancellationToken cancellationToken);
 
     }

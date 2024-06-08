@@ -111,7 +111,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
 
                     string? token = await _userManager.GenerateEmailConfirmationTokenAsync(newUser) ?? throw new Exception("Token Oluşturulamadı");
                     Console.WriteLine(token);
-                    await _mailService.SendEmailForConfirmEmail(newUser.Email, token);
+                    await _mailService.SendEmailForConfirmEmail(newUser.Email, token, cancellationToken);
 
                     return new RegisterResponse
                     {
@@ -211,7 +211,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
                     await _userManager.AddToRoleAsync(newUser, role);
 
                     string? token = await _userManager.GenerateEmailConfirmationTokenAsync(newUser) ?? throw new Exception("Token Oluşturulamadı");
-                    await _mailService.SendEmailForConfirmEmail(newUser.Email, token);
+                    await _mailService.SendEmailForConfirmEmail(newUser.Email, token, cancellationToken);
 
                     return new RegisterResponse
                     {
@@ -380,7 +380,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
             if (user != null)
             {
                 string? token = await _userManager.GeneratePasswordResetTokenAsync(user) ?? throw new Exception("Token Oluşturulamadı");
-                await _mailService.SendEmailForForgotPassword(user, token);
+                await _mailService.SendEmailForForgotPassword(user, token, cancellationToken);
             }
             else
             {

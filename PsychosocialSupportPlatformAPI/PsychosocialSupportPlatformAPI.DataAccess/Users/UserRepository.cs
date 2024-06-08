@@ -73,14 +73,14 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Users
         }
 
 
-        public async Task<IEnumerable<Patient>> GetAllPatientsByDoctorId(string doctorId)
+        public async Task<IEnumerable<Patient>> GetAllPatientsByDoctorId(string doctorId, CancellationToken cancellationToken)
         {
             return await _context.Patients
                 .AsNoTracking()
                 .Where(p => p.AppointmentSchedules
                 .Any(a => a.DoctorId == doctorId))
                 .Distinct()
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
         }
 
 
@@ -102,12 +102,12 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Users
         }
 
 
-        public async Task<Patient?> GetPatientBySlug(string patientSlug)
+        public async Task<Patient?> GetPatientBySlug(string patientSlug, CancellationToken cancellationToken)
         {
             return await _context.Patients
                 .AsNoTracking()
                 .Where(a => a.UserName == patientSlug)
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync(cancellationToken);
         }
 
         public async Task<IEnumerable<Patient>> GetAllPatients(CancellationToken cancellationToken)
@@ -126,7 +126,7 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Users
         }
 
 
-        public async Task<IdentityResult> UpdateDoctor(string currentUserId, Doctor doctor)
+        public async Task<IdentityResult> UpdateDoctor(string currentUserId, Doctor doctor, CancellationToken cancellationToken)
         {
             Doctor updatedDoctor = await _doctorManager.FindByIdAsync(currentUserId);
             if (updatedDoctor == null) { return IdentityResult.Failed(); }
@@ -136,16 +136,16 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Users
             updatedDoctor.PhoneNumber = doctor.PhoneNumber;
 
             IdentityResult result = await _doctorManager.UpdateAsync(updatedDoctor);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
             return result;
         }
 
 
-        public async Task<IdentityResult> UpdateDoctorTitle(Doctor doctor, DoctorTitle doctorTitle)
+        public async Task<IdentityResult> UpdateDoctorTitle(Doctor doctor, DoctorTitle doctorTitle, CancellationToken cancellationToken)
         {
             doctor.DoctorTitleId = doctorTitle.Id;
             IdentityResult result = await _doctorManager.UpdateAsync(doctor);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
             return result;
         }
 

@@ -31,12 +31,12 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> GetAllDoctorAppointments()
+        public async Task<IActionResult> GetAllDoctorAppointments(CancellationToken cancellationToken)
         {
             string? currentUserId = User.Identity?.Name;
             if (currentUserId == null) return Unauthorized();
 
-            var allDoctorAppointments = await _appointmentScheduleService.AllDoctorAppointments(currentUserId);
+            var allDoctorAppointments = await _appointmentScheduleService.AllDoctorAppointments(currentUserId, cancellationToken);
 
             if (!allDoctorAppointments.Any()) return NotFound();
             return Ok(allDoctorAppointments);
@@ -44,12 +44,12 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> GetAllDoctorAppointmentsByPatientId([FromQuery] string patientId)
+        public async Task<IActionResult> GetAllDoctorAppointmentsByPatientId([FromQuery] string patientId, CancellationToken cancellationToken)
         {
             string? currentUserId = User.Identity?.Name;
             if (currentUserId == null) return Unauthorized();
 
-            var allDoctorAppointments = await _appointmentScheduleService.GetAllDoctorAppointmentsByPatientId(patientId, currentUserId);
+            var allDoctorAppointments = await _appointmentScheduleService.GetAllDoctorAppointmentsByPatientId(patientId, currentUserId, cancellationToken);
 
             if (!allDoctorAppointments.Any()) return NotFound();
             return Ok(allDoctorAppointments);
@@ -57,12 +57,12 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> GetAllPastDoctorAppointmentsByPatientSlug([FromQuery] string patientSlug)
+        public async Task<IActionResult> GetAllPastDoctorAppointmentsByPatientSlug([FromQuery] string patientSlug, CancellationToken cancellationToken)
         {
             string? currentUserId = User.Identity?.Name;
             if (currentUserId == null) return Unauthorized();
 
-            var allDoctorAppointments = await _appointmentScheduleService.GetAllPastDoctorAppointmentsByPatientSlug(patientSlug, currentUserId);
+            var allDoctorAppointments = await _appointmentScheduleService.GetAllPastDoctorAppointmentsByPatientSlug(patientSlug, currentUserId, cancellationToken);
 
             if (!allDoctorAppointments.Any()) return NotFound();
             return Ok(allDoctorAppointments);
@@ -70,12 +70,12 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> GetAllDoctorAppointmentsByDate([FromQuery] string date)
+        public async Task<IActionResult> GetAllDoctorAppointmentsByDate([FromQuery] string date, CancellationToken cancellationToken)
         {
             string? currentUserId = User.Identity?.Name;
             if (currentUserId == null) return Unauthorized();
 
-            IEnumerable<GetDoctorAppointmentDTO> allDoctorAppointments = await _appointmentScheduleService.GetAllDoctorAppointmentsByDate(DateTime.Parse(date), currentUserId);
+            IEnumerable<GetDoctorAppointmentDTO> allDoctorAppointments = await _appointmentScheduleService.GetAllDoctorAppointmentsByDate(DateTime.Parse(date), currentUserId, cancellationToken);
 
             if (!allDoctorAppointments.Any()) return NotFound();
             return Ok(allDoctorAppointments);
@@ -83,12 +83,12 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> GetAllPatients()
+        public async Task<IActionResult> GetAllPatients(CancellationToken cancellationToken)
         {
             string? currentUserId = User.Identity?.Name;
             if (currentUserId == null) return Unauthorized();
 
-            IEnumerable<GetPatientDto> allPatients = await _userService.GetAllPatientsByDoctorId(currentUserId);
+            IEnumerable<GetPatientDto> allPatients = await _userService.GetAllPatientsByDoctorId(currentUserId, cancellationToken);
             if (!allPatients.Any()) return NotFound();
 
             return Ok(allPatients);
@@ -96,27 +96,27 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
 
 
         [HttpPatch]
-        public async Task<IActionResult> CreateAppointmentForPatient([FromBody] CreateAppointmentForPatientDTO createAppointmentForPatientDTO)
+        public async Task<IActionResult> CreateAppointmentForPatient([FromBody] CreateAppointmentForPatientDTO createAppointmentForPatientDTO, CancellationToken cancellationToken)
         {
             string? currentUserId = User.Identity?.Name;
             if (currentUserId == null) return Unauthorized();
 
             if (createAppointmentForPatientDTO == null) return BadRequest();
 
-            await _appointmentService.CreateAppointmentForPatient(currentUserId, createAppointmentForPatientDTO);
+            await _appointmentService.CreateAppointmentForPatient(currentUserId, createAppointmentForPatientDTO, cancellationToken);
             return Ok();
         }
 
 
         [HttpPatch]
-        public async Task<IActionResult> CancelDoctorAppointment([FromBody] CancelDoctorAppointmentDTO cancelDoctorAppointmentDTO)
+        public async Task<IActionResult> CancelDoctorAppointment([FromBody] CancelDoctorAppointmentDTO cancelDoctorAppointmentDTO, CancellationToken cancellationToken)
         {
             string? currentUserId = User.Identity?.Name;
             if (currentUserId == null) return Unauthorized();
 
             if (cancelDoctorAppointmentDTO == null) return BadRequest();
 
-            await _appointmentService.CancelDoctorAppointment(cancelDoctorAppointmentDTO, currentUserId);
+            await _appointmentService.CancelDoctorAppointment(cancelDoctorAppointmentDTO, currentUserId, cancellationToken);
             return Ok();
         }
     }

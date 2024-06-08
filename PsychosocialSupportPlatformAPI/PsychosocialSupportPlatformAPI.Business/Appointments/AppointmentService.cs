@@ -3,7 +3,6 @@ using Microsoft.Extensions.Configuration;
 using PsychosocialSupportPlatformAPI.Business.Appointments.DTOs;
 using PsychosocialSupportPlatformAPI.Business.AppointmentSchedules.DTOs;
 using PsychosocialSupportPlatformAPI.Business.Mails;
-using PsychosocialSupportPlatformAPI.Business.Users;
 using PsychosocialSupportPlatformAPI.Business.Users.DTOs;
 using PsychosocialSupportPlatformAPI.DataAccess.Appointments;
 using PsychosocialSupportPlatformAPI.DataAccess.AppointmentSchedules;
@@ -41,34 +40,34 @@ namespace PsychosocialSupportPlatformAPI.Business.Appointments
         }
 
 
-        public async Task CancelDoctorAppointment(CancelDoctorAppointmentDTO cancelDoctorAppointmentDTO, string doctorId)
+        public async Task CancelDoctorAppointment(CancelDoctorAppointmentDTO cancelDoctorAppointmentDTO, string doctorId, CancellationToken cancellationToken)
         {
             AppointmentSchedule appointmentSchedule = _mapper.Map<AppointmentSchedule>(cancelDoctorAppointmentDTO);
             appointmentSchedule.DoctorId = doctorId;
 
-            AppointmentSchedule? cancelAppointmentSchedule = await _appointmentRepository.GetDoctorAppointment(appointmentSchedule) ?? throw new Exception("İptal Edilmek İstenen Randevu Kaydı Bulunamadı");
+            AppointmentSchedule? cancelAppointmentSchedule = await _appointmentRepository.GetDoctorAppointment(appointmentSchedule, cancellationToken) ?? throw new Exception("İptal Edilmek İstenen Randevu Kaydı Bulunamadı");
 
             if (cancelAppointmentSchedule.PatientId != null)
             {
-                await _mailService.SendEmailToPatientForCancelAppointment(cancelAppointmentSchedule);
+                await _mailService.SendEmailToPatientForCancelAppointment(cancelAppointmentSchedule, cancellationToken);
             }
-            await _appointmentRepository.CancelDoctorAppointment(cancelAppointmentSchedule);
+            await _appointmentRepository.CancelDoctorAppointment(cancelAppointmentSchedule, cancellationToken);
         }
 
 
-        public async Task CancelPatientAppointment(CancelPatientAppointmentDTO cancelPatientAppointmentDTO, string patientId)
+        public async Task CancelPatientAppointment(CancelPatientAppointmentDTO cancelPatientAppointmentDTO, string patientId, CancellationToken cancellationToken)
         {
             AppointmentSchedule appointmentSchedule = _mapper.Map<AppointmentSchedule>(cancelPatientAppointmentDTO);
             appointmentSchedule.PatientId = patientId;
-            AppointmentSchedule? cancelAppointmentSchedule = await _appointmentRepository.GetPatientAppointment(appointmentSchedule) ?? throw new Exception("İptal Edilmek İstenen Randevu Kaydı Bulunamadı");
+            AppointmentSchedule? cancelAppointmentSchedule = await _appointmentRepository.GetPatientAppointment(appointmentSchedule, cancellationToken) ?? throw new Exception("İptal Edilmek İstenen Randevu Kaydı Bulunamadı");
 
-            await _mailService.SendEmailToDoctorForCancelAppointment(cancelAppointmentSchedule);
-            await _appointmentRepository.CancelPatientAppointment(cancelAppointmentSchedule);
+            await _mailService.SendEmailToDoctorForCancelAppointment(cancelAppointmentSchedule, cancellationToken);
+            await _appointmentRepository.CancelPatientAppointment(cancelAppointmentSchedule, cancellationToken);
         }
 
-        public async Task CreateAppointmentForPatient(string doctorId, CreateAppointmentForPatientDTO createAppointmentForPatientDTO)
+        public async Task CreateAppointmentForPatient(string doctorId, CreateAppointmentForPatientDTO createAppointmentForPatientDTO, CancellationToken cancellationToken)
         {
-            AppointmentSchedule? doctorAppoitment = await _appointmentScheduleRepository.GetAppointmentScheduleByDayAndTimeRange(doctorId, DateTime.Parse(createAppointmentForPatientDTO.Day), createAppointmentForPatientDTO.TimeRange);
+            AppointmentSchedule? doctorAppoitment = await _appointmentScheduleRepository.GetAppointmentScheduleByDayAndTimeRange(doctorId, DateTime.Parse(createAppointmentForPatientDTO.Day), createAppointmentForPatientDTO.TimeRange, cancellationToken);
 
             if (doctorAppoitment == null)
             {
@@ -78,45 +77,45 @@ namespace PsychosocialSupportPlatformAPI.Business.Appointments
                     Day = DateTime.Parse(createAppointmentForPatientDTO.Day),
                     TimeRange = createAppointmentForPatientDTO.TimeRange
                 };
-                await _appointmentScheduleRepository.AddAppointmentSchedule(appointmentSchedule);
+                await _appointmentScheduleRepository.AddAppointmentSchedule(appointmentSchedule, cancellationToken);
 
                 doctorAppoitment = appointmentSchedule;
             }
             if (doctorAppoitment!.Status == true)
                 throw new Exception("Başka Randevu Kaydınız Bulunmaktadır");
 
-            Patient? patient = await _userRepository.GetPatientBySlug(createAppointmentForPatientDTO.PatientUserName) ?? throw new Exception("Hasta Kullanıcı Bulunamadı");
+            Patient? patient = await _userRepository.GetPatientBySlug(createAppointmentForPatientDTO.PatientUserName, cancellationToken) ?? throw new Exception("Hasta Kullanıcı Bulunamadı");
 
             doctorAppoitment.PatientId = patient.Id;
             doctorAppoitment.Status = true;
 
-            doctorAppoitment.URL = "await GenerateZoomMeetingUrl()";
+            doctorAppoitment.URL = await GenerateZoomMeetingUrl(cancellationToken);
 
-            await _appointmentScheduleRepository.UpdateAppointmentSchedule(doctorAppoitment);
+            await _appointmentScheduleRepository.UpdateAppointmentSchedule(doctorAppoitment, cancellationToken);
 
         }
 
-        public async Task<GetPatientAppointmentDTO?> GetPatientAppointmentById(int patientAppointmentId, string patientId)
+        public async Task<GetPatientAppointmentDTO?> GetPatientAppointmentById(int patientAppointmentId, string patientId, CancellationToken cancellationToken)
         {
-            return _mapper.Map<GetPatientAppointmentDTO>(await _appointmentRepository.GetPatientAppointmentById(patientAppointmentId, patientId));
+            return _mapper.Map<GetPatientAppointmentDTO>(await _appointmentRepository.GetPatientAppointmentById(patientAppointmentId, patientId, cancellationToken));
         }
 
 
-        public async Task<IEnumerable<object>> GetPatientAppointmentsByPatientId(string patientID)
+        public async Task<IEnumerable<object>> GetPatientAppointmentsByPatientId(string patientId, CancellationToken cancellationToken)
         {
-            return await _appointmentRepository.GetPatientAppointmentsByPatientId(patientID);
+            return await _appointmentRepository.GetPatientAppointmentsByPatientId(patientId, cancellationToken);
         }
 
 
-        public async Task<IEnumerable<GetPatientDoctorDto>> GetPatientDoctorsByPatientId(string patientId)
+        public async Task<IEnumerable<GetPatientDoctorDto>> GetPatientDoctorsByPatientId(string patientId, CancellationToken cancellationToken)
         {
-            return _mapper.Map<IEnumerable<GetPatientDoctorDto>>(await _appointmentRepository.GetPatientDoctorsByPatientId(patientId));
+            return _mapper.Map<IEnumerable<GetPatientDoctorDto>>(await _appointmentRepository.GetPatientDoctorsByPatientId(patientId, cancellationToken));
         }
 
 
-        public async Task<bool> MakeAppointment(string patientId, MakeAppointmentDTO makeAppointmentDTO)
+        public async Task<bool> MakeAppointment(string patientId, MakeAppointmentDTO makeAppointmentDTO, CancellationToken cancellationToken)
         {
-            AppointmentSchedule? patientLastAppointment = await _appointmentRepository.GetPatientLastAppointment(patientId);
+            AppointmentSchedule? patientLastAppointment = await _appointmentRepository.GetPatientLastAppointment(patientId, cancellationToken);
 
             if (patientLastAppointment != null)
             {
@@ -127,7 +126,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Appointments
                     throw new Exception("Sadece Doktorunuzdan Randevu Alabilirsiniz.");
             }
 
-            AppointmentSchedule? appointmentSchedule = await _appointmentScheduleRepository.GetAppointmentScheduleByDayAndTimeRange(makeAppointmentDTO.DoctorId, DateTime.Parse(makeAppointmentDTO.Day), makeAppointmentDTO.TimeRange);
+            AppointmentSchedule? appointmentSchedule = await _appointmentScheduleRepository.GetAppointmentScheduleByDayAndTimeRange(makeAppointmentDTO.DoctorId, DateTime.Parse(makeAppointmentDTO.Day), makeAppointmentDTO.TimeRange, cancellationToken);
 
             if (appointmentSchedule == null || appointmentSchedule.Status == true)
                 return false;
@@ -137,13 +136,13 @@ namespace PsychosocialSupportPlatformAPI.Business.Appointments
 
             appointmentSchedule.URL = "await GenerateZoomMeetingUrl()";
 
-            await _appointmentScheduleRepository.UpdateAppointmentSchedule(appointmentSchedule);
+            await _appointmentScheduleRepository.UpdateAppointmentSchedule(appointmentSchedule, cancellationToken);
 
             return true;
         }
 
 
-        private async Task<string> GenerateZoomMeetingUrl()
+        private async Task<string> GenerateZoomMeetingUrl(CancellationToken cancellationToken)
         {
             string authHeader = Convert.ToBase64String(Encoding.UTF8.GetBytes(_configuration["Zoom:ApiKey"] + ":" + _configuration["Zoom:SecretKey"]));
 
@@ -153,9 +152,9 @@ namespace PsychosocialSupportPlatformAPI.Business.Appointments
 
             client.DefaultRequestHeaders.Add("Authorization", authorization);
 
-            HttpResponseMessage responseToken = await client.PostAsync(_configuration["Zoom:TokenURl"] + _configuration["Zoom:AccountId"], null);
+            HttpResponseMessage responseToken = await client.PostAsync(_configuration["Zoom:TokenURl"] + _configuration["Zoom:AccountId"], null, cancellationToken);
 
-            string tokenResponseBody = await responseToken.Content.ReadAsStringAsync();
+            string tokenResponseBody = await responseToken.Content.ReadAsStringAsync(cancellationToken);
 
             var jsonObject = JsonDocument.Parse(tokenResponseBody).RootElement;
 
@@ -196,9 +195,9 @@ namespace PsychosocialSupportPlatformAPI.Business.Appointments
             var json = JsonSerializer.Serialize(requestData);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-            HttpResponseMessage responseMeeting = await clientMeet.PostAsync(_configuration["Zoom:CreateMeetingUrl"], content);
+            HttpResponseMessage responseMeeting = await clientMeet.PostAsync(_configuration["Zoom:CreateMeetingUrl"], content, cancellationToken);
 
-            string responseBody = await responseMeeting.Content.ReadAsStringAsync();
+            string responseBody = await responseMeeting.Content.ReadAsStringAsync(cancellationToken);
 
             var meetingJson = JsonDocument.Parse(responseBody).RootElement;
             string joinUrl = meetingJson.GetProperty("join_url").GetString() ?? throw new Exception("Meet Toplantı Bağlantısı Oluşturulamadı");

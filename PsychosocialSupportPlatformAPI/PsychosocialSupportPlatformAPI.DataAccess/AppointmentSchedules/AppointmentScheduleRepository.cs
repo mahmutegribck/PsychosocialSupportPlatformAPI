@@ -13,24 +13,24 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.AppointmentSchedules
         }
 
 
-        public async Task AddAppointmentScheduleList(List<AppointmentSchedule> appointmentSchedules)
+        public async Task AddAppointmentScheduleList(List<AppointmentSchedule> appointmentSchedules, CancellationToken cancellationToken)
         {
             await _context.AppointmentSchedules.AddRangeAsync(appointmentSchedules);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
         }
 
 
-        public async Task AddAppointmentSchedule(AppointmentSchedule appointmentSchedule)
+        public async Task AddAppointmentSchedule(AppointmentSchedule appointmentSchedule, CancellationToken cancellationToken)
         {
-            await _context.AppointmentSchedules.AddAsync(appointmentSchedule);
-            await _context.SaveChangesAsync();
+            await _context.AppointmentSchedules.AddAsync(appointmentSchedule, cancellationToken);
+            await _context.SaveChangesAsync(cancellationToken);
         }
 
 
-        public async Task DeleteAppointmentScheduleList(IEnumerable<AppointmentSchedule> appointmentSchedules)
+        public async Task DeleteAppointmentScheduleList(IEnumerable<AppointmentSchedule> appointmentSchedules, CancellationToken cancellationToken)
         {
             _context.AppointmentSchedules.RemoveRange(appointmentSchedules);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
         }
 
 
@@ -103,34 +103,34 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.AppointmentSchedules
         }
 
 
-        public async Task<IEnumerable<AppointmentSchedule>> GetAppointmentScheduleByDay(string doctorId, DateTime day)
+        public async Task<IEnumerable<AppointmentSchedule>> GetAppointmentScheduleByDay(string doctorId, DateTime day, CancellationToken cancellationToken)
         {
             return await _context.AppointmentSchedules
                 .AsNoTracking()
                 .Include(a => a.Doctor)
                 .Include(a => a.Patient)
                 .Where(a => a.DoctorId == doctorId && a.Day == day)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
         }
 
 
-        public async Task<AppointmentSchedule?> GetAppointmentScheduleById(int appointmentScheduleId)
+        public async Task<AppointmentSchedule?> GetAppointmentScheduleById(int appointmentScheduleId, CancellationToken cancellationToken)
         {
             return await _context.AppointmentSchedules
                 .AsNoTracking()
                 .Where(a => a.Id == appointmentScheduleId)
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync(cancellationToken);
         }
 
 
-        public async Task UpdateAppointmentSchedule(AppointmentSchedule appointmentSchedule)
+        public async Task UpdateAppointmentSchedule(AppointmentSchedule appointmentSchedule, CancellationToken cancellationToken)
         {
             _context.AppointmentSchedules.Update(appointmentSchedule);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
         }
 
 
-        public async Task<AppointmentSchedule?> GetAppointmentScheduleByDayAndTimeRange(string doctorId, DateTime day, TimeRange timeRange)
+        public async Task<AppointmentSchedule?> GetAppointmentScheduleByDayAndTimeRange(string doctorId, DateTime day, TimeRange timeRange, CancellationToken cancellationToken)
         {
             return await _context.AppointmentSchedules
                 .AsNoTracking()
@@ -138,11 +138,11 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.AppointmentSchedules
                     a.DoctorId == doctorId &&
                     a.Day == day &&
                     a.TimeRange == timeRange)
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync(cancellationToken);
         }
 
 
-        public async Task<IEnumerable<AppointmentSchedule>> AllDoctorAppointments(string doctorId)
+        public async Task<IEnumerable<AppointmentSchedule>> AllDoctorAppointments(string doctorId, CancellationToken cancellationToken)
         {
             return await _context.AppointmentSchedules
                 .AsNoTracking()
@@ -150,11 +150,11 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.AppointmentSchedules
                 .Where(a =>
                     a.DoctorId == doctorId &&
                     a.PatientId != null)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
         }
 
 
-        public async Task<IEnumerable<AppointmentSchedule>> GetAllDoctorAppointmentsByPatientId(string patientId, string doctorId)
+        public async Task<IEnumerable<AppointmentSchedule>> GetAllDoctorAppointmentsByPatientId(string patientId, string doctorId, CancellationToken cancellationToken)
         {
             return await _context.AppointmentSchedules
                 .AsNoTracking()
@@ -162,11 +162,11 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.AppointmentSchedules
                 .Where(a =>
                     a.DoctorId == doctorId &&
                     a.PatientId == patientId)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
         }
 
 
-        public async Task<IEnumerable<AppointmentSchedule>> GetAllPastDoctorAppointmentsByPatientSlug(string patientSlug, string doctorId)
+        public async Task<IEnumerable<AppointmentSchedule>> GetAllPastDoctorAppointmentsByPatientSlug(string patientSlug, string doctorId, CancellationToken cancellationToken)
         {
             return await _context.AppointmentSchedules
                 .AsNoTracking()
@@ -177,11 +177,11 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.AppointmentSchedules
                     a.Patient.UserName == patientSlug &&
                     a.Day <= DateTime.Now.Date &&
                     (int)a.TimeRange < DateTime.Now.Hour)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
         }
 
 
-        public async Task<IEnumerable<AppointmentSchedule>> GetAllDoctorAppointmentsByDate(DateTime day, string doctorId)
+        public async Task<IEnumerable<AppointmentSchedule>> GetAllDoctorAppointmentsByDate(DateTime day, string doctorId, CancellationToken cancellationToken)
         {
             return await _context.AppointmentSchedules
                 .AsNoTracking()
@@ -190,7 +190,7 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.AppointmentSchedules
                     a.Day == day &&
                     a.DoctorId == doctorId &&
                     a.PatientId != null)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
         }
 
 

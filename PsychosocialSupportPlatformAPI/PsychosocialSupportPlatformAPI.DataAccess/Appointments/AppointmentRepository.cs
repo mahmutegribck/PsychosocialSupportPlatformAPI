@@ -12,7 +12,8 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Appointments
         {
             _context = context;
         }
-        public async Task<AppointmentSchedule?> GetPatientAppointment(AppointmentSchedule appointmentSchedule)
+
+        public async Task<AppointmentSchedule?> GetPatientAppointment(AppointmentSchedule appointmentSchedule, CancellationToken cancellationToken)
         {
             return await _context.AppointmentSchedules
                 .Include(a => a.Patient)
@@ -24,48 +25,53 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Appointments
                 a.Day == appointmentSchedule.Day &&
                 a.Status == true)
                 .AsNoTracking()
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync(cancellationToken);
         }
 
-        public async Task<AppointmentSchedule?> GetDoctorAppointment(AppointmentSchedule appointmentSchedule)
+        public async Task<AppointmentSchedule?> GetDoctorAppointment(AppointmentSchedule appointmentSchedule, CancellationToken cancellationToken)
         {
             return await _context.AppointmentSchedules
+                .AsNoTracking()
                 .Include(a => a.Patient)
                 .Include(a => a.Doctor)
                 .Where(a =>
                 a.DoctorId == appointmentSchedule.DoctorId &&
                 a.TimeRange == appointmentSchedule.TimeRange &&
                 a.Day == appointmentSchedule.Day)
-                .AsNoTracking()
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync(cancellationToken);
         }
 
-        public async Task CancelPatientAppointment(AppointmentSchedule appointmentSchedule)
+        public async Task CancelPatientAppointment(AppointmentSchedule appointmentSchedule, CancellationToken cancellationToken)
         {
             appointmentSchedule.Status = false;
             appointmentSchedule.PatientId = null;
             appointmentSchedule.Patient = null;
             appointmentSchedule.URL = null;
             _context.AppointmentSchedules.Update(appointmentSchedule);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task CancelDoctorAppointment(AppointmentSchedule appointmentSchedule)
+        public async Task CancelDoctorAppointment(AppointmentSchedule appointmentSchedule, CancellationToken cancellationToken)
         {
             _context.AppointmentSchedules.Remove(appointmentSchedule);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task<IEnumerable<Doctor>> GetPatientDoctorsByPatientId(string patientId)
-        {
-            return await _context.AppointmentSchedules.Where(a => a.PatientId == patientId).Select(a => a.Doctor).Distinct().ToListAsync();
-        }
-
-        public async Task<IEnumerable<object>> GetPatientAppointmentsByPatientId(string patientId)
+        public async Task<IEnumerable<Doctor>> GetPatientDoctorsByPatientId(string patientId, CancellationToken cancellationToken)
         {
             return await _context.AppointmentSchedules
-                .Include(a => a.Doctor)
                 .AsNoTracking()
+                .Where(a => a.PatientId == patientId)
+                .Select(a => a.Doctor)
+                .Distinct()
+                .ToListAsync(cancellationToken);
+        }
+
+        public async Task<IEnumerable<object>> GetPatientAppointmentsByPatientId(string patientId, CancellationToken cancellationToken)
+        {
+            return await _context.AppointmentSchedules
+                .AsNoTracking()
+                .Include(a => a.Doctor)
                 .Where(a => a.PatientId == patientId)
                 .GroupBy(a => a.Day.Date)
                 .OrderBy(group => group.Key)
@@ -83,13 +89,16 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Appointments
                         DoctorTitle = appointment.Doctor.DoctorTitle.Title,
                         AppointmentURL = appointment.URL
                     }).ToList()
-
-                }).ToListAsync();
+                }).ToListAsync(cancellationToken);
         }
 
-        public async Task<AppointmentSchedule?> GetPatientAppointmentById(int patientAppointmentId, string patientId)
+        public async Task<AppointmentSchedule?> GetPatientAppointmentById(int patientAppointmentId, string patientId, CancellationToken cancellationToken)
         {
-            return await _context.AppointmentSchedules.AsNoTracking().Include(a => a.Doctor).Where(a => a.Id == patientAppointmentId && a.PatientId == patientId).FirstAsync();
+            return await _context.AppointmentSchedules
+                .AsNoTracking()
+                .Include(a => a.Doctor)
+                .Where(a => a.Id == patientAppointmentId && a.PatientId == patientId)
+                .FirstAsync(cancellationToken);
         }
 
         public async Task<bool> CheckPatientAppointment(int appointmentScheduleId, string patientId, string doctorId, CancellationToken cancellationToken)
@@ -101,9 +110,13 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Appointments
                     a.DoctorId == doctorId, cancellationToken);
         }
 
-        public async Task<AppointmentSchedule?> GetPatientLastAppointment(string patientId)
+        public async Task<AppointmentSchedule?> GetPatientLastAppointment(string patientId, CancellationToken cancellationToken)
         {
-            return await _context.AppointmentSchedules.Where(a => a.PatientId == patientId).OrderByDescending(a => a.Day).FirstOrDefaultAsync();
+            return await _context.AppointmentSchedules
+                .AsNoTracking()
+                .Where(a => a.PatientId == patientId)
+                .OrderByDescending(a => a.Day)
+                .FirstOrDefaultAsync(cancellationToken);
         }
     }
 }

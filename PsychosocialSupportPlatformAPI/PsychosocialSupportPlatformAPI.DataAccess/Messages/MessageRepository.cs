@@ -19,9 +19,11 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Messages
         }
 
 
-        public async Task<List<object>> GetMessagedUsers(string userId)
+        public async Task<List<object>> GetMessagedUsers(string userId, CancellationToken cancellationToken)
         {
-            var messagingUsers = await _context.Messages.Where(m => m.SenderId == userId || m.ReceiverId == userId)
+            var messagingUsers = await _context.Messages
+                .AsNoTracking()
+                .Where(m => m.SenderId == userId || m.ReceiverId == userId)
                 .Select(m => m.SenderId == userId ? m.ReceiverId : m.SenderId)
                 .Distinct()
                 .Where(id => id != userId)
@@ -45,22 +47,28 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Messages
                     .FirstOrDefault(),
                     UnreadMessageCount = _context.Messages.Count(msg => msg.ReceiverId == userId && msg.SenderId == id && !msg.Status)
                 })
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             return messagingUsers.Cast<object>().ToList();
         }
 
 
-        public async Task<List<Message>> GetMessages(string senderId, string receiverId)
+        public async Task<List<Message>> GetMessages(string senderId, string receiverId, CancellationToken cancellationToken)
         {
-            var deneme = await _context.Messages.Include(m => m.Sender).Include(m => m.Receiver).Where(m => (m.SenderId == senderId && m.ReceiverId == receiverId) || (m.SenderId == receiverId && m.ReceiverId == senderId)).OrderBy(m => m.SendedTime).AsNoTracking().ToListAsync();
-            return deneme;
+            var messages = await _context.Messages
+                .Include(m => m.Sender)
+                .Include(m => m.Receiver)
+                .Where(m => (m.SenderId == senderId && m.ReceiverId == receiverId) || (m.SenderId == receiverId && m.ReceiverId == senderId))
+                .OrderBy(m => m.SendedTime)
+                .AsNoTracking()
+                .ToListAsync(cancellationToken);
+            return messages;
         }
 
 
-        public async Task<bool> MessageChangeStatus(string senderId, string receiverId)
+        public async Task<bool> MessageChangeStatus(string senderId, string receiverId, CancellationToken cancellationToken)
         {
-            var userMessage = await _context.Messages.Where(m => m.SenderId == senderId && m.ReceiverId == receiverId && m.Status == false).ToListAsync();
+            var userMessage = await _context.Messages.Where(m => m.SenderId == senderId && m.ReceiverId == receiverId && m.Status == false).ToListAsync(cancellationToken);
 
             if (userMessage == null) return false;
 
@@ -68,40 +76,40 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Messages
             {
                 user.Status = true;
             }
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
             return true;
         }
 
 
-        public async Task<IEnumerable<string?>> GetPatientAllMessageEmotions(string patientUserName)
+        public async Task<IEnumerable<string?>> GetPatientAllMessageEmotions(string patientUserName, CancellationToken cancellationToken)
         {
             return await _context.Messages
                 .AsNoTracking()
                 .Include(m => m.Sender)
                 .Where(m => m.Sender.UserName == patientUserName)
                 .Select(m => m.Emotion)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
         }
 
-        public async Task<IEnumerable<string?>> GetPatientLastMonthMessageEmotions(string patientUserName)
+        public async Task<IEnumerable<string?>> GetPatientLastMonthMessageEmotions(string patientUserName, CancellationToken cancellationToken)
         {
             return await _context.Messages
                 .AsNoTracking()
                 .Include(m => m.Sender)
                 .Where(m => m.Sender.UserName == patientUserName && m.SendedTime.Month == DateTime.Now.Month)
                 .Select(m => m.Emotion)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
         }
 
 
-        public async Task<IEnumerable<string?>> GetPatientLastDayMessageEmotions(string patientUserName)
+        public async Task<IEnumerable<string?>> GetPatientLastDayMessageEmotions(string patientUserName, CancellationToken cancellationToken)
         {
             return await _context.Messages
                 .AsNoTracking()
                 .Include(m => m.Sender)
                 .Where(m => m.Sender.UserName == patientUserName && m.SendedTime.DayOfYear == DateTime.Now.DayOfYear)
                 .Select(m => m.Emotion)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
         }
     }
 }

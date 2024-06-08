@@ -25,11 +25,11 @@ namespace PsychosocialSupportPlatformAPI.Business.AppointmentSchedules
         }
 
 
-        public async Task AddAppointmentSchedule(DoctorSchedule doctorSchedule)
+        public async Task AddAppointmentSchedule(DoctorSchedule doctorSchedule, CancellationToken cancellationToken)
         {
             if (doctorSchedule == null) throw new Exception();
 
-            List<AppointmentSchedule> appointmentList = new List<AppointmentSchedule>();
+            List<AppointmentSchedule> appointmentList = new();
 
             if (doctorSchedule.EightToNine == true)
             {
@@ -133,21 +133,21 @@ namespace PsychosocialSupportPlatformAPI.Business.AppointmentSchedules
                 appointmentList.Add(appointmentSixteenToSeventeen);
             }
 
-            await _appointmentScheduleRepository.AddAppointmentScheduleList(appointmentList);
+            await _appointmentScheduleRepository.AddAppointmentScheduleList(appointmentList, cancellationToken);
         }
 
 
-        public async Task UpdateAppointmentSchedule(DoctorSchedule doctorSchedule)
+        public async Task UpdateAppointmentSchedule(DoctorSchedule doctorSchedule, CancellationToken cancellationToken)
         {
             if (doctorSchedule == null) throw new Exception("Kayıtlı Doktor Randevu Takvimi Bulunamadı.");
 
             List<AppointmentSchedule> createAppointmentList = new();
             List<AppointmentSchedule> deleteAppointmentList = new();
 
-            IEnumerable<AppointmentSchedule> appointmentSchedules = await _appointmentScheduleRepository.GetAppointmentScheduleByDay(doctorSchedule.DoctorId, doctorSchedule.Day);
+            IEnumerable<AppointmentSchedule> appointmentSchedules = await _appointmentScheduleRepository.GetAppointmentScheduleByDay(doctorSchedule.DoctorId, doctorSchedule.Day, cancellationToken);
             if (!appointmentSchedules.Any())
             {
-                await AddAppointmentSchedule(doctorSchedule);
+                await AddAppointmentSchedule(doctorSchedule, cancellationToken);
             }
             foreach (var appointmentSchedule in appointmentSchedules)
             {
@@ -317,28 +317,28 @@ namespace PsychosocialSupportPlatformAPI.Business.AppointmentSchedules
             }
             if (deleteAppointmentList.Any())
             {
-                await _appointmentScheduleRepository.DeleteAppointmentScheduleList(deleteAppointmentList);
+                await _appointmentScheduleRepository.DeleteAppointmentScheduleList(deleteAppointmentList, cancellationToken);
                 foreach (AppointmentSchedule deleteAppointment in deleteAppointmentList)
                 {
                     if (deleteAppointment.PatientId != null)
                     {
-                        await _mailService.SendEmailToPatientForCancelAppointment(deleteAppointment);
+                        await _mailService.SendEmailToPatientForCancelAppointment(deleteAppointment, cancellationToken);
                     }
                 }
             }
             if (createAppointmentList.Any())
             {
-                await _appointmentScheduleRepository.AddAppointmentScheduleList(createAppointmentList);
+                await _appointmentScheduleRepository.AddAppointmentScheduleList(createAppointmentList, cancellationToken);
             }
         }
 
 
-        public async Task DeleteAppointmentSchedule(string doctorId, DateTime day)
+        public async Task DeleteAppointmentSchedule(string doctorId, DateTime day, CancellationToken cancellationToken)
         {
             if (doctorId == null) throw new Exception();
 
-            IEnumerable<AppointmentSchedule> appointmentSchedules = await _appointmentScheduleRepository.GetAppointmentScheduleByDay(doctorId, day);
-            await _appointmentScheduleRepository.DeleteAppointmentScheduleList(appointmentSchedules);
+            IEnumerable<AppointmentSchedule> appointmentSchedules = await _appointmentScheduleRepository.GetAppointmentScheduleByDay(doctorId, day, cancellationToken);
+            await _appointmentScheduleRepository.DeleteAppointmentScheduleList(appointmentSchedules, cancellationToken);
         }
 
 
@@ -347,9 +347,9 @@ namespace PsychosocialSupportPlatformAPI.Business.AppointmentSchedules
             return await _appointmentScheduleRepository.GetAllAppointmentSchedules(day, patientId, cancellationToken);
         }
 
-        public async Task<IEnumerable<object>> AllDoctorAppointments(string doctorId)
+        public async Task<IEnumerable<object>> AllDoctorAppointments(string doctorId, CancellationToken cancellationToken)
         {
-            IEnumerable<AppointmentSchedule> doctorAppointments = await _appointmentScheduleRepository.AllDoctorAppointments(doctorId);
+            IEnumerable<AppointmentSchedule> doctorAppointments = await _appointmentScheduleRepository.AllDoctorAppointments(doctorId, cancellationToken);
 
             if (!doctorAppointments.Any()) throw new Exception("Doktorun Hasta Randevusu Bulunamadı.");
 
@@ -371,12 +371,11 @@ namespace PsychosocialSupportPlatformAPI.Business.AppointmentSchedules
             return groupedDoctorAppointments;
         }
 
-        public async Task<IEnumerable<object>> GetAllDoctorAppointmentsByPatientId(string patientId, string doctorId)
+        public async Task<IEnumerable<object>> GetAllDoctorAppointmentsByPatientId(string patientId, string doctorId, CancellationToken cancellationToken)
         {
-            IEnumerable<AppointmentSchedule> doctorAppointments = await _appointmentScheduleRepository.GetAllDoctorAppointmentsByPatientId(patientId, doctorId);
+            IEnumerable<AppointmentSchedule> doctorAppointments = await _appointmentScheduleRepository.GetAllDoctorAppointmentsByPatientId(patientId, doctorId, cancellationToken);
 
             if (!doctorAppointments.Any()) throw new Exception("Doktorun Hasta ile Randevusu Bulunamadı.");
-
 
 
             var groupedDoctorAppointments = doctorAppointments.GroupBy(d => d.Day)
@@ -393,13 +392,12 @@ namespace PsychosocialSupportPlatformAPI.Business.AppointmentSchedules
                         AppointmentUrl = p.URL
                     })
                 });
-
             return groupedDoctorAppointments;
         }
 
-        public async Task<IEnumerable<object>> GetAllPastDoctorAppointmentsByPatientSlug(string patientSlug, string doctorId)
+        public async Task<IEnumerable<object>> GetAllPastDoctorAppointmentsByPatientSlug(string patientSlug, string doctorId, CancellationToken cancellationToken)
         {
-            IEnumerable<AppointmentSchedule> doctorAppointments = await _appointmentScheduleRepository.GetAllPastDoctorAppointmentsByPatientSlug(patientSlug, doctorId);
+            IEnumerable<AppointmentSchedule> doctorAppointments = await _appointmentScheduleRepository.GetAllPastDoctorAppointmentsByPatientSlug(patientSlug, doctorId, cancellationToken);
 
             if (!doctorAppointments.Any()) throw new Exception("Doktorun Hasta ile Randevusu Bulunamadı.");
 
@@ -425,9 +423,9 @@ namespace PsychosocialSupportPlatformAPI.Business.AppointmentSchedules
         }
 
 
-        public async Task<IEnumerable<GetDoctorAppointmentDTO>> GetAllDoctorAppointmentsByDate(DateTime date, string doctorId)
+        public async Task<IEnumerable<GetDoctorAppointmentDTO>> GetAllDoctorAppointmentsByDate(DateTime date, string doctorId, CancellationToken cancellationToken)
         {
-            IEnumerable<AppointmentSchedule> doctorAppointments = await _appointmentScheduleRepository.GetAllDoctorAppointmentsByDate(date, doctorId);
+            IEnumerable<AppointmentSchedule> doctorAppointments = await _appointmentScheduleRepository.GetAllDoctorAppointmentsByDate(date, doctorId, cancellationToken);
 
             if (!doctorAppointments.Any()) throw new Exception("Doktorun Bu Tarihte Randevusu Bulunamadı.");
 

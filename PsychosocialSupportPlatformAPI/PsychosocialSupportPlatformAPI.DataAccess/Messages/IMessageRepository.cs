@@ -5,12 +5,12 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Messages
     public interface IMessageRepository
     {
         Task AddMessage(Message message);
-        Task<List<Message>> GetMessages(string senderId, string receiverId);
-        Task<bool> MessageChangeStatus(string senderId, string receiverId);
-        Task<List<object>> GetMessagedUsers(string userId);
-        Task<IEnumerable<string?>> GetPatientAllMessageEmotions(string patientUserName);
-        Task<IEnumerable<string?>> GetPatientLastMonthMessageEmotions(string patientUserName);
-        Task<IEnumerable<string?>> GetPatientLastDayMessageEmotions(string patientUserName);
+        Task<List<Message>> GetMessages(string senderId, string receiverId, CancellationToken cancellationToken);
+        Task<bool> MessageChangeStatus(string senderId, string receiverId, CancellationToken cancellationToken);
+        Task<List<object>> GetMessagedUsers(string userId, CancellationToken cancellationToken);
+        Task<IEnumerable<string?>> GetPatientAllMessageEmotions(string patientUserName, CancellationToken cancellationToken);
+        Task<IEnumerable<string?>> GetPatientLastMonthMessageEmotions(string patientUserName, CancellationToken cancellationToken);
+        Task<IEnumerable<string?>> GetPatientLastDayMessageEmotions(string patientUserName, CancellationToken cancellationToken);
 
     }
 }

@@ -10,20 +10,20 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Statistics
         {
             _context = context;
         }
-        public async Task CreateVideoStatistics(VideoStatistics statistics)
+        public async Task CreateVideoStatistics(VideoStatistics statistics, CancellationToken cancellationToken)
         {
-            await _context.VideoStatistics.AddAsync(statistics);
-            await _context.SaveChangesAsync();
+            await _context.VideoStatistics.AddAsync(statistics, cancellationToken);
+            await _context.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task DeleteVideoStatistics(int statisticsID)
+        public async Task DeleteVideoStatistics(int statisticsId, CancellationToken cancellationToken)
         {
-            var deleteVideoStatistics = await _context.VideoStatistics.FindAsync(statisticsID);
+            var deleteVideoStatistics = await _context.VideoStatistics.Where(s => s.Id == statisticsId).FirstAsync(cancellationToken);
 
             if (deleteVideoStatistics != null)
             {
                 _context.VideoStatistics.Remove(deleteVideoStatistics);
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync(cancellationToken);
             }
         }
 
@@ -46,19 +46,21 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Statistics
             }).ToListAsync(cancellationToken);
         }
 
-        public async Task<IEnumerable<object>> GetAllVideoStatisticsByPatientId(string patientId)
+        public async Task<IEnumerable<object>> GetAllVideoStatisticsByPatientId(string patientId, CancellationToken cancellationToken)
         {
-            return await _context.Videos.Select(v => new
-            {
-                VideoId = v.Id,
-                VideoTitle = v.Title,
-                VideoStatistics = v.Statistics.Where(s => s.PatientId == patientId).Select(s => new
+            return await _context.Videos
+                .AsNoTracking()
+                .Select(v => new
                 {
-                    PatientProfileImageUrl = s.Patient.ProfileImageUrl,
-                    VideoClicksNumber = s.ClicksNumber,
-                    VideoViewingRate = s.ViewingRate
-                }),
-            }).AsNoTracking().ToListAsync();
+                    VideoId = v.Id,
+                    VideoTitle = v.Title,
+                    VideoStatistics = v.Statistics.Where(s => s.PatientId == patientId).Select(s => new
+                    {
+                        PatientProfileImageUrl = s.Patient.ProfileImageUrl,
+                        VideoClicksNumber = s.ClicksNumber,
+                        VideoViewingRate = s.ViewingRate
+                    }),
+                }).ToListAsync(cancellationToken);
         }
 
         public async Task<IEnumerable<object>> GetAllVideoStatisticsByPatientUserName(string patientUserName, CancellationToken cancellationToken)
@@ -86,48 +88,48 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Statistics
                 }).ToListAsync(cancellationToken);
         }
 
-        public async Task<IEnumerable<object>> GetAllVideoStatisticsByPatientUserName(string patientUserName, string doctorId)
+        public async Task<IEnumerable<object>> GetAllVideoStatisticsByPatientUserName(string patientUserName, string doctorId, CancellationToken cancellationToken)
         {
-            return await _context.Patients.Include(p => p.AppointmentSchedules).Where(p => p.UserName == patientUserName && p.AppointmentSchedules.Any(a => a.DoctorId == doctorId)).Select(p => new
-            {
-                PatientName = p.Name,
-                PatientSurname = p.Surname,
-                PatientProfileImageUrl = p.ProfileImageUrl,
-
-                Videos = _context.Videos.Select(v => new
+            return await _context.Patients
+                .AsNoTracking()
+                .Include(p => p.AppointmentSchedules)
+                .Where(p => p.UserName == patientUserName && p.AppointmentSchedules.Any(a => a.DoctorId == doctorId))
+                .Select(p => new
                 {
-                    VideoId = v.Id,
-                    VideoTitle = v.Title,
-                    VideoStatistics = p.Statistics.Where(s => s.VideoId == v.Id).Select(s => new
+                    PatientName = p.Name,
+                    PatientSurname = p.Surname,
+                    PatientProfileImageUrl = p.ProfileImageUrl,
+
+                    Videos = _context.Videos.Select(v => new
                     {
-                        VideoClicksNumber = s.ClicksNumber,
-                        VideoViewingRate = s.ViewingRate
+                        VideoId = v.Id,
+                        VideoTitle = v.Title,
+                        VideoStatistics = p.Statistics.Where(s => s.VideoId == v.Id).Select(s => new
+                        {
+                            VideoClicksNumber = s.ClicksNumber,
+                            VideoViewingRate = s.ViewingRate
+                        }).ToList(),
                     }).ToList(),
-                }).ToList(),
-
-            }).AsNoTracking().ToListAsync();
-
+                }).ToListAsync(cancellationToken);
         }
 
-        public async Task<VideoStatistics> GetPatientVideoStatisticsByVideoID(string patientID, int videoID)
+        public async Task<VideoStatistics?> GetPatientVideoStatisticsByVideoId(string patientId, int videoId, CancellationToken cancellationToken)
         {
-            return await _context.VideoStatistics.AsNoTracking().Where(v => v.VideoId == videoID && v.PatientId == patientID).AsNoTracking().FirstOrDefaultAsync();
+            return await _context.VideoStatistics
+                .AsNoTracking()
+                .Where(v => v.VideoId == videoId && v.PatientId == patientId)
+                .FirstOrDefaultAsync(cancellationToken);
         }
 
-        public async Task<VideoStatistics> GetVideoStatisticsByID(int statisticsID)
+        public async Task<VideoStatistics?> GetVideoStatisticsById(int statisticsId, CancellationToken cancellationToken)
         {
-            return await _context.VideoStatistics.Where(v => v.Id == statisticsID).AsNoTracking().FirstOrDefaultAsync();
+            return await _context.VideoStatistics.AsNoTracking().Where(v => v.Id == statisticsId).FirstOrDefaultAsync(cancellationToken);
         }
 
-        public async Task<VideoStatistics> GetVideoStatisticsByPatientID(string patientID)
-        {
-            return await _context.VideoStatistics.Where(v => v.PatientId == patientID).AsNoTracking().FirstOrDefaultAsync();
-        }
-
-        public async Task UpdateVideoStatistics(VideoStatistics statistics)
+        public async Task UpdateVideoStatistics(VideoStatistics statistics, CancellationToken cancellationToken)
         {
             _context.VideoStatistics.Update(statistics);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
 
         }
     }

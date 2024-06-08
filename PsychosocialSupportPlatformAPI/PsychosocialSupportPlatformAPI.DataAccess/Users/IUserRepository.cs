@@ -7,14 +7,14 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Users
     {
         Task<ApplicationUser?> GetUser(string id, CancellationToken cancellationToken);
         Task<ApplicationUser?> GetUserBySlug(string userSlug, CancellationToken cancellationToken);
-        Task<Patient?> GetPatientBySlug(string patientSlug);
+        Task<Patient?> GetPatientBySlug(string patientSlug, CancellationToken cancellationToken);
         Task<IEnumerable<Patient>> GetAllPatients(CancellationToken cancellationToken);
         Task<IEnumerable<Doctor>> GetAllDoctors(CancellationToken cancellationToken);
         Task<IdentityResult> DeleteUser(string id, CancellationToken cancellationToken);
-        Task<IdentityResult> UpdateDoctor(string currentUserId, Doctor doctor);
-        Task<IdentityResult> UpdateDoctorTitle(Doctor doctor, DoctorTitle doctorTitle);
+        Task<IdentityResult> UpdateDoctor(string currentUserId, Doctor doctor, CancellationToken cancellationToken);
+        Task<IdentityResult> UpdateDoctorTitle(Doctor doctor, DoctorTitle doctorTitle, CancellationToken cancellationToken);
         Task<IdentityResult> UpdatePatient(string currentUserId, Patient patient, CancellationToken cancellationToken);
-        Task<IEnumerable<Patient>> GetAllPatientsByDoctorId(string doctorId);
+        Task<IEnumerable<Patient>> GetAllPatientsByDoctorId(string doctorId, CancellationToken cancellationToken);
         Task AddDoctorTitle(DoctorTitle doctorTitle, CancellationToken cancellationToken);
         Task DeleteDoctorTitle(DoctorTitle doctorTitle, CancellationToken cancellationToken);
         Task<bool> CheckDoctorTitle(string doctorTitle, CancellationToken cancellationToken);

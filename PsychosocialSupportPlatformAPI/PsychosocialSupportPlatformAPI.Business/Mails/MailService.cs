@@ -25,7 +25,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Mails
             _patientManager = patientManager;
         }
 
-        public async Task SendEmailToDoctorForCancelAppointment(AppointmentSchedule appointment)
+        public async Task SendEmailToDoctorForCancelAppointment(AppointmentSchedule appointment, CancellationToken cancellationToken)
         {
             var mail = new MailMessage()
             {
@@ -45,10 +45,10 @@ namespace PsychosocialSupportPlatformAPI.Business.Mails
             client.Port = Convert.ToInt32(_configuration["Mailing:Port"]);
             client.DeliveryMethod = SmtpDeliveryMethod.Network;
 
-            await client.SendMailAsync(mail);
+            await client.SendMailAsync(mail, cancellationToken);
         }
 
-        public async Task SendEmailToPatientForCancelAppointment(AppointmentSchedule appointment)
+        public async Task SendEmailToPatientForCancelAppointment(AppointmentSchedule appointment, CancellationToken cancellationToken)
         {
             var mail = new MailMessage()
             {
@@ -68,10 +68,10 @@ namespace PsychosocialSupportPlatformAPI.Business.Mails
             client.Port = Convert.ToInt32(_configuration["Mailing:Port"]);
             client.DeliveryMethod = SmtpDeliveryMethod.Network;
 
-            await client.SendMailAsync(mail);
+            await client.SendMailAsync(mail, cancellationToken);
         }
 
-        public async Task SendEmailToDoctorForConfirmationAccount(Doctor doctor)
+        public async Task SendEmailToDoctorForConfirmationAccount(Doctor doctor, CancellationToken cancellationToken)
         {
             var mail = new MailMessage()
             {
@@ -91,10 +91,10 @@ namespace PsychosocialSupportPlatformAPI.Business.Mails
             client.Port = Convert.ToInt32(_configuration["Mailing:Port"]);
             client.DeliveryMethod = SmtpDeliveryMethod.Network;
 
-            await client.SendMailAsync(mail);
+            await client.SendMailAsync(mail, cancellationToken);
         }
 
-        public async Task SendEmailForForgotPassword(ApplicationUser user, string token)
+        public async Task SendEmailForForgotPassword(ApplicationUser user, string token, CancellationToken cancellationToken)
         {
             var mail = new MailMessage()
             {
@@ -114,10 +114,10 @@ namespace PsychosocialSupportPlatformAPI.Business.Mails
             client.Port = Convert.ToInt32(_configuration["Mailing:Port"]);
             client.DeliveryMethod = SmtpDeliveryMethod.Network;
 
-            await client.SendMailAsync(mail);
+            await client.SendMailAsync(mail, cancellationToken);
         }
 
-        public async Task SendEmailForConfirmEmail(string email, string token)
+        public async Task SendEmailForConfirmEmail(string email, string token, CancellationToken cancellationToken)
         {
             var mail = new MailMessage()
             {
@@ -137,7 +137,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Mails
             client.Port = Convert.ToInt32(_configuration["Mailing:Port"]);
             client.DeliveryMethod = SmtpDeliveryMethod.Network;
 
-            await client.SendMailAsync(mail);
+            await client.SendMailAsync(mail, cancellationToken);
         }
 
         public async Task SendEmailToDoctorForEmergency(string doctorId, string patientId, string message)

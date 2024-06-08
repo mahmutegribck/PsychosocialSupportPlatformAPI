@@ -5,17 +5,15 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Statistics
 {
     public interface IVideoStatisticsRepository
     {
-        Task CreateVideoStatistics(VideoStatistics statistics);
-        Task UpdateVideoStatistics(VideoStatistics statistics);
-        Task DeleteVideoStatistics(int statisticsID);
+        Task CreateVideoStatistics(VideoStatistics statistics, CancellationToken cancellationToken);
+        Task UpdateVideoStatistics(VideoStatistics statistics, CancellationToken cancellationToken);
+        Task DeleteVideoStatistics(int statisticsId, CancellationToken cancellationToken);
         Task<IEnumerable<object>> GetAllVideoStatistics(CancellationToken cancellationToken);
-        Task<VideoStatistics> GetVideoStatisticsByID(int statisticsID);
-        Task<IEnumerable<object>> GetAllVideoStatisticsByPatientId(string patientId);
+        Task<VideoStatistics?> GetVideoStatisticsById(int statisticsId, CancellationToken cancellationToken);
+        Task<IEnumerable<object>> GetAllVideoStatisticsByPatientId(string patientId, CancellationToken cancellationToken);
         Task<IEnumerable<object>> GetAllVideoStatisticsByPatientUserName(string patientUserName, CancellationToken cancellationToken);
-        Task<VideoStatistics> GetVideoStatisticsByPatientID(string patientID);
-        Task<VideoStatistics> GetPatientVideoStatisticsByVideoID(string patientID, int videoID);
-        Task<IEnumerable<object>> GetAllVideoStatisticsByPatientUserName(string patientUserName, string doctorId);
-
+        Task<VideoStatistics?> GetPatientVideoStatisticsByVideoId(string patientId, int videoId, CancellationToken cancellationToken);
+        Task<IEnumerable<object>> GetAllVideoStatisticsByPatientUserName(string patientUserName, string doctorId, CancellationToken cancellationToken);
 
     }
 }

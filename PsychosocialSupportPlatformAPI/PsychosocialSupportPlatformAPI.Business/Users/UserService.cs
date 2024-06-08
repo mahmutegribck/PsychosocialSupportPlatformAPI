@@ -64,9 +64,9 @@ namespace PsychosocialSupportPlatformAPI.Business.Users
             return await _userRepository.DeleteUser(id, cancellationToken);
         }
 
-        public async Task<IEnumerable<GetPatientDto>> GetAllPatientsByDoctorId(string doctorId)
+        public async Task<IEnumerable<GetPatientDto>> GetAllPatientsByDoctorId(string doctorId, CancellationToken cancellationToken)
         {
-            return _mapper.Map<IEnumerable<GetPatientDto>>(await _userRepository.GetAllPatientsByDoctorId(doctorId));
+            return _mapper.Map<IEnumerable<GetPatientDto>>(await _userRepository.GetAllPatientsByDoctorId(doctorId, cancellationToken));
         }
 
         public async Task<object> GetUserByID(string userId, CancellationToken cancellationToken)
@@ -105,7 +105,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Users
 
         public async Task<IdentityResult> UpdateDoctor(string doctorId, UpdateDoctorDTO updateDoctorDTO, CancellationToken cancellationToken)
         {
-            return await _userRepository.UpdateDoctor(doctorId, _mapper.Map<Doctor>(updateDoctorDTO));
+            return await _userRepository.UpdateDoctor(doctorId, _mapper.Map<Doctor>(updateDoctorDTO), cancellationToken);
         }
 
         public async Task<IdentityResult> UpdateDoctorTitle(string doctorId, int doctorTitleId, CancellationToken cancellationToken)
@@ -113,7 +113,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Users
             DoctorTitle? doctorTitle = await _userRepository.GetDoctorTitleById(doctorTitleId, cancellationToken) ?? throw new Exception("Ünvan Bulunamadı");
             Doctor? doctor = await _doctorManager.Users.Where(d => d.Id == doctorId).FirstOrDefaultAsync(cancellationToken) ?? throw new Exception("Doktor Bulunamadı");
 
-            return await _userRepository.UpdateDoctorTitle(doctor, doctorTitle);
+            return await _userRepository.UpdateDoctorTitle(doctor, doctorTitle, cancellationToken);
         }
 
         public async Task<IdentityResult> UpdatePatient(string patientId, UpdatePatientDTO updatePatientDTO, CancellationToken cancellationToken)
@@ -207,7 +207,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Users
 
             await _userRepository.ConfirmDoctor(doctor, cancellationToken);
 
-            await _mailService.SendEmailToDoctorForConfirmationAccount(doctor);
+            await _mailService.SendEmailToDoctorForConfirmationAccount(doctor, cancellationToken);
         }
 
         public async Task<IEnumerable<GetPatientDto>> GetAllPatients(CancellationToken cancellationToken)

@@ -18,11 +18,11 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> GetMessages([FromBody] GetUserMessageDto getUserMessageDto)
+        public async Task<IActionResult> GetMessages([FromBody] GetUserMessageDto getUserMessageDto, CancellationToken cancellationToken)
         {
             if (ModelState.IsValid)
             {
-                var messages = await _messageService.GetMessages(getUserMessageDto);
+                var messages = await _messageService.GetMessages(getUserMessageDto, cancellationToken);
                 if (!messages.Any()) return NotFound();
                 return Ok(messages);
             }
@@ -31,11 +31,11 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
 
 
         [HttpPatch]
-        public async Task<IActionResult> MessageChangeStatus([FromBody] SetUserMessages setUserMessages)
+        public async Task<IActionResult> MessageChangeStatus([FromBody] SetUserMessages setUserMessages, CancellationToken cancellationToken)
         {
             if (ModelState.IsValid)
             {
-                if (await _messageService.MessageChangeStatus(setUserMessages)) return Ok();
+                if (await _messageService.MessageChangeStatus(setUserMessages, cancellationToken)) return Ok();
                 return NotFound();
             }
             return BadRequest();
@@ -43,9 +43,9 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> GetMessagedUsers(string userId)
+        public async Task<IActionResult> GetMessagedUsers(string userId, CancellationToken cancellationToken)
         {
-            var messagedUsers = await _messageService.GetMessagedUsers(userId);
+            var messagedUsers = await _messageService.GetMessagedUsers(userId, cancellationToken);
             if (messagedUsers == null) return NotFound();
 
             return Ok(messagedUsers);
@@ -54,9 +54,9 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
 
         [HttpGet]
         [Authorize(Roles = "Doctor, Admin")]
-        public async Task<IActionResult> GetPatientAllMessageEmotions(string patientUserName)
+        public async Task<IActionResult> GetPatientAllMessageEmotions(string patientUserName, CancellationToken cancellationToken)
         {
-            GetMessageEmotionDTO? messageEmotion = await _messageService.GetPatientAllMessageEmotions(patientUserName);
+            GetMessageEmotionDTO? messageEmotion = await _messageService.GetPatientAllMessageEmotions(patientUserName, cancellationToken);
             if (messageEmotion == null) return NotFound();
 
             return Ok(messageEmotion);
@@ -65,9 +65,9 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
 
         [HttpGet]
         [Authorize(Roles = "Doctor, Admin")]
-        public async Task<IActionResult> GetPatientLastMonthMessageEmotions(string patientUserName)
+        public async Task<IActionResult> GetPatientLastMonthMessageEmotions(string patientUserName, CancellationToken cancellationToken)
         {
-            GetMessageEmotionDTO? messageEmotion = await _messageService.GetPatientLastMonthMessageEmotions(patientUserName);
+            GetMessageEmotionDTO? messageEmotion = await _messageService.GetPatientLastMonthMessageEmotions(patientUserName, cancellationToken);
             if (messageEmotion == null) return NotFound();
 
             return Ok(messageEmotion);
@@ -76,9 +76,9 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
 
         [HttpGet]
         [Authorize(Roles = "Doctor, Admin")]
-        public async Task<IActionResult> GetPatientLastDayMessageEmotions(string patientUserName)
+        public async Task<IActionResult> GetPatientLastDayMessageEmotions(string patientUserName, CancellationToken cancellationToken)
         {
-            GetMessageEmotionDTO? messageEmotion = await _messageService.GetPatientLastDayMessageEmotions(patientUserName);
+            GetMessageEmotionDTO? messageEmotion = await _messageService.GetPatientLastDayMessageEmotions(patientUserName, cancellationToken);
             if (messageEmotion == null) return NotFound();
 
             return Ok(messageEmotion);

@@ -5,7 +5,6 @@ using Microsoft.Extensions.Configuration;
 using PsychosocialSupportPlatformAPI.Business.Mails;
 using PsychosocialSupportPlatformAPI.Business.Messages.DTOs;
 using PsychosocialSupportPlatformAPI.Business.MLModel;
-using PsychosocialSupportPlatformAPI.Business.Users.DTOs;
 using PsychosocialSupportPlatformAPI.DataAccess.Messages;
 using PsychosocialSupportPlatformAPI.Entity.Entities.Messages;
 using PsychosocialSupportPlatformAPI.Entity.Entities.Users;
@@ -56,18 +55,18 @@ namespace PsychosocialSupportPlatformAPI.Business.Messages
         }
 
 
-        public async Task<List<object>> GetMessagedUsers(string userId)
+        public async Task<List<object>> GetMessagedUsers(string userId, CancellationToken cancellationToken)
         {
-            return await _messageRepository.GetMessagedUsers(userId);
+            return await _messageRepository.GetMessagedUsers(userId, cancellationToken);
         }
 
 
-        public async Task<List<GetMessageDto>> GetMessages(GetUserMessageDto getUserMessageDto)
+        public async Task<List<GetMessageDto>> GetMessages(GetUserMessageDto getUserMessageDto, CancellationToken cancellationToken)
         {
             try
             {
                 if (getUserMessageDto == null) throw new ArgumentNullException("Veriler Eksik");
-                return _mapper.Map<List<GetMessageDto>>(await _messageRepository.GetMessages(getUserMessageDto.SenderId, getUserMessageDto.ReceiverId));
+                return _mapper.Map<List<GetMessageDto>>(await _messageRepository.GetMessages(getUserMessageDto.SenderId, getUserMessageDto.ReceiverId, cancellationToken));
 
             }
             catch (Exception)
@@ -78,15 +77,15 @@ namespace PsychosocialSupportPlatformAPI.Business.Messages
         }
 
 
-        public async Task<bool> MessageChangeStatus(SetUserMessages setUserMessages)
+        public async Task<bool> MessageChangeStatus(SetUserMessages setUserMessages, CancellationToken cancellationToken)
         {
-            return await _messageRepository.MessageChangeStatus(setUserMessages.SenderId, setUserMessages.ReceiverId);
+            return await _messageRepository.MessageChangeStatus(setUserMessages.SenderId, setUserMessages.ReceiverId, cancellationToken);
         }
 
 
-        public async Task<GetMessageEmotionDTO> GetPatientAllMessageEmotions(string patientUserName)
+        public async Task<GetMessageEmotionDTO> GetPatientAllMessageEmotions(string patientUserName, CancellationToken cancellationToken)
         {
-            IEnumerable<string?> messageEmotions = await _messageRepository.GetPatientAllMessageEmotions(patientUserName);
+            IEnumerable<string?> messageEmotions = await _messageRepository.GetPatientAllMessageEmotions(patientUserName, cancellationToken);
             if (!messageEmotions.Any()) throw new Exception();
 
             int totalMessageEmotions = messageEmotions.Count();
@@ -115,9 +114,9 @@ namespace PsychosocialSupportPlatformAPI.Business.Messages
         }
 
 
-        public async Task<GetMessageEmotionDTO> GetPatientLastMonthMessageEmotions(string patientUserName)
+        public async Task<GetMessageEmotionDTO> GetPatientLastMonthMessageEmotions(string patientUserName, CancellationToken cancellationToken)
         {
-            IEnumerable<string?> messageEmotions = await _messageRepository.GetPatientLastMonthMessageEmotions(patientUserName);
+            IEnumerable<string?> messageEmotions = await _messageRepository.GetPatientLastMonthMessageEmotions(patientUserName, cancellationToken);
             if (!messageEmotions.Any()) throw new Exception();
 
             int totalMessageEmotions = messageEmotions.Count();
@@ -146,9 +145,9 @@ namespace PsychosocialSupportPlatformAPI.Business.Messages
         }
 
 
-        public async Task<GetMessageEmotionDTO> GetPatientLastDayMessageEmotions(string patientUserName)
+        public async Task<GetMessageEmotionDTO> GetPatientLastDayMessageEmotions(string patientUserName, CancellationToken cancellationToken)
         {
-            IEnumerable<string?> messageEmotions = await _messageRepository.GetPatientLastDayMessageEmotions(patientUserName);
+            IEnumerable<string?> messageEmotions = await _messageRepository.GetPatientLastDayMessageEmotions(patientUserName, cancellationToken);
             if (!messageEmotions.Any()) throw new Exception();
 
             int totalMessageEmotions = messageEmotions.Count();
@@ -174,8 +173,6 @@ namespace PsychosocialSupportPlatformAPI.Business.Messages
                 SadMessageRatio = Math.Round((double)sadMessages / totalMessageEmotions, 2),
                 EmergencyMessageRatio = Math.Round((double)emergencyMessages / totalMessageEmotions, 2)
             };
-
-
         }
     }
 }

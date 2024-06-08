@@ -19,42 +19,42 @@ namespace PsychosocialSupportPlatformAPI.API.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> AddDoctorSchedule([FromBody] List<CreateDoctorScheduleDTO> createDoctorScheduleDTOs)
+        public async Task<IActionResult> AddDoctorSchedule([FromBody] List<CreateDoctorScheduleDTO> createDoctorScheduleDTOs, CancellationToken cancellationToken)
         {
             string? currentUserId = User.Identity?.Name;
             if (currentUserId == null) return Unauthorized();
-            await _doctorScheduleService.AddDoctorSchedule(createDoctorScheduleDTOs, currentUserId);
+            await _doctorScheduleService.AddDoctorSchedule(createDoctorScheduleDTOs, currentUserId, cancellationToken);
             return Ok();
         }
 
 
         [HttpDelete]
-        public async Task<IActionResult> DeleteDoctorSchedule([FromQuery] int doctorScheduleId)
+        public async Task<IActionResult> DeleteDoctorSchedule([FromQuery] int doctorScheduleId, CancellationToken cancellationToken)
         {
             string? currentUserId = User.Identity?.Name;
             if (currentUserId == null) return Unauthorized();
-            await _doctorScheduleService.DeleteDoctorSchedule(currentUserId, doctorScheduleId);
+            await _doctorScheduleService.DeleteDoctorSchedule(currentUserId, doctorScheduleId, cancellationToken);
             return Ok();
         }
 
 
         [HttpGet]
-        public async Task<IActionResult> GetDoctorSchedules()
+        public async Task<IActionResult> GetDoctorSchedules(CancellationToken cancellationToken)
         {
             string? currentUserId = User.Identity?.Name;
             if (currentUserId == null) return Unauthorized();
-            IEnumerable<GetDoctorScheduleDTO?> allDoctorSchedule = await _doctorScheduleService.GetAllDoctorScheduleById(currentUserId);
+            IEnumerable<GetDoctorScheduleDTO?> allDoctorSchedule = await _doctorScheduleService.GetAllDoctorScheduleById(currentUserId, cancellationToken);
             if (allDoctorSchedule == null) return NotFound();
             return Ok(allDoctorSchedule);
         }
 
 
         [HttpGet]
-        public async Task<IActionResult> GetDoctorScheduleById([FromQuery] int scheduleId)
+        public async Task<IActionResult> GetDoctorScheduleById([FromQuery] int scheduleId, CancellationToken cancellationToken)
         {
             string? currentUserId = User.Identity?.Name;
             if (currentUserId == null) return Unauthorized();
-            GetDoctorScheduleDTO? doctorSchedule = await _doctorScheduleService.GetDoctorScheduleById(currentUserId, scheduleId);
+            GetDoctorScheduleDTO? doctorSchedule = await _doctorScheduleService.GetDoctorScheduleById(currentUserId, scheduleId, cancellationToken);
             if (doctorSchedule == null) return NotFound();
             return Ok(doctorSchedule);
         }
