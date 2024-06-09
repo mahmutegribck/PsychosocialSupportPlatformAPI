@@ -98,7 +98,7 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Appointments
                 .AsNoTracking()
                 .Include(a => a.Doctor)
                 .Where(a => a.Id == patientAppointmentId && a.PatientId == patientId)
-                .FirstAsync(cancellationToken);
+                .FirstOrDefaultAsync(cancellationToken);
         }
 
         public async Task<bool> CheckPatientAppointment(int appointmentScheduleId, string patientId, string doctorId, CancellationToken cancellationToken)

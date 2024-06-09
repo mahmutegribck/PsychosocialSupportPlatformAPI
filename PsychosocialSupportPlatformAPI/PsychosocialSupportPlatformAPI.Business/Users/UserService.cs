@@ -42,7 +42,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Users
 
         public async Task ChangePassword(ChangePasswordDTO changePasswordDTO, string currentUserId, CancellationToken cancellationToken)
         {
-            var user = await _userManager.Users.Where(u => u.Id == currentUserId).FirstAsync(cancellationToken) ?? throw new Exception("Kullanıcı Bulunamadı.");
+            var user = await _userManager.Users.Where(u => u.Id == currentUserId).FirstOrDefaultAsync(cancellationToken) ?? throw new Exception("Kullanıcı Bulunamadı.");
 
             if (!await _userManager.CheckPasswordAsync(user, changePasswordDTO.OldPassword))
             {
@@ -161,7 +161,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Users
 
         public async Task DeleteProfileImage(string userId, CancellationToken cancellationToken)
         {
-            ApplicationUser user = await _userManager.Users.Where(u => u.Id == userId).FirstAsync(cancellationToken) ?? throw new Exception("Kullanıcı Bulunamadı");
+            ApplicationUser user = await _userManager.Users.Where(u => u.Id == userId).FirstOrDefaultAsync(cancellationToken) ?? throw new Exception("Kullanıcı Bulunamadı");
             if (user.ProfileImagePath != null)
             {
                 File.Delete(user.ProfileImagePath);

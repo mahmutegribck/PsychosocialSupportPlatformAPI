@@ -264,7 +264,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
         {
             try
             {
-                ApplicationUser? user = await _userManager.Users.Where(u => u.Email == model.Email).FirstAsync(cancellationToken);
+                ApplicationUser? user = await _userManager.Users.Where(u => u.Email == model.Email).FirstOrDefaultAsync(cancellationToken);
                 if (user == null)
                 {
                     return new LoginResponse
@@ -358,7 +358,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
         {
             try
             {
-                ApplicationUser? user = await _userManager.Users.Where(u => u.Email == model.Email).FirstAsync(cancellationToken) ?? throw new Exception($"{model.Email} Adresine Ait Hesap Bulunamadı");
+                ApplicationUser? user = await _userManager.Users.Where(u => u.Email == model.Email).FirstOrDefaultAsync(cancellationToken) ?? throw new Exception($"{model.Email} Adresine Ait Hesap Bulunamadı");
 
                 if (model.NewPassword != model.ConfirmPassword) throw new Exception("Şifreler Eşleşemedi");
 
@@ -375,9 +375,9 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
 
         public async Task ForgotPassword(string email, CancellationToken cancellationToken)
         {
-            ApplicationUser? user = await _userManager.Users.AsNoTracking().Where(u => u.Email == email).FirstAsync(cancellationToken);
+            ApplicationUser? user = await _userManager.Users.AsNoTracking().Where(u => u.Email == email).FirstOrDefaultAsync(cancellationToken);
 
-            if (user != null)
+            if (user != null && user.EmailConfirmed == true)
             {
                 string? token = await _userManager.GeneratePasswordResetTokenAsync(user) ?? throw new Exception("Token Oluşturulamadı");
                 await _mailService.SendEmailForForgotPassword(user, token, cancellationToken);
@@ -390,7 +390,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
 
         public async Task ConfirmEmail(string email, string token, CancellationToken cancellationToken)
         {
-            ApplicationUser? user = await _userManager.Users.Where(u => u.Email == email).FirstAsync(cancellationToken);
+            ApplicationUser? user = await _userManager.Users.Where(u => u.Email == email).FirstOrDefaultAsync(cancellationToken);
 
             if (user != null)
             {
@@ -413,14 +413,14 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
                 };
                 Payload payload = await ValidateAsync(token, settings);
                 UserLoginInfo userLoginInfo = new("google", payload.Subject, "GOOGLE");
-                Patient user = await _patientManager.FindByLoginAsync(userLoginInfo.LoginProvider, userLoginInfo.ProviderKey);
+                Patient? user = await _patientManager.FindByLoginAsync(userLoginInfo.LoginProvider, userLoginInfo.ProviderKey);
 
                 bool result = user != null;
 
                 if (user == null)
                 {
-                    user = await _patientManager.Users.Where(p => p.Email == payload.Email).FirstAsync(cancellationToken);
-                    var doctor = await _doctorManager.Users.Where(d => d.Email == payload.Email).FirstAsync(cancellationToken);
+                    user = await _patientManager.Users.Where(p => p.Email == payload.Email).FirstOrDefaultAsync(cancellationToken);
+                    var doctor = await _doctorManager.Users.Where(d => d.Email == payload.Email).FirstOrDefaultAsync(cancellationToken);
 
                     if (doctor != null) throw new Exception("Lütfen Giriş Yap Ekranından Giriş Yapınız.");
 
@@ -527,7 +527,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
 
                 if (user == null)
                 {
-                    user = await _patientManager.Users.Where(p => p.Email == userData.Email).FirstAsync(cancellationToken);
+                    user = await _patientManager.Users.Where(p => p.Email == userData.Email).FirstOrDefaultAsync(cancellationToken);
                     if (user == null)
                     {
                         user = new()
@@ -596,7 +596,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Auth.AuthService
 
         public async Task LogOutUser(string currentUserId, CancellationToken cancellationToken)
         {
-            ApplicationUser? user = await _userManager.Users.Where(u => u.Id == currentUserId).FirstAsync(cancellationToken) ?? throw new Exception("Kullanıcı Bulunamadı");
+            ApplicationUser? user = await _userManager.Users.Where(u => u.Id == currentUserId).FirstOrDefaultAsync(cancellationToken) ?? throw new Exception("Kullanıcı Bulunamadı");
 
             user.RefreshToken = null;
             user.RefreshTokenEndDate = null;

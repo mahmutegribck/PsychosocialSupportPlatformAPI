@@ -134,7 +134,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Appointments
             appointmentSchedule.PatientId = patientId;
             appointmentSchedule.Status = true;
 
-            appointmentSchedule.URL = "await GenerateZoomMeetingUrl()";
+            appointmentSchedule.URL = await GenerateZoomMeetingUrl(cancellationToken);
 
             await _appointmentScheduleRepository.UpdateAppointmentSchedule(appointmentSchedule, cancellationToken);
 

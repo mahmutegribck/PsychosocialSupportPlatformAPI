@@ -152,7 +152,7 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Users
 
         public async Task<IdentityResult> UpdatePatient(string currentUserId, Patient patient, CancellationToken cancellationToken)
         {
-            Patient updatedPatient = await _context.Patients.Where(p => p.Id == currentUserId).FirstAsync(cancellationToken);
+            Patient? updatedPatient = await _context.Patients.Where(p => p.Id == currentUserId).FirstOrDefaultAsync(cancellationToken);
             if (updatedPatient == null) { return IdentityResult.Failed(); }
 
             updatedPatient.Name = patient.Name;

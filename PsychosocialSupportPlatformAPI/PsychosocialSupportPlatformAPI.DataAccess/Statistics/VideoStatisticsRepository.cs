@@ -18,7 +18,7 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.Statistics
 
         public async Task DeleteVideoStatistics(int statisticsId, CancellationToken cancellationToken)
         {
-            var deleteVideoStatistics = await _context.VideoStatistics.Where(s => s.Id == statisticsId).FirstAsync(cancellationToken);
+            var deleteVideoStatistics = await _context.VideoStatistics.Where(s => s.Id == statisticsId).FirstOrDefaultAsync(cancellationToken);
 
             if (deleteVideoStatistics != null)
             {

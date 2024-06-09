@@ -93,11 +93,11 @@ builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<IUserRepository, UserRepository>();
 
-builder.Services.AddScoped<IMessageService, MessageService>();
-builder.Services.AddScoped<IMessageRepository, MessageRepository>();
+builder.Services.AddTransient<IMessageService, MessageService>();
+builder.Services.AddTransient<IMessageRepository, MessageRepository>();
 
 builder.Services.AddTransient<IVideoService, VideoService>();
-builder.Services.AddScoped<IVideoRepository, VideoRepository>();
+builder.Services.AddTransient<IVideoRepository, VideoRepository>();
 
 builder.Services.AddScoped<IVideoStatisticsRepository, VideoStatisticsRepository>();
 builder.Services.AddScoped<IVideoStatisticsService, VideoStatisticsService>();

@@ -60,6 +60,11 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.AppointmentSchedules
                     DoctorTitle = a.Doctor.DoctorTitle.Title
                 });
 
+            if (day.Date == DateTime.Today)
+            {
+                query = query.Where(a => (int)a.TimeRange >= DateTime.Now.Hour);
+            }
+
             if (patientLastAppointmentDoctorId != null)
             {
                 query = query.Where(s => s.DoctorID == patientLastAppointmentDoctorId);
@@ -114,13 +119,6 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.AppointmentSchedules
         }
 
 
-        public async Task<AppointmentSchedule?> GetAppointmentScheduleById(int appointmentScheduleId, CancellationToken cancellationToken)
-        {
-            return await _context.AppointmentSchedules
-                .AsNoTracking()
-                .Where(a => a.Id == appointmentScheduleId)
-                .FirstOrDefaultAsync(cancellationToken);
-        }
 
 
         public async Task UpdateAppointmentSchedule(AppointmentSchedule appointmentSchedule, CancellationToken cancellationToken)

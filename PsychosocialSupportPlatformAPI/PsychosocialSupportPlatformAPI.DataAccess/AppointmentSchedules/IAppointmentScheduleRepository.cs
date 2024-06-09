@@ -11,7 +11,6 @@ namespace PsychosocialSupportPlatformAPI.DataAccess.AppointmentSchedules
         Task<IEnumerable<object>> GetAllAppointmentSchedules(DateTime day, string patientId, CancellationToken cancellationToken);
         Task<IEnumerable<AppointmentSchedule>> GetAppointmentScheduleByDay(string doctorId, DateTime day, CancellationToken cancellationToken);
         Task<AppointmentSchedule?> GetAppointmentScheduleByDayAndTimeRange(string doctorId, DateTime day, TimeRange timeRange, CancellationToken cancellationToken);
-        Task<AppointmentSchedule?> GetAppointmentScheduleById(int appointmentScheduleId, CancellationToken cancellationToken);
         Task UpdateAppointmentSchedule(AppointmentSchedule appointmentSchedule, CancellationToken cancellationToken);
         Task<IEnumerable<AppointmentSchedule>> AllDoctorAppointments(string doctorId, CancellationToken cancellationToken);
         Task<IEnumerable<AppointmentSchedule>> GetAllDoctorAppointmentsByPatientId(string patientId, string doctorId, CancellationToken cancellationToken);
