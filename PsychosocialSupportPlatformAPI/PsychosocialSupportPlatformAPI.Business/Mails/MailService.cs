@@ -658,7 +658,7 @@ namespace PsychosocialSupportPlatformAPI.Business.Mails
                             <tr>
                               <td align='center' valign='center' width='100%' class='Button-primary-wrapper'
                                 style='  border-radius: 3px; background-color: #db2777;'>
-                                <a href='{_configuration["Urls:FrontUrl"]}confirm-email?email={HttpUtility.UrlEncode(email)}&token={HttpUtility.UrlEncode(token)}'' target='
+                                <a href='{_configuration["Urls:FrontUrl"]}confirm-email?token={HttpUtility.UrlEncode(token)}?email={HttpUtility.UrlEncode(email)}'' target='
                                   _blank' class='Button-primary'
                                   style='  font-family:  GT America Medium ,  Roboto ,  Helvetica ,  Arial , sans-serif; border-radius: 3px; border: 1px solid #db2777; color: rgb(255, 255, 255); display: block; font-size: 16px; font-weight: 600; padding: 18px; text-decoration: none;'>
                                   Hesabınızı Doğrulayın </a> </td>
